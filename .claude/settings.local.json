@@ -9,7 +9,12 @@
       "Bash(git commit *)",
       "Bash(git push *)",
       "Bash(git fetch *)",
-      "Bash(git pull *)"
+      "Bash(git pull *)",
+      "Bash(file *)",
+      "Bash(identify *)",
+      "Bash(convert *)",
+      "Bash(xc:#FFFFFF[48x48!])",
+      "Bash(dart analyze *)"
     ]
   }
 }
