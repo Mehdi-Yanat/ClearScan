@@ -4,7 +4,7 @@
 
 ClearScan transforms your mobile device into a powerful document scanner. It combines a seamless user experience with professional-grade image processing to ensure your documents are captured, enhanced, and exported with precision.
 
-![App Screenshot Placeholder](https://github.com/Mehdi-Yanat/ClearScan/blob/main/imgs/logo.png?raw=true)
+![App Screenshot Placeholder](https://github.com/Mehdi-Yanat/ClearScan/blob/main/AppIcons/appstore.png?raw=true)
 
 ## ✨ Features
 
