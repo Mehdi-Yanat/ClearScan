@@ -1,11 +1,14 @@
 import 'package:clear_scan/screens/documents_screen.dart';
+import 'package:clear_scan/screens/notifications_screen.dart';
 import 'package:flutter/material.dart';
+
+import 'screens/workshop_screen.dart';
 
 import 'screens/home_screen.dart';
 import 'screens/onboarding_screen.dart';
 import 'screens/profile_screens.dart';
-import 'screens/settings_screen.dart';
 import 'screens/splash_screen.dart';
+import 'services/app_lock_service.dart';
 import 'theme/app_theme.dart'; // AppTheme, AppPreferences, themeModeNotifier, localeNotifier
 import 'l10n/app_localizations.dart' as loc;
 
@@ -16,6 +19,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   themeModeNotifier.value = await AppPreferences.getThemeMode();
   localeNotifier.value = await AppPreferences.getLocale();
+  await AppLockService.initialize();
   runApp(const MyApp());
 }
 
@@ -42,10 +46,13 @@ class MyApp extends StatelessWidget {
             '/onboarding': (context) => const OnboardingPage(),
             '/splash': (context) => const SplashPage(),
             '/documents': (context) => const DocumentsScreen(),
-            '/settings': (context) => const SettingsScreen(),
+            '/notifications': (context) => const NotificationsScreen(),
+            '/workshop': (context) => const WorkshopScreen(),
             '/profile': (context) => const ProfileScreen(),
           },
           home: const _AppEntry(),
+          builder: (context, child) =>
+              AppLockGate(child: child ?? const SizedBox.shrink()),
         ),
       ),
     );
