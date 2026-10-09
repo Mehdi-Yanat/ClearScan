@@ -2,7 +2,7 @@ name: clear_scan
 description: "A modern, premium document scanner designed to replace traditional scanners."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This app is open source, so you may remove
-# this line if you decide to publish package artifacts.
+# this line if you decide to publish package assets.
 publish_to: 'none'
 
 # The following defines the version and build number for your application.
@@ -20,7 +20,7 @@ publish_to: 'none'
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.12.2
+  sdk: ^3.13.4
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -34,18 +34,21 @@ dependencies:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^1.0.8
+  cupertino_icons: ^2.0.0
   image_picker: ^1.2.3
   image_cropper: ^12.2.1
   image: ^4.0.20
   pdf: ^3.13.0
   path_provider: ^2.0.15
+  shared_preferences: ^2.5.6
+  camera: ^0.12.1
+  provider: ^6.1.2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_launcher_icons: ^0.14.4
-  flutter_native_splash: ^2.4.0
+  flutter_native_splash: ^2.4.8
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
@@ -59,11 +62,19 @@ flutter_icons:
   image_path: "AppIcons/AppIcon.icon/Assets/icon.png"
 
 flutter_native_splash:
-  color: "#ffffff"
-  image: AppIcons/AppIcon.icon/Assets/icon.png
+  color: "#FFFFFF"
+  color_dark: "#0B1E26"
+  image: assets/03_splash_assets/png/splash_logo_light.png
+  image_dark: assets/03_splash_assets/png/splash_logo_dark.png
   android: true
-  ios: true
-  web: true
+
+  android_12:
+    color: "#FFFFFF"
+    color_dark: "#0B1E26"
+    image: assets/03_splash_assets/png/android12_icon_light.png
+    image_dark: assets/03_splash_assets/png/android12_icon_dark.png
+    icon_background_color: "#FFFFFF"
+    icon_background_color_dark: "#0B1E26"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -71,6 +82,13 @@ flutter_native_splash:
 
 # The following section is specific to Flutter packages.
 flutter:
+  assets:
+    - assets/03_splash_assets/png/splash_logo_dark.png
+    - assets/03_splash_assets/png/splash_logo_light.png
+    - assets/03_splash_assets/png/branding_light.png
+    - assets/03_splash_assets/png/branding_dark.png
+    - assets/03_splash_assets/png/wordmark_light.png
+    - assets/03_splash_assets/png/wordmark_dark.png
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
@@ -105,5 +123,15 @@ flutter:
   #       - asset: fonts/TrajanPro_Bold.ttf
   #         weight: 700
   #
+  fonts:
+    - family: Poppins
+      fonts:
+        - asset: assets/fonts/poppins/Poppins-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/poppins/Poppins-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/poppins/Poppins-Bold.ttf
+          weight: 700
+
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
