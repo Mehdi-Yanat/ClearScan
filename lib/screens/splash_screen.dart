@@ -88,13 +88,13 @@ class _SplashPageState extends State<SplashPage> {
                     const SizedBox(width: 12),
                     _LoadingDot(
                       color: Theme.of(context).colorScheme.primary
-                          .withOpacity(0.6),
+                          .withValues(alpha: 0.6),
                       delay: const Duration(milliseconds: 150),
                     ),
                     const SizedBox(width: 12),
                     _LoadingDot(
                       color: Theme.of(context).colorScheme.primary
-                          .withOpacity(0.3),
+                          .withValues(alpha: 0.3),
                       delay: const Duration(milliseconds: 300),
                     ),
                   ],
@@ -104,7 +104,7 @@ class _SplashPageState extends State<SplashPage> {
                   'v1.0.0',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     color: Theme.of(context).colorScheme.onSurfaceVariant
-                        .withOpacity(0.7),
+                        .withValues(alpha: 0.7),
                     fontSize: 13,
                     fontWeight: FontWeight.w500,
                   ),

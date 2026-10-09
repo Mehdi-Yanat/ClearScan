@@ -2,19 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../theme/app_theme.dart'; // AppColors, AppPreferences, themeModeNotifier
+import '../l10n/app_localizations.dart' as loc;
+import '../theme/app_theme.dart'; // AppColors, AppPreferences, themeModeNotifier, localeNotifier
 import '../widgets/app_bottom_bar.dart';
 import 'scanner_screen.dart';
 import 'settings_screen.dart';
-import 'package:clear_scan/l10n/app_localizations.dart' as loc;
 
 // Storage card stays dark navy in both themes.
 const _heroBackground = Color(0xFF0F2A33);
 const _heroMutedText = Color(0xFFB7CDD2);
 const _heroAccent = Color(0xFF2CC4CF);
 
-/// Text/icon color that stays readable on the primary color in each theme
-/// (bright teal in dark mode needs dark text, deep teal in light mode needs white).
+// Text/icon color that stays readable on the primary color in each theme
+// (bright teal in dark mode needs dark text, deep teal in light mode needs white).
 Color _onPrimary(BuildContext context) =>
     Theme.of(context).brightness == Brightness.dark
     ? const Color(0xFF0B1E26)
@@ -28,12 +28,10 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  static const _languageKey = 'profile_language';
   static const _appVersion = '1.0.0';
 
   final String _name = 'John Doe';
   final String _email = 'john.doe@email.com';
-  final String _plan = 'Free plan';
 
   final double _usedGb = 2.4;
   final double _totalGb = 5;
@@ -41,7 +39,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
   SharedPreferences? _prefs;
   bool _backupOn = false;
   bool _lockOn = false;
-  String _language = 'English';
+  String _language = 'English'; // display string
+
+  // Mapping between display strings and Locale objects
+  static final Map<String, Locale> _languageToLocale = {
+    'English': const Locale('en'),
+    'العربية': const Locale('ar'),
+    'Deutsch': const Locale('de'),
+  };
+  static final Map<Locale, String> _localeToLanguage = {
+    const Locale('en'): 'English',
+    const Locale('ar'): 'العربية',
+    const Locale('de'): 'Deutsch',
+  };
 
   @override
   void initState() {
@@ -63,11 +73,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Future<void> _loadPrefs() async {
     final p = await SharedPreferences.getInstance();
     if (!mounted) return;
+    final locale = await AppPreferences.getLocale();
     setState(() {
       _prefs = p;
       _backupOn = p.getBool(AppSettings.autoBackup) ?? false;
       _lockOn = p.getBool(AppSettings.appLock) ?? false;
-      _language = p.getString(_languageKey) ?? 'English';
+      // Load locale code and map to display string
+      _language = _localeToLanguage[locale] ?? 'English';
+      // Update the notifier as well
+      localeNotifier.value = locale;
     });
   }
 
@@ -205,13 +219,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
       _ProfileRowData(
         icon: Icons.cloud_outlined,
         label: loc.AppLocalizations.of(context)!.backupAndSync,
-        value: _backupOn ? loc.AppLocalizations.of(context)!.on : loc.AppLocalizations.of(context)!.off,
+        value: _backupOn
+            ? loc.AppLocalizations.of(context)!.on
+            : loc.AppLocalizations.of(context)!.off,
         onTap: _openSettings,
       ),
       _ProfileRowData(
         icon: Icons.shield_outlined,
         label: loc.AppLocalizations.of(context)!.appLock,
-        value: _lockOn ? loc.AppLocalizations.of(context)!.on : loc.AppLocalizations.of(context)!.off,
+        value: _lockOn
+            ? loc.AppLocalizations.of(context)!.on
+            : loc.AppLocalizations.of(context)!.off,
         onTap: _openSettings,
       ),
       _ProfileRowData(
@@ -222,8 +240,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
           title: loc.AppLocalizations.of(context)!.language,
           options: const ['English', 'العربية', 'Deutsch'],
           current: _language,
-          prefsKey: _languageKey,
-          onPicked: (v) => _language = v,
+          prefsKey: null,
+          onPicked: (v) {
+            setState(() {
+              _language = v;
+            });
+            final locale = _languageToLocale[v] ?? const Locale('en');
+            localeNotifier.value = locale;
+            // Persist the locale (we don't await because we don't want to block the UI)
+            AppPreferences.setLocale(locale);
+          },
         ),
       ),
       _ProfileRowData(
@@ -232,8 +258,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
         value: themeModeNotifier.value == ThemeMode.light
             ? loc.AppLocalizations.of(context)!.light
             : themeModeNotifier.value == ThemeMode.dark
-                ? loc.AppLocalizations.of(context)!.dark
-                : loc.AppLocalizations.of(context)!.system,
+            ? loc.AppLocalizations.of(context)!.dark
+            : loc.AppLocalizations.of(context)!.system,
         // No prefsKey: AppPreferences.setThemeMode already persists it in the
         // lowercase format getThemeMode() expects.
         onTap: () => _pickOption(
@@ -261,7 +287,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
           context: context,
           applicationName: 'ClearScan',
           applicationVersion: _appVersion,
-          applicationLegalese: loc.AppLocalizations.of(context)!.scanAnythingSaveEverything,
+          applicationLegalese: loc.AppLocalizations.of(context)!
+              .scanAnythingSaveEverything,
         ),
       ),
     ];

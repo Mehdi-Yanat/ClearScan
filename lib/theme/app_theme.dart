@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final themeModeNotifier = ValueNotifier<ThemeMode>(ThemeMode.system);
+// Default locale is English; will be overridden by saved preference if any.
+final localeNotifier = ValueNotifier<Locale>(const Locale('en'));
 
 // Original AppColors class for backward compatibility
 class AppColors {
@@ -77,12 +79,37 @@ class AppColors {
   static const Color success = Color(0xFF2FB67C);
 }
 
-// AppPreferences for theme management
+// AppPreferences for theme and locale management
 class AppPreferences {
   static const String themeModeKey = 'theme_mode';
+  static const String localeKey = 'app_locale';
   static const String systemDefault = 'system';
   static const String light = 'light';
   static const String dark = 'dark';
+
+  static Future<Locale> getLocale() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? langCode = prefs.getString(localeKey);
+    if (langCode == null) return const Locale('en');
+    // Support language_COUNTRY format? We'll just split by '_'
+    final parts = langCode.split('_');
+    final languageCode = parts[0];
+    final countryCode = parts.length > 1 ? parts[1] : null;
+    if (countryCode != null) {
+      return Locale(languageCode, countryCode);
+    } else {
+      return Locale(languageCode);
+    }
+  }
+
+  static Future<void> setLocale(Locale locale) async {
+    final prefs = await SharedPreferences.getInstance();
+    final String localeString =
+        locale.countryCode == null || locale.countryCode!.isEmpty
+        ? locale.languageCode
+        : '${locale.languageCode}_${locale.countryCode}';
+    await prefs.setString(localeKey, localeString);
+  }
 
   static Future<ThemeMode> getThemeMode() async {
     final prefs = await SharedPreferences.getInstance();

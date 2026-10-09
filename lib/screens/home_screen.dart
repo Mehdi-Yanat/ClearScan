@@ -2,6 +2,7 @@ import 'package:clear_scan/screens/scanner_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../l10n/app_localizations.dart' as loc;
 import '../theme/app_theme.dart';
 import '../widgets/app_bottom_bar.dart';
 
@@ -75,11 +76,14 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(height: 20),
               _HeroCard(onScan: _openScanner),
               const SizedBox(height: 24),
-              const _SectionTitle('Quick Actions'),
+              _SectionTitle(loc.AppLocalizations.of(context)!.quickActions),
               const SizedBox(height: 14),
               _QuickActions(onScan: _openScanner),
               const SizedBox(height: 24),
-              const _SectionTitle('Recent Documents', actionLabel: 'See all'),
+              _SectionTitle(
+                loc.AppLocalizations.of(context)!.recentDocuments,
+                actionLabel: loc.AppLocalizations.of(context)!.seeAll,
+              ),
               const SizedBox(height: 14),
               const _RecentDocuments(docs: _recentDocs),
             ],
@@ -163,7 +167,7 @@ class _HeroCard extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
-      height: 170,
+      height: 178,
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 18),
       decoration: BoxDecoration(
         color: _heroBackground,
@@ -176,8 +180,8 @@ class _HeroCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Scan Anything.\nSave Everything.',
+                Text(
+                  loc.AppLocalizations.of(context)!.scanAnythingSaveEverything,
                   style: TextStyle(
                     fontSize: 20,
                     height: 1.2,
@@ -186,8 +190,8 @@ class _HeroCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 8),
-                const Text(
-                  'Fast, smart and secure\ndocument scanning.',
+                Text(
+                  loc.AppLocalizations.of(context)!.fast_and_smart,
                   style: TextStyle(
                     fontSize: 11.5,
                     height: 1.35,
@@ -200,7 +204,13 @@ class _HeroCard extends StatelessWidget {
                   child: ElevatedButton.icon(
                     onPressed: onScan,
                     icon: const Icon(Icons.photo_camera_outlined, size: 17),
-                    label: const Text('Scan Now'),
+                    label: Text(
+                      loc.AppLocalizations.of(context)!.scanButton,
+                      style: const TextStyle(
+                        fontSize: 12.5,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
                     style: ElevatedButton.styleFrom(
                       // The hero is dark in both themes, so use the bright
                       // accent here for contrast and dark text on top of it.
@@ -208,7 +218,7 @@ class _HeroCard extends StatelessWidget {
                       foregroundColor: const Color(0xFF0B1E26),
                       elevation: 0,
                       minimumSize: Size.zero,
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      padding: const EdgeInsets.symmetric(horizontal: 25),
                       shape: const StadiumBorder(),
                       textStyle: const TextStyle(
                         fontSize: 12.5,
@@ -273,12 +283,28 @@ class _QuickActions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final items = <_QuickAction>[
-      _QuickAction(Icons.badge_outlined, 'ID Cards', onScan),
-      _QuickAction(Icons.menu_book_outlined, 'Passport', onScan),
-      _QuickAction(Icons.qr_code_2_rounded, 'QR Code', onScan),
-      _QuickAction(Icons.folder_open_outlined, 'Import', () {
-        // TODO: file picker import
-      }),
+      _QuickAction(
+        Icons.badge_outlined,
+        loc.AppLocalizations.of(context)!.idCards,
+        onScan,
+      ),
+      _QuickAction(
+        Icons.menu_book_outlined,
+        loc.AppLocalizations.of(context)!.passport,
+        onScan,
+      ),
+      _QuickAction(
+        Icons.qr_code_2_rounded,
+        loc.AppLocalizations.of(context)!.qrCode,
+        onScan,
+      ),
+      _QuickAction(
+        Icons.folder_open_outlined,
+        loc.AppLocalizations.of(context)!.import,
+        () {
+          // TODO: file picker import
+        },
+      ),
     ];
 
     return Row(
@@ -431,10 +457,19 @@ class _DocRow extends StatelessWidget {
               onSelected: (_) {
                 // TODO: share / rename / delete
               },
-              itemBuilder: (_) => const [
-                PopupMenuItem(value: 'share', child: Text('Share')),
-                PopupMenuItem(value: 'rename', child: Text('Rename')),
-                PopupMenuItem(value: 'delete', child: Text('Delete')),
+              itemBuilder: (_) => [
+                PopupMenuItem(
+                  value: 'share',
+                  child: Text(loc.AppLocalizations.of(context)!.share),
+                ),
+                PopupMenuItem(
+                  value: 'rename',
+                  child: Text(loc.AppLocalizations.of(context)!.rename),
+                ),
+                PopupMenuItem(
+                  value: 'delete',
+                  child: Text(loc.AppLocalizations.of(context)!.delete),
+                ),
               ],
             ),
           ],
@@ -494,7 +529,7 @@ class _DocThumb extends StatelessWidget {
 // ───────────────────────────── Shared bits ─────────────────────────────
 
 class _SectionTitle extends StatelessWidget {
-  const _SectionTitle(this.title, {this.actionLabel, this.onAction});
+  const _SectionTitle(this.title, {this.actionLabel}) : onAction = null;
 
   final String title;
   final String? actionLabel;
@@ -515,7 +550,9 @@ class _SectionTitle extends StatelessWidget {
         const Spacer(),
         if (actionLabel != null)
           GestureDetector(
-            onTap: onAction,
+            onTap:
+                onAction ??
+                () {}, // If onAction is null, do nothing when tapped
             child: Text(
               actionLabel!,
               style: TextStyle(

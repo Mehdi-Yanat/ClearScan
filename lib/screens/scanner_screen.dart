@@ -4,21 +4,18 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
-
-import '../theme/app_theme.dart';
+import '../l10n/app_localizations.dart';
 
 enum _ScanMode {
-  idCard('ID Card', 1.586, 'Place your ID card inside the frame'),
-  passport('Passport', 0.72, 'Align the photo page with the frame'),
-  document('Document', 0.707, 'Align the document with the frame'),
-  qr('QR Code', 1.0, 'Point your camera at a QR code'),
-  book('Book', 1.35, 'Open the book and fit both pages in the frame');
+  idCard(1.586),
+  passport(0.72),
+  document(0.707),
+  qr(1.0),
+  book(1.35);
 
-  const _ScanMode(this.label, this.aspect, this.hint);
+  const _ScanMode(this.aspect);
 
-  final String label;
   final double aspect;
-  final String hint;
 }
 
 class ScannerScreen extends StatefulWidget {
@@ -142,7 +139,7 @@ class _ScannerScreenState extends State<ScannerScreen>
     if (!mounted) return;
     final callback = widget.onCaptured;
     if (callback != null) {
-      callback(file, _mode.label);
+      callback(file, _getScanModeLabel(_mode));
     } else {
       // TODO: push the crop / adjust-edges screen with [file].
       _showSnack('Captured: ${file.path.split('/').last}');
@@ -161,6 +158,70 @@ class _ScannerScreenState extends State<ScannerScreen>
     FlashMode.always => Icons.flash_on_rounded,
     _ => Icons.flash_off_rounded,
   };
+
+  String _getScanModeLabel(_ScanMode mode) {
+    final localizations = AppLocalizations.of(context);
+    if (localizations == null) {
+      // Fallback to English if localizations is not available
+      switch (mode) {
+        case _ScanMode.idCard:
+          return 'ID Card';
+        case _ScanMode.passport:
+          return 'Passport';
+        case _ScanMode.document:
+          return 'Document';
+        case _ScanMode.qr:
+          return 'QR Code';
+        case _ScanMode.book:
+          return 'Book';
+      }
+    }
+    // Localizations is not null here
+    switch (mode) {
+      case _ScanMode.idCard:
+        return localizations.scanModeIdCardLabel;
+      case _ScanMode.passport:
+        return localizations.scanModePassportLabel;
+      case _ScanMode.document:
+        return localizations.scanModeDocumentLabel;
+      case _ScanMode.qr:
+        return localizations.scanModeQrLabel;
+      case _ScanMode.book:
+        return localizations.scanModeBookLabel;
+    }
+  }
+
+  String _getScanModeHint(_ScanMode mode) {
+    final localizations = AppLocalizations.of(context);
+    if (localizations == null) {
+      // Fallback to English if localizations is not available
+      switch (mode) {
+        case _ScanMode.idCard:
+          return 'Place your ID card inside the frame';
+        case _ScanMode.passport:
+          return 'Align the photo page with the frame';
+        case _ScanMode.document:
+          return 'Align the document with the frame';
+        case _ScanMode.qr:
+          return 'Point your camera at a QR code';
+        case _ScanMode.book:
+          return 'Open the book and fit both pages in the frame';
+      }
+    }
+    // Localizations is not null here
+    switch (mode) {
+      case _ScanMode.idCard:
+        return localizations.scanModeIdCardHint;
+      case _ScanMode.passport:
+        return localizations.scanModePassportHint;
+      case _ScanMode.document:
+        return localizations.scanModeDocumentHint;
+      case _ScanMode.qr:
+        return localizations.scanModeQrHint;
+      case _ScanMode.book:
+        return localizations.scanModeBookHint;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -212,7 +273,7 @@ class _ScannerScreenState extends State<ScannerScreen>
                         ),
                       ),
                     ),
-                    _HintPill(text: _mode.hint),
+                    _HintPill(text: _getScanModeHint(_mode)),
                     const SizedBox(height: 18),
                     _ModeSelector(
                       selected: _mode,
@@ -464,6 +525,38 @@ class _ModeSelector extends StatelessWidget {
   final Color accent;
   final ValueChanged<_ScanMode> onChanged;
 
+  String _getModeLabel(_ScanMode mode, BuildContext context) {
+    final localizations = AppLocalizations.of(context);
+    if (localizations == null) {
+      // Fallback to English if localizations is not available
+      switch (mode) {
+        case _ScanMode.idCard:
+          return 'ID Card';
+        case _ScanMode.passport:
+          return 'Passport';
+        case _ScanMode.document:
+          return 'Document';
+        case _ScanMode.qr:
+          return 'QR Code';
+        case _ScanMode.book:
+          return 'Book';
+      }
+    }
+    // Localizations is not null here
+    switch (mode) {
+      case _ScanMode.idCard:
+        return localizations.scanModeIdCardLabel;
+      case _ScanMode.passport:
+        return localizations.scanModePassportLabel;
+      case _ScanMode.document:
+        return localizations.scanModeDocumentLabel;
+      case _ScanMode.qr:
+        return localizations.scanModeQrLabel;
+      case _ScanMode.book:
+        return localizations.scanModeBookLabel;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // Use theme-aware muted color for unselected items
@@ -485,7 +578,7 @@ class _ModeSelector extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        mode.label,
+                        _getModeLabel(mode, context),
                         maxLines: 1,
                         style: TextStyle(
                           fontSize: 12.5,

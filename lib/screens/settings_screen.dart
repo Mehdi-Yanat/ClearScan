@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../theme/app_theme.dart';
+import '../l10n/app_localizations.dart';
 
 class AppSettings {
   static const autoDetectEdges = 'settings_auto_detect_edges';
@@ -99,13 +99,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Future<void> _clearCache() async {
+    final l10n = AppLocalizations.of(context);
+    if (!mounted || l10n == null) return;
+
+    // Get all strings we need for the dialog before showing it
+    final clearCacheTitle = l10n.settingsClearCacheTitle;
+    final clearCacheMessage = l10n.settingsClearCacheMessage;
+    final settingsCancel = l10n.settingsCancel;
+    final settingsClear = l10n.settingsClear;
+
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: Theme.of(context).colorScheme.surface,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: Text(
-          'Clear cache?',
+          clearCacheTitle,
           style: TextStyle(
             fontSize: 17,
             fontWeight: FontWeight.w700,
@@ -113,7 +122,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
         ),
         content: Text(
-          'Temporary files will be deleted. Your documents are not affected.',
+          clearCacheMessage,
           style: TextStyle(
             fontSize: 13.5,
             color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -124,7 +133,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
             child: Text(
-              'Cancel',
+              settingsCancel,
               style: TextStyle(
                 color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
@@ -133,7 +142,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
             child: Text(
-              'Clear',
+              settingsClear,
               style: TextStyle(
                 color: Theme.of(context).colorScheme.error,
                 fontWeight: FontWeight.w700,
@@ -156,7 +165,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
       }
     } catch (_) {}
     await _refreshCacheSize();
-    _snack('Cache cleared');
+    if (!mounted) return;
+    _snack(l10n.settingsCacheCleared);
   }
 
   // ── helpers ──
@@ -219,13 +229,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   option,
                   style: TextStyle(
                     fontSize: 14,
-                    color: Theme.of(context).colorScheme.onSurface, // ✅ Fixed
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
                 trailing: option == current
                     ? Icon(
                         Icons.check_rounded,
-                        color: Theme.of(context).colorScheme.primary, // ✅ Fixed
+                        color: Theme.of(context).colorScheme.primary,
                       )
                     : null,
                 onTap: () => Navigator.of(context).pop(option),
@@ -241,7 +251,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   void _openLink(String title) {
-    _snack('$title: add your link');
+    final l10n = AppLocalizations.of(context);
+    String message;
+    if (l10n != null) {
+      message = l10n.settingsOpenLinkPlaceholder(title);
+    } else {
+      message = '{title}: add your link';
+    }
+    _snack(message);
   }
 
   // ── build ──
@@ -260,9 +277,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
             : Brightness.dark,
       ),
       child: Scaffold(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor, // ✅ Fixed
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         appBar: AppBar(
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor, // ✅ Fixed
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           surfaceTintColor: Colors.transparent,
           elevation: 0,
           scrolledUnderElevation: 0,
@@ -271,34 +288,36 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 Navigator.of(context).pushReplacementNamed('/home'),
             icon: Icon(
               Icons.arrow_back_rounded,
-              color: Theme.of(context).colorScheme.onSurface, // ✅ Fixed
+              color: Theme.of(context).colorScheme.onSurface,
             ),
             tooltip: 'Back',
           ),
           titleSpacing: 0,
           title: Text(
-            'Settings',
+            AppLocalizations.of(context)!.settingsTitle,
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w700,
-              color: Theme.of(context).colorScheme.onSurface, // ✅ Fixed
+              color: Theme.of(context).colorScheme.onSurface,
             ),
           ),
         ),
         body: _prefs == null
             ? Center(
                 child: CircularProgressIndicator(
-                  color: Theme.of(context).colorScheme.primary, // ✅ Fixed
+                  color: Theme.of(context).colorScheme.primary,
                 ),
               )
             : ListView(
                 padding: const EdgeInsets.fromLTRB(24, 8, 24, 32),
                 children: [
                   _Section(
-                    title: 'SCANNING',
+                    title: AppLocalizations.of(context)!
+                        .settingsSectionScanning,
                     children: [
                       _ToggleRow(
-                        label: 'Auto-detect edges',
+                        label: AppLocalizations.of(context)!
+                            .settingsAutoDetectEdges,
                         value: _autoDetectEdges,
                         onChanged: (v) => _setBool(
                           AppSettings.autoDetectEdges,
@@ -307,7 +326,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         ),
                       ),
                       _ToggleRow(
-                        label: 'Auto-capture',
+                        label: AppLocalizations.of(context)!
+                            .settingsAutoCapture,
                         value: _autoCapture,
                         onChanged: (v) => _setBool(
                           AppSettings.autoCapture,
@@ -316,22 +336,33 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         ),
                       ),
                       _ValueRow(
-                        label: 'Default quality',
+                        label: AppLocalizations.of(context)!
+                            .settingsDefaultQuality,
                         value: _quality,
                         onTap: () => _pickOption(
-                          title: 'Default quality',
-                          options: const ['Low', 'Medium', 'High'],
+                          title: AppLocalizations.of(context)!
+                              .settingsDefaultQuality,
+                          options: <String>[
+                            AppLocalizations.of(context)!.settingsQualityLow,
+                            AppLocalizations.of(context)!.settingsQualityMedium,
+                            AppLocalizations.of(context)!.settingsQualityHigh,
+                          ],
                           current: _quality,
                           prefsKey: AppSettings.quality,
                           onPicked: (v) => _quality = v,
                         ),
                       ),
                       _ValueRow(
-                        label: 'Default format',
+                        label: AppLocalizations.of(context)!
+                            .settingsDefaultFormat,
                         value: _format,
                         onTap: () => _pickOption(
-                          title: 'Default format',
-                          options: const ['PDF', 'JPG'],
+                          title: AppLocalizations.of(context)!
+                              .settingsDefaultFormat,
+                          options:  [
+                            AppLocalizations.of(context)!.settingsFormatPdf,
+                            AppLocalizations.of(context)!.settingsFormatJpg,
+                          ],
                           current: _format,
                           prefsKey: AppSettings.format,
                           onPicked: (v) => _format = v,
@@ -340,17 +371,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ],
                   ),
                   _Section(
-                    title: 'SECURITY',
+                    title: AppLocalizations.of(context)!
+                        .settingsSectionSecurity,
                     children: [
                       _ToggleRow(
-                        label: 'App lock (PIN / biometric)',
+                        label: AppLocalizations.of(context)!.settingsAppLock,
                         value: _appLock,
                         onChanged: (v) {
                           _setBool(AppSettings.appLock, v, () => _appLock = v);
                         },
                       ),
                       _ToggleRow(
-                        label: 'Hide in recents',
+                        label: AppLocalizations.of(context)!
+                            .settingsHideInRecents,
                         value: _hideInRecents,
                         onChanged: (v) {
                           _setBool(
@@ -363,10 +396,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ],
                   ),
                   _Section(
-                    title: 'STORAGE & SYNC',
+                    title: AppLocalizations.of(context)!
+                        .settingsSectionStorageSync,
                     children: [
                       _ToggleRow(
-                        label: 'Auto backup',
+                        label: AppLocalizations.of(context)!.settingsAutoBackup,
                         value: _autoBackup,
                         onChanged: (v) {
                           _setBool(
@@ -377,22 +411,28 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         },
                       ),
                       _ValueRow(
-                        label: 'Clear cache',
+                        label: AppLocalizations.of(context)!.settingsClearCache,
                         value: _formatBytes(_cacheBytes),
                         onTap: _clearCache,
                       ),
                     ],
                   ),
                   _Section(
-                    title: 'ABOUT',
+                    title: AppLocalizations.of(context)!.settingsSectionAbout,
                     children: [
                       _ValueRow(
-                        label: 'Privacy policy',
-                        onTap: () => _openLink('Privacy policy'),
+                        label: AppLocalizations.of(context)!
+                            .settingsPrivacyPolicy,
+                        onTap: () => _openLink(
+                          AppLocalizations.of(context)!.settingsPrivacyPolicy,
+                        ),
                       ),
                       _ValueRow(
-                        label: 'Terms of service',
-                        onTap: () => _openLink('Terms of service'),
+                        label: AppLocalizations.of(context)!
+                            .settingsTermsOfService,
+                        onTap: () => _openLink(
+                          AppLocalizations.of(context)!.settingsTermsOfService,
+                        ),
                       ),
                     ],
                   ),
@@ -446,7 +486,7 @@ class _Section extends StatelessWidget {
                       height: 1,
                       thickness: 1,
                       indent: 20,
-                      color: Theme.of(context).colorScheme.outline, // ✅ Fixed
+                      color: Theme.of(context).colorScheme.outline,
                     ),
                 ],
               ],
@@ -493,13 +533,13 @@ class _ToggleRow extends StatelessWidget {
               Switch(
                 value: value,
                 onChanged: onChanged,
-                activeColor: Theme.of(context).colorScheme.primary,
+                activeThumbColor: Theme.of(context).colorScheme.primary,
                 activeTrackColor: Theme.of(context).colorScheme.primary
-                    .withOpacity(0.3),
+                    .withValues(alpha: 0.3),
                 inactiveThumbColor: Theme.of(context).colorScheme.outline,
                 inactiveTrackColor: Theme.of(context)
                     .colorScheme
-                    .surfaceVariant,
+                    .surfaceContainerHighest,
               ),
             ],
           ),

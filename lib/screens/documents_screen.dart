@@ -2,9 +2,9 @@ import 'package:clear_scan/widgets/app_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../l10n/app_localizations.dart' as loc;
 import '../theme/app_theme.dart';
 import 'scanner_screen.dart';
-import 'package:clear_scan/l10n/app_localizations.dart' as loc;
 
 /// Text/icon color that stays readable on the primary color in each theme
 /// (bright teal in dark mode needs dark text, deep teal in light mode needs white).
@@ -218,12 +218,11 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
                 ),
               ),
             ),
-            final sortOptions = [
+            for (final (value, label) in [
               (_Sort.date, loc.AppLocalizations.of(sheetContext)!.sortDate),
               (_Sort.name, loc.AppLocalizations.of(sheetContext)!.sortName),
               (_Sort.size, loc.AppLocalizations.of(sheetContext)!.sortSize),
-            ];
-            for (final (value, label) in sortOptions)
+            ])
               ListTile(
                 title: Text(
                   label,
@@ -442,9 +441,15 @@ class _Header extends StatelessWidget {
               if (value == 'new') onNewFolder();
               // TODO: 'select' → multi-select mode
             },
-            itemBuilder: (_) => const [
-              PopupMenuItem(value: 'select', child: Text(loc.AppLocalizations.of(context)!.selectOption)),
-              PopupMenuItem(value: 'new', child: Text(loc.AppLocalizations.of(context)!.newOption)),
+            itemBuilder: (_) => [
+              PopupMenuItem(
+                value: 'select',
+                child: Text(loc.AppLocalizations.of(context)!.selectOption),
+              ),
+              PopupMenuItem(
+                value: 'new',
+                child: Text(loc.AppLocalizations.of(context)!.newOption),
+              ),
             ],
           ),
         ],
@@ -771,10 +776,19 @@ class _MoreMenu extends StatelessWidget {
         if (value == 'delete') onDelete();
         // TODO: 'share', 'rename'
       },
-      itemBuilder: (_) => const [
-        PopupMenuItem(value: 'share', child: Text(loc.AppLocalizations.of(context)!.share)),
-        PopupMenuItem(value: 'rename', child: Text(loc.AppLocalizations.of(context)!.rename)),
-        PopupMenuItem(value: 'delete', child: Text(loc.AppLocalizations.of(context)!.delete)),
+      itemBuilder: (_) => [
+        PopupMenuItem(
+          value: 'share',
+          child: Text(loc.AppLocalizations.of(context)!.share),
+        ),
+        PopupMenuItem(
+          value: 'rename',
+          child: Text(loc.AppLocalizations.of(context)!.rename),
+        ),
+        PopupMenuItem(
+          value: 'delete',
+          child: Text(loc.AppLocalizations.of(context)!.delete),
+        ),
       ],
     );
   }

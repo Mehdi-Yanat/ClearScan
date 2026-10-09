@@ -1,6 +1,5 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
-
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -86,4 +85,246 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get scanAnythingSaveEverything => 'Scan Anything. Save Everything.';
+
+  @override
+  String get quickActions => 'Quick Actions';
+
+  @override
+  String get recentDocuments => 'Recent Documents';
+
+  @override
+  String get seeAll => 'See all';
+
+  @override
+  String get idCards => 'ID Cards';
+
+  @override
+  String get passport => 'Passport';
+
+  @override
+  String get qrCode => 'QR Code';
+
+  @override
+  String get import => 'Import';
+
+  @override
+  String get share => 'Share';
+
+  @override
+  String get rename => 'Rename';
+
+  @override
+  String get delete => 'Delete';
+
+  @override
+  String get fast_and_smart => 'Fast, smart and secure\ndocument scanning.';
+
+  @override
+  String get documentsTitle => 'Documents';
+
+  @override
+  String get documentsSortBy => 'Sort by';
+
+  @override
+  String get documentsFilterAll => 'All';
+
+  @override
+  String get documentsFilterPdf => 'PDF';
+
+  @override
+  String get documentsFilterImages => 'Images';
+
+  @override
+  String get documentsFilterDocs => 'Docs';
+
+  @override
+  String get documentsFilterFavorites => 'Favorites';
+
+  @override
+  String get sortDate => 'Date';
+
+  @override
+  String get sortName => 'Name';
+
+  @override
+  String get sortSize => 'Size';
+
+  @override
+  String get searchTooltip => 'Search';
+
+  @override
+  String get selectOption => 'Select';
+
+  @override
+  String get newOption => 'New…';
+
+  @override
+  String get searchHint => 'Search documents';
+
+  @override
+  String get undo => 'Undo';
+
+  @override
+  String get scanDocument => 'Scan document';
+
+  @override
+  String get newFolder => 'New folder';
+
+  @override
+  String get importFile => 'Import file';
+
+  @override
+  String get removeFromFavorites => 'Remove from favorites';
+
+  @override
+  String get addToFavorites => 'Add to favorites';
+
+  @override
+  String get items => 'items';
+
+  @override
+  String get noDocumentsFound => 'No documents found';
+
+  @override
+  String get onboardingSlideScanTitle => 'Scan Anything';
+
+  @override
+  String get onboardingSlideScanSubtitle => 'Turn paper into crisp, searchable PDFs\nin seconds, right from your phone.';
+
+  @override
+  String get onboardingSlideOrganizeTitle => 'Organize Everything';
+
+  @override
+  String get onboardingSlideOrganizeSubtitle => 'Keep IDs, contracts and receipts\nneatly sorted in folders.';
+
+  @override
+  String get onboardingSlideSignTitle => 'Edit & Sign';
+
+  @override
+  String get onboardingSlideSignSubtitle => 'Merge, compress, sign and share\nyour documents in a few taps.';
+
+  @override
+  String get onboardingSkip => 'Skip';
+
+  @override
+  String get onboardingGetStarted => 'Get Started';
+
+  @override
+  String get onboardingAgreeTerms => 'By continuing you agree to Terms & Privacy';
+
+  @override
+  String get onboardingTileIdCards => 'ID Cards';
+
+  @override
+  String get onboardingTileContracts => 'Contracts';
+
+  @override
+  String get onboardingTileReceipts => 'Receipts';
+
+  @override
+  String get scanModeIdCardLabel => 'ID Card';
+
+  @override
+  String get scanModePassportLabel => 'Passport';
+
+  @override
+  String get scanModeDocumentLabel => 'Document';
+
+  @override
+  String get scanModeQrLabel => 'QR Code';
+
+  @override
+  String get scanModeBookLabel => 'Book';
+
+  @override
+  String get scanModeIdCardHint => 'Place your ID card inside the frame';
+
+  @override
+  String get scanModePassportHint => 'Align the photo page with the frame';
+
+  @override
+  String get scanModeDocumentHint => 'Align the document with the frame';
+
+  @override
+  String get scanModeQrHint => 'Point your camera at a QR code';
+
+  @override
+  String get scanModeBookHint => 'Open the book and fit both pages in the frame';
+
+  @override
+  String get settingsSectionScanning => 'SCANNING';
+
+  @override
+  String get settingsSectionSecurity => 'SECURITY';
+
+  @override
+  String get settingsSectionStorageSync => 'STORAGE & SYNC';
+
+  @override
+  String get settingsSectionAbout => 'ABOUT';
+
+  @override
+  String get settingsAutoDetectEdges => 'Auto-detect edges';
+
+  @override
+  String get settingsAutoCapture => 'Auto-capture';
+
+  @override
+  String get settingsAppLock => 'App lock (PIN / biometric)';
+
+  @override
+  String get settingsHideInRecents => 'Hide in recents';
+
+  @override
+  String get settingsAutoBackup => 'Auto backup';
+
+  @override
+  String get settingsDefaultQuality => 'Default quality';
+
+  @override
+  String get settingsDefaultFormat => 'Default format';
+
+  @override
+  String get settingsClearCache => 'Clear cache';
+
+  @override
+  String get settingsPrivacyPolicy => 'Privacy policy';
+
+  @override
+  String get settingsTermsOfService => 'Terms of service';
+
+  @override
+  String get settingsQualityLow => 'Low';
+
+  @override
+  String get settingsQualityMedium => 'Medium';
+
+  @override
+  String get settingsQualityHigh => 'High';
+
+  @override
+  String get settingsFormatPdf => 'PDF';
+
+  @override
+  String get settingsFormatJpg => 'JPG';
+
+  @override
+  String get settingsClearCacheTitle => 'Clear cache?';
+
+  @override
+  String get settingsClearCacheMessage => 'Temporary files will be deleted. Your documents are not affected.';
+
+  @override
+  String get settingsCancel => 'Cancel';
+
+  @override
+  String get settingsClear => 'Clear';
+
+  @override
+  String get settingsCacheCleared => 'Cache cleared';
+
+  @override
+  String settingsOpenLinkPlaceholder(Object title) {
+    return '$title: add your link';
+  }
 }

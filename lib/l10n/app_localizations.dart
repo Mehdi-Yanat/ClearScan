@@ -63,8 +63,7 @@ import 'app_localizations_en.dart';
 /// be consistent with the languages listed in the AppLocalizations.supportedLocales
 /// property.
 abstract class AppLocalizations {
-  AppLocalizations(String locale)
-    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+  AppLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -72,8 +71,7 @@ abstract class AppLocalizations {
     return Localizations.of<AppLocalizations>(context, AppLocalizations);
   }
 
-  static const LocalizationsDelegate<AppLocalizations> delegate =
-      _AppLocalizationsDelegate();
+  static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
 
   /// A list of this localizations delegate along with the default localizations
   /// delegates.
@@ -85,19 +83,18 @@ abstract class AppLocalizations {
   /// Additional delegates can be added by appending to this list in
   /// MaterialApp. This list does not have to be used at all if a custom list
   /// of delegates is preferred or required.
-  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
-      <LocalizationsDelegate<dynamic>>[
-        delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ];
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = <LocalizationsDelegate<dynamic>>[
+    delegate,
+    GlobalMaterialLocalizations.delegate,
+    GlobalCupertinoLocalizations.delegate,
+    GlobalWidgetsLocalizations.delegate,
+  ];
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
     Locale('ar'),
     Locale('de'),
-    Locale('en'),
+    Locale('en')
   ];
 
   /// No description provided for @appTitle.
@@ -255,10 +252,489 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Scan Anything. Save Everything.'**
   String get scanAnythingSaveEverything;
+
+  /// No description provided for @quickActions.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick Actions'**
+  String get quickActions;
+
+  /// No description provided for @recentDocuments.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent Documents'**
+  String get recentDocuments;
+
+  /// No description provided for @seeAll.
+  ///
+  /// In en, this message translates to:
+  /// **'See all'**
+  String get seeAll;
+
+  /// No description provided for @idCards.
+  ///
+  /// In en, this message translates to:
+  /// **'ID Cards'**
+  String get idCards;
+
+  /// No description provided for @passport.
+  ///
+  /// In en, this message translates to:
+  /// **'Passport'**
+  String get passport;
+
+  /// No description provided for @qrCode.
+  ///
+  /// In en, this message translates to:
+  /// **'QR Code'**
+  String get qrCode;
+
+  /// No description provided for @import.
+  ///
+  /// In en, this message translates to:
+  /// **'Import'**
+  String get import;
+
+  /// No description provided for @share.
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get share;
+
+  /// No description provided for @rename.
+  ///
+  /// In en, this message translates to:
+  /// **'Rename'**
+  String get rename;
+
+  /// No description provided for @delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get delete;
+
+  /// No description provided for @fast_and_smart.
+  ///
+  /// In en, this message translates to:
+  /// **'Fast, smart and secure\ndocument scanning.'**
+  String get fast_and_smart;
+
+  /// No description provided for @documentsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Documents'**
+  String get documentsTitle;
+
+  /// No description provided for @documentsSortBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort by'**
+  String get documentsSortBy;
+
+  /// No description provided for @documentsFilterAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get documentsFilterAll;
+
+  /// No description provided for @documentsFilterPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF'**
+  String get documentsFilterPdf;
+
+  /// No description provided for @documentsFilterImages.
+  ///
+  /// In en, this message translates to:
+  /// **'Images'**
+  String get documentsFilterImages;
+
+  /// No description provided for @documentsFilterDocs.
+  ///
+  /// In en, this message translates to:
+  /// **'Docs'**
+  String get documentsFilterDocs;
+
+  /// No description provided for @documentsFilterFavorites.
+  ///
+  /// In en, this message translates to:
+  /// **'Favorites'**
+  String get documentsFilterFavorites;
+
+  /// No description provided for @sortDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get sortDate;
+
+  /// No description provided for @sortName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get sortName;
+
+  /// No description provided for @sortSize.
+  ///
+  /// In en, this message translates to:
+  /// **'Size'**
+  String get sortSize;
+
+  /// No description provided for @searchTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get searchTooltip;
+
+  /// No description provided for @selectOption.
+  ///
+  /// In en, this message translates to:
+  /// **'Select'**
+  String get selectOption;
+
+  /// No description provided for @newOption.
+  ///
+  /// In en, this message translates to:
+  /// **'New…'**
+  String get newOption;
+
+  /// No description provided for @searchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search documents'**
+  String get searchHint;
+
+  /// No description provided for @undo.
+  ///
+  /// In en, this message translates to:
+  /// **'Undo'**
+  String get undo;
+
+  /// No description provided for @scanDocument.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan document'**
+  String get scanDocument;
+
+  /// No description provided for @newFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'New folder'**
+  String get newFolder;
+
+  /// No description provided for @importFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Import file'**
+  String get importFile;
+
+  /// No description provided for @removeFromFavorites.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from favorites'**
+  String get removeFromFavorites;
+
+  /// No description provided for @addToFavorites.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to favorites'**
+  String get addToFavorites;
+
+  /// No description provided for @items.
+  ///
+  /// In en, this message translates to:
+  /// **'items'**
+  String get items;
+
+  /// No description provided for @noDocumentsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No documents found'**
+  String get noDocumentsFound;
+
+  /// No description provided for @onboardingSlideScanTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan Anything'**
+  String get onboardingSlideScanTitle;
+
+  /// No description provided for @onboardingSlideScanSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn paper into crisp, searchable PDFs\nin seconds, right from your phone.'**
+  String get onboardingSlideScanSubtitle;
+
+  /// No description provided for @onboardingSlideOrganizeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Organize Everything'**
+  String get onboardingSlideOrganizeTitle;
+
+  /// No description provided for @onboardingSlideOrganizeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep IDs, contracts and receipts\nneatly sorted in folders.'**
+  String get onboardingSlideOrganizeSubtitle;
+
+  /// No description provided for @onboardingSlideSignTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit & Sign'**
+  String get onboardingSlideSignTitle;
+
+  /// No description provided for @onboardingSlideSignSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Merge, compress, sign and share\nyour documents in a few taps.'**
+  String get onboardingSlideSignSubtitle;
+
+  /// No description provided for @onboardingSkip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get onboardingSkip;
+
+  /// No description provided for @onboardingGetStarted.
+  ///
+  /// In en, this message translates to:
+  /// **'Get Started'**
+  String get onboardingGetStarted;
+
+  /// No description provided for @onboardingAgreeTerms.
+  ///
+  /// In en, this message translates to:
+  /// **'By continuing you agree to Terms & Privacy'**
+  String get onboardingAgreeTerms;
+
+  /// No description provided for @onboardingTileIdCards.
+  ///
+  /// In en, this message translates to:
+  /// **'ID Cards'**
+  String get onboardingTileIdCards;
+
+  /// No description provided for @onboardingTileContracts.
+  ///
+  /// In en, this message translates to:
+  /// **'Contracts'**
+  String get onboardingTileContracts;
+
+  /// No description provided for @onboardingTileReceipts.
+  ///
+  /// In en, this message translates to:
+  /// **'Receipts'**
+  String get onboardingTileReceipts;
+
+  /// No description provided for @scanModeIdCardLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'ID Card'**
+  String get scanModeIdCardLabel;
+
+  /// No description provided for @scanModePassportLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Passport'**
+  String get scanModePassportLabel;
+
+  /// No description provided for @scanModeDocumentLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Document'**
+  String get scanModeDocumentLabel;
+
+  /// No description provided for @scanModeQrLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'QR Code'**
+  String get scanModeQrLabel;
+
+  /// No description provided for @scanModeBookLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Book'**
+  String get scanModeBookLabel;
+
+  /// No description provided for @scanModeIdCardHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Place your ID card inside the frame'**
+  String get scanModeIdCardHint;
+
+  /// No description provided for @scanModePassportHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Align the photo page with the frame'**
+  String get scanModePassportHint;
+
+  /// No description provided for @scanModeDocumentHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Align the document with the frame'**
+  String get scanModeDocumentHint;
+
+  /// No description provided for @scanModeQrHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Point your camera at a QR code'**
+  String get scanModeQrHint;
+
+  /// No description provided for @scanModeBookHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the book and fit both pages in the frame'**
+  String get scanModeBookHint;
+
+  /// No description provided for @settingsSectionScanning.
+  ///
+  /// In en, this message translates to:
+  /// **'SCANNING'**
+  String get settingsSectionScanning;
+
+  /// No description provided for @settingsSectionSecurity.
+  ///
+  /// In en, this message translates to:
+  /// **'SECURITY'**
+  String get settingsSectionSecurity;
+
+  /// No description provided for @settingsSectionStorageSync.
+  ///
+  /// In en, this message translates to:
+  /// **'STORAGE & SYNC'**
+  String get settingsSectionStorageSync;
+
+  /// No description provided for @settingsSectionAbout.
+  ///
+  /// In en, this message translates to:
+  /// **'ABOUT'**
+  String get settingsSectionAbout;
+
+  /// No description provided for @settingsAutoDetectEdges.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto-detect edges'**
+  String get settingsAutoDetectEdges;
+
+  /// No description provided for @settingsAutoCapture.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto-capture'**
+  String get settingsAutoCapture;
+
+  /// No description provided for @settingsAppLock.
+  ///
+  /// In en, this message translates to:
+  /// **'App lock (PIN / biometric)'**
+  String get settingsAppLock;
+
+  /// No description provided for @settingsHideInRecents.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide in recents'**
+  String get settingsHideInRecents;
+
+  /// No description provided for @settingsAutoBackup.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto backup'**
+  String get settingsAutoBackup;
+
+  /// No description provided for @settingsDefaultQuality.
+  ///
+  /// In en, this message translates to:
+  /// **'Default quality'**
+  String get settingsDefaultQuality;
+
+  /// No description provided for @settingsDefaultFormat.
+  ///
+  /// In en, this message translates to:
+  /// **'Default format'**
+  String get settingsDefaultFormat;
+
+  /// No description provided for @settingsClearCache.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear cache'**
+  String get settingsClearCache;
+
+  /// No description provided for @settingsPrivacyPolicy.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy policy'**
+  String get settingsPrivacyPolicy;
+
+  /// No description provided for @settingsTermsOfService.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms of service'**
+  String get settingsTermsOfService;
+
+  /// No description provided for @settingsQualityLow.
+  ///
+  /// In en, this message translates to:
+  /// **'Low'**
+  String get settingsQualityLow;
+
+  /// No description provided for @settingsQualityMedium.
+  ///
+  /// In en, this message translates to:
+  /// **'Medium'**
+  String get settingsQualityMedium;
+
+  /// No description provided for @settingsQualityHigh.
+  ///
+  /// In en, this message translates to:
+  /// **'High'**
+  String get settingsQualityHigh;
+
+  /// No description provided for @settingsFormatPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF'**
+  String get settingsFormatPdf;
+
+  /// No description provided for @settingsFormatJpg.
+  ///
+  /// In en, this message translates to:
+  /// **'JPG'**
+  String get settingsFormatJpg;
+
+  /// No description provided for @settingsClearCacheTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear cache?'**
+  String get settingsClearCacheTitle;
+
+  /// No description provided for @settingsClearCacheMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Temporary files will be deleted. Your documents are not affected.'**
+  String get settingsClearCacheMessage;
+
+  /// No description provided for @settingsCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get settingsCancel;
+
+  /// No description provided for @settingsClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get settingsClear;
+
+  /// No description provided for @settingsCacheCleared.
+  ///
+  /// In en, this message translates to:
+  /// **'Cache cleared'**
+  String get settingsCacheCleared;
+
+  /// No description provided for @settingsOpenLinkPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'{title}: add your link'**
+  String settingsOpenLinkPlaceholder(Object title);
 }
 
-class _AppLocalizationsDelegate
-    extends LocalizationsDelegate<AppLocalizations> {
+class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();
 
   @override
@@ -267,28 +743,26 @@ class _AppLocalizationsDelegate
   }
 
   @override
-  bool isSupported(Locale locale) =>
-      <String>['ar', 'de', 'en'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>['ar', 'de', 'en'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
 }
 
 AppLocalizations lookupAppLocalizations(Locale locale) {
+
+
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
-    case 'ar':
-      return AppLocalizationsAr();
-    case 'de':
-      return AppLocalizationsDe();
-    case 'en':
-      return AppLocalizationsEn();
+    case 'ar': return AppLocalizationsAr();
+    case 'de': return AppLocalizationsDe();
+    case 'en': return AppLocalizationsEn();
   }
 
   throw FlutterError(
     'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
     'an issue with the localizations generation tool. Please file an issue '
     'on GitHub with a reproducible sample app and the gen-l10n configuration '
-    'that was used.',
+    'that was used.'
   );
 }

@@ -1,21 +1,21 @@
 import 'package:clear_scan/screens/documents_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'screens/home_screen.dart';
 import 'screens/onboarding_screen.dart';
 import 'screens/profile_screens.dart';
 import 'screens/settings_screen.dart';
 import 'screens/splash_screen.dart';
-import 'theme/app_theme.dart'; // AppTheme, AppPreferences, themeModeNotifier
-import 'l10n/app_localizations.dart';
+import 'theme/app_theme.dart'; // AppTheme, AppPreferences, themeModeNotifier, localeNotifier
+import 'l10n/app_localizations.dart' as loc;
 
 // NOTE: `themeModeNotifier` now lives in theme/app_theme.dart so every screen
 // shares the same instance. Do NOT declare it again here.
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   themeModeNotifier.value = await AppPreferences.getThemeMode();
+  localeNotifier.value = await AppPreferences.getLocale();
   runApp(const MyApp());
 }
 
@@ -26,32 +26,27 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ValueListenableBuilder<ThemeMode>(
       valueListenable: themeModeNotifier,
-      builder: (context, mode, _) => MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'ClearScan',
-        theme: AppTheme.lightTheme(),
-        darkTheme: AppTheme.darkTheme(),
-        themeMode: mode,
-        localizationsDelegates: const [
-          AppLocalizations.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: const [
-          Locale('en'),
-          Locale('de'),
-          Locale('ar'),
-        ],
-        routes: {
-          '/home': (context) => const HomeScreen(),
-          '/onboarding': (context) => const OnboardingPage(),
-          '/splash': (context) => const SplashPage(),
-          '/documents': (context) => const DocumentsScreen(),
-          '/settings': (context) => const SettingsScreen(),
-          '/profile': (context) => const ProfileScreen(),
-        },
-        home: const _AppEntry(),
+      builder: (context, mode, _) => ValueListenableBuilder<Locale>(
+        valueListenable: localeNotifier,
+        builder: (context, locale, _) => MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'ClearScan',
+          theme: AppTheme.lightTheme(),
+          darkTheme: AppTheme.darkTheme(),
+          themeMode: mode,
+          locale: locale,
+          localizationsDelegates: loc.AppLocalizations.localizationsDelegates,
+          supportedLocales: loc.AppLocalizations.supportedLocales,
+          routes: {
+            '/home': (context) => const HomeScreen(),
+            '/onboarding': (context) => const OnboardingPage(),
+            '/splash': (context) => const SplashPage(),
+            '/documents': (context) => const DocumentsScreen(),
+            '/settings': (context) => const SettingsScreen(),
+            '/profile': (context) => const ProfileScreen(),
+          },
+          home: const _AppEntry(),
+        ),
       ),
     );
   }
