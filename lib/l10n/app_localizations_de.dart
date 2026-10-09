@@ -32,4 +32,58 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get arabic => 'Arabisch';
+
+  @override
+  String get freePlan => 'Kostenloser Plan';
+
+  @override
+  String get on => 'Ein';
+
+  @override
+  String get off => 'Aus';
+
+  @override
+  String get backupAndSync => 'Sicherung & Synchronisierung';
+
+  @override
+  String get appLock => 'App-Sperre';
+
+  @override
+  String get appearance => 'Erscheinungsbild';
+
+  @override
+  String get rateClearScan => 'ClearScan bewerten';
+
+  @override
+  String get helpAndSupport => 'Hilfe & Support';
+
+  @override
+  String get about => 'Über';
+
+  @override
+  String get profile => 'Profil';
+
+  @override
+  String get settingsTooltip => 'Einstellungen';
+
+  @override
+  String get storage => 'Speicher';
+
+  @override
+  String get light => 'Hell';
+
+  @override
+  String get dark => 'Dunkel';
+
+  @override
+  String get system => 'System';
+
+  @override
+  String get rateStoreListing => 'Store öffnen';
+
+  @override
+  String get helpCenterEmail => 'Hilfezentrum / E-Mail öffnen';
+
+  @override
+  String get scanAnythingSaveEverything => 'Alles scannen. Alles speichern.';
 }

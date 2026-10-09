@@ -6,6 +6,7 @@ import '../theme/app_theme.dart'; // AppColors, AppPreferences, themeModeNotifie
 import '../widgets/app_bottom_bar.dart';
 import 'scanner_screen.dart';
 import 'settings_screen.dart';
+import 'package:clear_scan/l10n/app_localizations.dart' as loc;
 
 // Storage card stays dark navy in both themes.
 const _heroBackground = Color(0xFF0F2A33);
@@ -203,23 +204,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final rows = <_ProfileRowData>[
       _ProfileRowData(
         icon: Icons.cloud_outlined,
-        label: 'Backup & Sync',
-        value: _backupOn ? 'On' : 'Off',
+        label: loc.AppLocalizations.of(context)!.backupAndSync,
+        value: _backupOn ? loc.AppLocalizations.of(context)!.on : loc.AppLocalizations.of(context)!.off,
         onTap: _openSettings,
       ),
       _ProfileRowData(
         icon: Icons.shield_outlined,
-        label: 'App Lock',
-        value: _lockOn ? 'On' : 'Off',
+        label: loc.AppLocalizations.of(context)!.appLock,
+        value: _lockOn ? loc.AppLocalizations.of(context)!.on : loc.AppLocalizations.of(context)!.off,
         onTap: _openSettings,
       ),
       _ProfileRowData(
         icon: Icons.language_rounded,
-        label: 'Language',
+        label: loc.AppLocalizations.of(context)!.language,
         value: _language,
         onTap: () => _pickOption(
-          title: 'Language',
-          options: const ['English', 'Français', 'العربية', 'Deutsch'],
+          title: loc.AppLocalizations.of(context)!.language,
+          options: const ['English', 'العربية', 'Deutsch'],
           current: _language,
           prefsKey: _languageKey,
           onPicked: (v) => _language = v,
@@ -227,12 +228,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
       _ProfileRowData(
         icon: Icons.dark_mode_outlined,
-        label: 'Appearance',
-        value: _themeModeToString(themeModeNotifier.value),
+        label: loc.AppLocalizations.of(context)!.appearance,
+        value: themeModeNotifier.value == ThemeMode.light
+            ? loc.AppLocalizations.of(context)!.light
+            : themeModeNotifier.value == ThemeMode.dark
+                ? loc.AppLocalizations.of(context)!.dark
+                : loc.AppLocalizations.of(context)!.system,
         // No prefsKey: AppPreferences.setThemeMode already persists it in the
         // lowercase format getThemeMode() expects.
         onTap: () => _pickOption(
-          title: 'Appearance',
+          title: loc.AppLocalizations.of(context)!.appearance,
           options: const ['System', 'Light', 'Dark'],
           current: _themeModeToString(themeModeNotifier.value),
           onPicked: _updateThemeMode,
@@ -240,23 +245,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
       _ProfileRowData(
         icon: Icons.star_outline_rounded,
-        label: 'Rate ClearScan',
-        onTap: () => _snack('TODO: open store listing (in_app_review)'),
+        label: loc.AppLocalizations.of(context)!.rateClearScan,
+        onTap: () => _snack(loc.AppLocalizations.of(context)!.rateStoreListing),
       ),
       _ProfileRowData(
         icon: Icons.help_outline_rounded,
-        label: 'Help & Support',
-        onTap: () => _snack('TODO: open help center / email'),
+        label: loc.AppLocalizations.of(context)!.helpAndSupport,
+        onTap: () => _snack(loc.AppLocalizations.of(context)!.helpCenterEmail),
       ),
       _ProfileRowData(
         icon: Icons.info_outline_rounded,
-        label: 'About',
+        label: loc.AppLocalizations.of(context)!.about,
         value: 'v$_appVersion',
         onTap: () => showAboutDialog(
           context: context,
           applicationName: 'ClearScan',
           applicationVersion: _appVersion,
-          applicationLegalese: 'Scan Anything. Save Everything.',
+          applicationLegalese: loc.AppLocalizations.of(context)!.scanAnythingSaveEverything,
         ),
       ),
     ];
@@ -282,7 +287,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Row(
                 children: [
                   Text(
-                    'Profile',
+                    loc.AppLocalizations.of(context)!.profile,
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.w700,
@@ -297,7 +302,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       size: 25,
                       color: AppColors.ink(context),
                     ),
-                    tooltip: 'Settings',
+                    tooltip: loc.AppLocalizations.of(context)!.settingsTooltip,
                   ),
                 ],
               ),
@@ -306,7 +311,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 initials: _initials,
                 name: _name,
                 email: _email,
-                plan: _plan,
+                plan: loc.AppLocalizations.of(context)!.freePlan,
               ),
               const SizedBox(height: 14),
               _StorageCard(usedGb: _usedGb, totalGb: _totalGb),
