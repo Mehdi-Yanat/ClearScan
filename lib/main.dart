@@ -1,8 +1,19 @@
+import 'package:clear_scan/screens/documents_screen.dart';
 import 'package:flutter/material.dart';
 
-import 'pages/scanner_page.dart';
+import 'screens/home_screen.dart';
+import 'screens/onboarding_screen.dart';
+import 'screens/profile_screens.dart';
+import 'screens/settings_screen.dart';
+import 'screens/splash_screen.dart';
+import 'theme/app_theme.dart'; // AppTheme, AppPreferences, themeModeNotifier
 
-void main() {
+// NOTE: `themeModeNotifier` now lives in theme/app_theme.dart so every screen
+// shares the same instance. Do NOT declare it again here.
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  themeModeNotifier.value = await AppPreferences.getThemeMode();
   runApp(const MyApp());
 }
 
@@ -11,70 +22,59 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const Color primaryColor = Color(0xFF277987);
-    const Color primaryDarkColor = Color(0xFF1B2835);
-    const Color backgroundColor = Color(0xFFFBFBFC);
-    const Color textPrimaryColor = Color(0xFF1B2835);
-    const Color textMutedColor = Color(0xFF6B7280);
-    const Color borderColor = Color(0xFFE5E7EB);
-
-    final ColorScheme colorScheme = ColorScheme.light(
-      primary: primaryColor,
-      onPrimary: Colors.white,
-      primaryContainer: primaryDarkColor,
-      onPrimaryContainer: Colors.white,
-      secondary: textMutedColor,
-      onSecondary: Colors.white,
-      surface: backgroundColor,
-      onSurface: textPrimaryColor,
-      surfaceContainerHighest: const Color(0xFFF5F7FA),
-      onSurfaceVariant: textMutedColor,
-      outline: borderColor,
-      inversePrimary: primaryDarkColor,
-    );
-
-    final ThemeData base = ThemeData.from(
-      colorScheme: colorScheme,
-      useMaterial3: true,
-    );
-
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'ClearScan',
-      theme: base.copyWith(
-        scaffoldBackgroundColor: colorScheme.surface,
-        appBarTheme: AppBarTheme(
-          backgroundColor: colorScheme.primary,
-          foregroundColor: colorScheme.onPrimary,
-          elevation: 0,
-          surfaceTintColor: Colors.transparent,
-        ),
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: colorScheme.primary,
-            foregroundColor: colorScheme.onPrimary,
-            padding: const EdgeInsets.symmetric(vertical: 14),
-          ),
-        ),
-        outlinedButtonTheme: OutlinedButtonThemeData(
-          style: OutlinedButton.styleFrom(
-            foregroundColor: colorScheme.primary,
-            side: BorderSide(color: colorScheme.outline),
-            padding: const EdgeInsets.symmetric(vertical: 14),
-          ),
-        ),
-        textTheme: base.textTheme.apply(
-          bodyColor: colorScheme.onSurface,
-          displayColor: colorScheme.onSurface,
-        ),
-        cardTheme: base.cardTheme.copyWith(
-          color: colorScheme.surface,
-          shadowColor: colorScheme.shadow,
-        ),
-        dividerColor: colorScheme.outline,
-        colorScheme: colorScheme,
+    // ValueListenableBuilder handles adding/removing the listener for us.
+    return ValueListenableBuilder<ThemeMode>(
+      valueListenable: themeModeNotifier,
+      builder: (context, mode, _) => MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'ClearScan',
+        theme: AppTheme.lightTheme(),
+        darkTheme: AppTheme.darkTheme(),
+        themeMode: mode,
+        routes: {
+          '/home': (context) => const HomeScreen(),
+          '/onboarding': (context) => const OnboardingPage(),
+          '/splash': (context) => const SplashPage(),
+          '/documents': (context) => const DocumentsScreen(),
+          '/settings': (context) => const SettingsScreen(),
+          '/profile': (context) => const ProfileScreen(),
+        },
+        home: const _AppEntry(),
       ),
-      home: const ScannerPage(),
+    );
+  }
+}
+
+class _AppEntry extends StatefulWidget {
+  const _AppEntry();
+
+  @override
+  State<_AppEntry> createState() => _AppEntryState();
+}
+
+class _AppEntryState extends State<_AppEntry> {
+  @override
+  void initState() {
+    super.initState();
+    _checkOnboarding();
+  }
+
+  Future<void> _checkOnboarding() async {
+    final seen = await OnboardingPage.hasSeen();
+    if (!mounted) return;
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute<void>(
+        builder: (_) => seen ? const SplashPage() : const OnboardingPage(),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Theme background instead of Colors.white: no white flash in dark mode.
+    return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      body: const Center(child: CircularProgressIndicator()),
     );
   }
 }
