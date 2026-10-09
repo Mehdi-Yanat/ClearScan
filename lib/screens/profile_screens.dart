@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -148,7 +150,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     required List<String> options,
     required String current,
     String? prefsKey, // null = the caller persists the value itself
-    required ValueChanged<String> onPicked,
+    required FutureOr<void> Function(String) onPicked,
   }) async {
     final picked = await showModalBottomSheet<String>(
       context: context,
@@ -206,8 +208,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
     );
     if (picked == null) return;
-    setState(() => onPicked(picked));
-    if (prefsKey != null) _prefs?.setString(prefsKey, picked);
+    try {
+      await onPicked(picked);
+      if (prefsKey != null) {
+        await _prefs?.setString(prefsKey, picked);
+      }
+    } on Exception catch (error) {
+      _snack('Could not save this setting: $error');
+    }
   }
 
   @override
@@ -241,14 +249,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
           options: const ['English', 'العربية', 'Deutsch'],
           current: _language,
           prefsKey: null,
-          onPicked: (v) {
+          onPicked: (v) async {
             setState(() {
               _language = v;
             });
             final locale = _languageToLocale[v] ?? const Locale('en');
             localeNotifier.value = locale;
-            // Persist the locale (we don't await because we don't want to block the UI)
-            AppPreferences.setLocale(locale);
+            await AppPreferences.setLocale(locale);
           },
         ),
       ),
@@ -457,6 +464,14 @@ class _AccountCard extends StatelessWidget {
                       fontWeight: FontWeight.w700,
                       color: primary,
                     ),
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Coming soon — please add an issue to GitHub and assign it to me.',
+                  style: TextStyle(
+                    fontSize: 10,
+                    color: AppColors.textMuted(context),
                   ),
                 ),
               ],
