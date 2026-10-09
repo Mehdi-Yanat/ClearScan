@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:clear_scan/pages/scanner_page.dart';
+import 'package:clear_scan/screens/scanner_screen.dart';
 import 'package:clear_scan/main.dart';
 
 void main() {
@@ -9,6 +9,6 @@ void main() {
 
     // Verify that our app starts on the ScannerPage by checking for the title.
     expect(find.text('ClearScan'), findsOneWidget);
-    expect(find.byType(ScannerPage), findsOneWidget);
+    expect(find.byType(ScannerScreen), findsOneWidget);
   });
 }
