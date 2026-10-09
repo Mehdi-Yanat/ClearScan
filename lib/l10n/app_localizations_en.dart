@@ -21,6 +21,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsTitle => 'Settings';
 
   @override
+  String get toolsTitle => 'Tools';
+
+  @override
   String get language => 'Language';
 
   @override
@@ -42,10 +45,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String get off => 'Off';
 
   @override
+  String get comingSoon => 'Coming soon';
+
+  @override
   String get backupAndSync => 'Backup & Sync';
 
   @override
   String get appLock => 'App Lock';
+
+  @override
+  String get appLockAuthReason => 'Authenticate to unlock ClearScan.';
+
+  @override
+  String get appLockAuthenticationFailed => 'Authentication failed. Try again to unlock ClearScan.';
+
+  @override
+  String appLockAuthenticationError(Object error) {
+    return 'Could not authenticate: $error';
+  }
+
+  @override
+  String get appLockUnlockTitle => 'ClearScan is locked';
+
+  @override
+  String get appLockUnlockButton => 'Unlock ClearScan';
 
   @override
   String get appearance => 'Appearance';
@@ -84,6 +107,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get helpCenterEmail => 'Open help center / email';
 
   @override
+  String helpEmailLaunchFailed(Object email) {
+    return 'Could not open your email app. Contact $email instead.';
+  }
+
+  @override
   String get scanAnythingSaveEverything => 'Scan Anything. Save Everything.';
 
   @override
@@ -91,6 +119,33 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get recentDocuments => 'Recent Documents';
+
+  @override
+  String get openPdf => 'Open PDF';
+
+  @override
+  String get notificationsTitle => 'Notifications';
+
+  @override
+  String get notificationsRetry => 'Retry';
+
+  @override
+  String get notificationsEmpty => 'You\'re all caught up.';
+
+  @override
+  String get notificationsMarkAllRead => 'Mark all as read';
+
+  @override
+  String get notificationsClearAll => 'Clear all notifications';
+
+  @override
+  String get notificationScanTitle => 'Scan captured';
+
+  @override
+  String get notificationImportTitle => 'Image imported';
+
+  @override
+  String get notificationFolderTitle => 'Folder created';
 
   @override
   String get seeAll => 'See all';
@@ -327,4 +382,34 @@ class AppLocalizationsEn extends AppLocalizations {
   String settingsOpenLinkPlaceholder(Object title) {
     return '$title: add your link';
   }
+
+  @override
+  String get cropAdjustBack => 'Back';
+
+  @override
+  String get cropAdjustTitle => 'Adjust edges';
+
+  @override
+  String get cropAdjustNext => 'Next';
+
+  @override
+  String get cropAdjustPage => 'Page';
+
+  @override
+  String get cropAdjustRetake => 'Retake';
+
+  @override
+  String get cropAdjustRotate => 'Rotate';
+
+  @override
+  String get cropAdjustAutoCrop => 'Auto crop';
+
+  @override
+  String get cropAdjustAddPage => 'Add page';
+
+  @override
+  String get cropAdjustErrorOpenImage => 'Could not open this image.';
+
+  @override
+  String get cropAdjustErrorCropImage => 'Could not crop the image. Adjust the corners and try again.';
 }

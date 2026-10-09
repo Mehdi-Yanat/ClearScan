@@ -3,7 +3,8 @@
   "appTitle": "كليارسكان",
   "scanButton": "مسح",
   "homeTitle": "الرئيسية",
-  "settingsTitle": "الإعدادات",
+  "settingsTitle": "إعدادات",
+  "toolsTitle": "أدوات",
   "language": "اللغة",
   "english": "الإنجليزية",
   "german": "الألمانية",
@@ -11,8 +12,19 @@
   "freePlan": "خطة مجانية",
   "on": "مفعل",
   "off": "معطل",
+  "comingSoon": "قريبًا",
   "backupAndSync": "النسخ الاحتياطي والمزامنة",
   "appLock": "قفل التطبيق",
+  "appLockAuthReason": "تحقق من هويتك لفتح ClearScan.",
+  "appLockAuthenticationFailed": "فشل التحقق. حاول مرة أخرى لفتح ClearScan.",
+  "appLockAuthenticationError": "تعذر التحقق: {error}",
+  "@appLockAuthenticationError": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "appLockUnlockTitle": "ClearScan مقفل",
+  "appLockUnlockButton": "فتح ClearScan",
   "appearance": "المظهر",
   "rateClearScan": "قيم ClearScan",
   "helpAndSupport": "المساعدة والدعم",
@@ -25,9 +37,24 @@
   "system": "النظام",
   "rateStoreListing": "فتح قائمة المتجر",
   "helpCenterEmail": "فتح مركز المساعدة / البريد الإلكتروني",
+  "helpEmailLaunchFailed": "تعذر فتح تطبيق البريد الإلكتروني. راسل {email} مباشرةً.",
+  "@helpEmailLaunchFailed": {
+    "placeholders": {
+      "email": {}
+    }
+  },
   "scanAnythingSaveEverything": "امسح كل شيء. احفظ كل شيء.",
   "quickActions": "الإجراءات السريعة",
   "recentDocuments": "المستندات الأخيرة",
+  "openPdf": "فتح ملف PDF",
+  "notificationsTitle": "الإشعارات",
+  "notificationsRetry": "إعادة المحاولة",
+  "notificationsEmpty": "أنت على اطلاع بكل جديد.",
+  "notificationsMarkAllRead": "تحديد الكل كمقروء",
+  "notificationsClearAll": "مسح كل الإشعارات",
+  "notificationScanTitle": "تم التقاط المسح",
+  "notificationImportTitle": "تم استيراد الصورة",
+  "notificationFolderTitle": "تم إنشاء المجلد",
   "seeAll": "عرض الكل",
   "idCards": "بطاقات الهوية",
   "passport": "جواز السفر",
@@ -110,5 +137,15 @@
     "placeholders": {
       "title": {}
     }
-  }
+  },
+  "cropAdjustBack": "العودة",
+  "cropAdjustTitle": "ضبط الحواف",
+  "cropAdjustNext": "التالي",
+  "cropAdjustPage": "الصفحة",
+  "cropAdjustRetake": "إعادة التقاط",
+  "cropAdjustRotate": "تدوير",
+  "cropAdjustAutoCrop": "قص تلقائي",
+  "cropAdjustAddPage": "إضافة صفحة",
+  "cropAdjustErrorOpenImage": "لم يتم فتح الصورة.",
+  "cropAdjustErrorCropImage": "لم يتم قص الصورة. اضبط الزوايا وحاول مرة أخرى."
 }

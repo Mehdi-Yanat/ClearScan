@@ -18,7 +18,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get homeTitle => 'الرئيسية';
 
   @override
-  String get settingsTitle => 'الإعدادات';
+  String get settingsTitle => 'إعدادات';
+
+  @override
+  String get toolsTitle => 'أدوات';
 
   @override
   String get language => 'اللغة';
@@ -42,10 +45,30 @@ class AppLocalizationsAr extends AppLocalizations {
   String get off => 'معطل';
 
   @override
+  String get comingSoon => 'قريبًا';
+
+  @override
   String get backupAndSync => 'النسخ الاحتياطي والمزامنة';
 
   @override
   String get appLock => 'قفل التطبيق';
+
+  @override
+  String get appLockAuthReason => 'تحقق من هويتك لفتح ClearScan.';
+
+  @override
+  String get appLockAuthenticationFailed => 'فشل التحقق. حاول مرة أخرى لفتح ClearScan.';
+
+  @override
+  String appLockAuthenticationError(Object error) {
+    return 'تعذر التحقق: $error';
+  }
+
+  @override
+  String get appLockUnlockTitle => 'ClearScan مقفل';
+
+  @override
+  String get appLockUnlockButton => 'فتح ClearScan';
 
   @override
   String get appearance => 'المظهر';
@@ -84,6 +107,11 @@ class AppLocalizationsAr extends AppLocalizations {
   String get helpCenterEmail => 'فتح مركز المساعدة / البريد الإلكتروني';
 
   @override
+  String helpEmailLaunchFailed(Object email) {
+    return 'تعذر فتح تطبيق البريد الإلكتروني. راسل $email مباشرةً.';
+  }
+
+  @override
   String get scanAnythingSaveEverything => 'امسح كل شيء. احفظ كل شيء.';
 
   @override
@@ -91,6 +119,33 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get recentDocuments => 'المستندات الأخيرة';
+
+  @override
+  String get openPdf => 'فتح ملف PDF';
+
+  @override
+  String get notificationsTitle => 'الإشعارات';
+
+  @override
+  String get notificationsRetry => 'إعادة المحاولة';
+
+  @override
+  String get notificationsEmpty => 'أنت على اطلاع بكل جديد.';
+
+  @override
+  String get notificationsMarkAllRead => 'تحديد الكل كمقروء';
+
+  @override
+  String get notificationsClearAll => 'مسح كل الإشعارات';
+
+  @override
+  String get notificationScanTitle => 'تم التقاط المسح';
+
+  @override
+  String get notificationImportTitle => 'تم استيراد الصورة';
+
+  @override
+  String get notificationFolderTitle => 'تم إنشاء المجلد';
 
   @override
   String get seeAll => 'عرض الكل';
@@ -327,4 +382,34 @@ class AppLocalizationsAr extends AppLocalizations {
   String settingsOpenLinkPlaceholder(Object title) {
     return '$title: أضف رابطك';
   }
+
+  @override
+  String get cropAdjustBack => 'العودة';
+
+  @override
+  String get cropAdjustTitle => 'ضبط الحواف';
+
+  @override
+  String get cropAdjustNext => 'التالي';
+
+  @override
+  String get cropAdjustPage => 'الصفحة';
+
+  @override
+  String get cropAdjustRetake => 'إعادة التقاط';
+
+  @override
+  String get cropAdjustRotate => 'تدوير';
+
+  @override
+  String get cropAdjustAutoCrop => 'قص تلقائي';
+
+  @override
+  String get cropAdjustAddPage => 'إضافة صفحة';
+
+  @override
+  String get cropAdjustErrorOpenImage => 'لم يتم فتح الصورة.';
+
+  @override
+  String get cropAdjustErrorCropImage => 'لم يتم قص الصورة. اضبط الزوايا وحاول مرة أخرى.';
 }

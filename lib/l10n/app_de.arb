@@ -4,6 +4,7 @@
   "scanButton": "Scannen",
   "homeTitle": "Startseite",
   "settingsTitle": "Einstellungen",
+  "toolsTitle": "Werkzeuge",
   "language": "Sprache",
   "english": "Englisch",
   "german": "Deutsch",
@@ -11,8 +12,19 @@
   "freePlan": "Kostenloser Plan",
   "on": "Ein",
   "off": "Aus",
+  "comingSoon": "Demnächst verfügbar",
   "backupAndSync": "Sicherung & Synchronisierung",
   "appLock": "App-Sperre",
+  "appLockAuthReason": "Authentifizieren, um ClearScan zu entsperren.",
+  "appLockAuthenticationFailed": "Authentifizierung fehlgeschlagen. Versuche erneut, ClearScan zu entsperren.",
+  "appLockAuthenticationError": "Authentifizierung fehlgeschlagen: {error}",
+  "@appLockAuthenticationError": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "appLockUnlockTitle": "ClearScan ist gesperrt",
+  "appLockUnlockButton": "ClearScan entsperren",
   "appearance": "Erscheinungsbild",
   "rateClearScan": "ClearScan bewerten",
   "helpAndSupport": "Hilfe & Support",
@@ -25,9 +37,24 @@
   "system": "System",
   "rateStoreListing": "Store öffnen",
   "helpCenterEmail": "Hilfezentrum / E-Mail öffnen",
+  "helpEmailLaunchFailed": "Die E-Mail-App konnte nicht geöffnet werden. Schreibe stattdessen an {email}.",
+  "@helpEmailLaunchFailed": {
+    "placeholders": {
+      "email": {}
+    }
+  },
   "scanAnythingSaveEverything": "Alles scannen. Alles speichern.",
   "quickActions": "Schnelle Aktionen",
   "recentDocuments": "Kürzliche Dokumente",
+  "openPdf": "PDF öffnen",
+  "notificationsTitle": "Benachrichtigungen",
+  "notificationsRetry": "Erneut versuchen",
+  "notificationsEmpty": "Du bist auf dem neuesten Stand.",
+  "notificationsMarkAllRead": "Alle als gelesen markieren",
+  "notificationsClearAll": "Alle Benachrichtigungen löschen",
+  "notificationScanTitle": "Scan aufgenommen",
+  "notificationImportTitle": "Bild importiert",
+  "notificationFolderTitle": "Ordner erstellt",
   "seeAll": "Alle sehen",
   "idCards": "Ausweise",
   "passport": "Reisepass",
@@ -110,5 +137,15 @@
     "placeholders": {
       "title": {}
     }
-  }
+  },
+  "cropAdjustBack": "Zurück",
+  "cropAdjustTitle": "Kanten anpassen",
+  "cropAdjustNext": "Weiter",
+  "cropAdjustPage": "Seite",
+  "cropAdjustRetake": "Wiederholen",
+  "cropAdjustRotate": "Drehen",
+  "cropAdjustAutoCrop": "Automatisch zuschneiden",
+  "cropAdjustAddPage": "Seite hinzufügen",
+  "cropAdjustErrorOpenImage": "Konnte das Bild nicht öffnen.",
+  "cropAdjustErrorCropImage": "Konnte das Bild nicht zuschneiden. Passe die Ecken an und versuche es erneut."
 }

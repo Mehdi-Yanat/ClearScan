@@ -121,6 +121,12 @@ abstract class AppLocalizations {
   /// **'Settings'**
   String get settingsTitle;
 
+  /// No description provided for @toolsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Tools'**
+  String get toolsTitle;
+
   /// No description provided for @language.
   ///
   /// In en, this message translates to:
@@ -163,6 +169,12 @@ abstract class AppLocalizations {
   /// **'Off'**
   String get off;
 
+  /// No description provided for @comingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Coming soon'**
+  String get comingSoon;
+
   /// No description provided for @backupAndSync.
   ///
   /// In en, this message translates to:
@@ -174,6 +186,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'App Lock'**
   String get appLock;
+
+  /// No description provided for @appLockAuthReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Authenticate to unlock ClearScan.'**
+  String get appLockAuthReason;
+
+  /// No description provided for @appLockAuthenticationFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Authentication failed. Try again to unlock ClearScan.'**
+  String get appLockAuthenticationFailed;
+
+  /// No description provided for @appLockAuthenticationError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not authenticate: {error}'**
+  String appLockAuthenticationError(Object error);
+
+  /// No description provided for @appLockUnlockTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'ClearScan is locked'**
+  String get appLockUnlockTitle;
+
+  /// No description provided for @appLockUnlockButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock ClearScan'**
+  String get appLockUnlockButton;
 
   /// No description provided for @appearance.
   ///
@@ -247,6 +289,12 @@ abstract class AppLocalizations {
   /// **'Open help center / email'**
   String get helpCenterEmail;
 
+  /// No description provided for @helpEmailLaunchFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open your email app. Contact {email} instead.'**
+  String helpEmailLaunchFailed(Object email);
+
   /// No description provided for @scanAnythingSaveEverything.
   ///
   /// In en, this message translates to:
@@ -264,6 +312,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Recent Documents'**
   String get recentDocuments;
+
+  /// No description provided for @openPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Open PDF'**
+  String get openPdf;
+
+  /// No description provided for @notificationsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get notificationsTitle;
+
+  /// No description provided for @notificationsRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get notificationsRetry;
+
+  /// No description provided for @notificationsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re all caught up.'**
+  String get notificationsEmpty;
+
+  /// No description provided for @notificationsMarkAllRead.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark all as read'**
+  String get notificationsMarkAllRead;
+
+  /// No description provided for @notificationsClearAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear all notifications'**
+  String get notificationsClearAll;
+
+  /// No description provided for @notificationScanTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan captured'**
+  String get notificationScanTitle;
+
+  /// No description provided for @notificationImportTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Image imported'**
+  String get notificationImportTitle;
+
+  /// No description provided for @notificationFolderTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Folder created'**
+  String get notificationFolderTitle;
 
   /// No description provided for @seeAll.
   ///
@@ -732,6 +834,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{title}: add your link'**
   String settingsOpenLinkPlaceholder(Object title);
+
+  /// No description provided for @cropAdjustBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get cropAdjustBack;
+
+  /// No description provided for @cropAdjustTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Adjust edges'**
+  String get cropAdjustTitle;
+
+  /// No description provided for @cropAdjustNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get cropAdjustNext;
+
+  /// No description provided for @cropAdjustPage.
+  ///
+  /// In en, this message translates to:
+  /// **'Page'**
+  String get cropAdjustPage;
+
+  /// No description provided for @cropAdjustRetake.
+  ///
+  /// In en, this message translates to:
+  /// **'Retake'**
+  String get cropAdjustRetake;
+
+  /// No description provided for @cropAdjustRotate.
+  ///
+  /// In en, this message translates to:
+  /// **'Rotate'**
+  String get cropAdjustRotate;
+
+  /// No description provided for @cropAdjustAutoCrop.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto crop'**
+  String get cropAdjustAutoCrop;
+
+  /// No description provided for @cropAdjustAddPage.
+  ///
+  /// In en, this message translates to:
+  /// **'Add page'**
+  String get cropAdjustAddPage;
+
+  /// No description provided for @cropAdjustErrorOpenImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open this image.'**
+  String get cropAdjustErrorOpenImage;
+
+  /// No description provided for @cropAdjustErrorCropImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not crop the image. Adjust the corners and try again.'**
+  String get cropAdjustErrorCropImage;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -4,6 +4,7 @@
   "scanButton": "Scan",
   "homeTitle": "Home",
   "settingsTitle": "Settings",
+  "toolsTitle": "Tools",
   "language": "Language",
   "english": "English",
   "german": "German",
@@ -11,8 +12,19 @@
   "freePlan": "Free plan",
   "on": "On",
   "off": "Off",
+  "comingSoon": "Coming soon",
   "backupAndSync": "Backup & Sync",
   "appLock": "App Lock",
+  "appLockAuthReason": "Authenticate to unlock ClearScan.",
+  "appLockAuthenticationFailed": "Authentication failed. Try again to unlock ClearScan.",
+  "appLockAuthenticationError": "Could not authenticate: {error}",
+  "@appLockAuthenticationError": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "appLockUnlockTitle": "ClearScan is locked",
+  "appLockUnlockButton": "Unlock ClearScan",
   "appearance": "Appearance",
   "rateClearScan": "Rate ClearScan",
   "helpAndSupport": "Help & Support",
@@ -25,9 +37,24 @@
   "system": "System",
   "rateStoreListing": "Open store listing",
   "helpCenterEmail": "Open help center / email",
+  "helpEmailLaunchFailed": "Could not open your email app. Contact {email} instead.",
+  "@helpEmailLaunchFailed": {
+    "placeholders": {
+      "email": {}
+    }
+  },
   "scanAnythingSaveEverything": "Scan Anything. Save Everything.",
   "quickActions": "Quick Actions",
   "recentDocuments": "Recent Documents",
+  "openPdf": "Open PDF",
+  "notificationsTitle": "Notifications",
+  "notificationsRetry": "Retry",
+  "notificationsEmpty": "You're all caught up.",
+  "notificationsMarkAllRead": "Mark all as read",
+  "notificationsClearAll": "Clear all notifications",
+  "notificationScanTitle": "Scan captured",
+  "notificationImportTitle": "Image imported",
+  "notificationFolderTitle": "Folder created",
   "seeAll": "See all",
   "idCards": "ID Cards",
   "passport": "Passport",
@@ -110,5 +137,15 @@
     "placeholders": {
       "title": {}
     }
-  }
+  },
+  "cropAdjustBack": "Back",
+  "cropAdjustTitle": "Adjust edges",
+  "cropAdjustNext": "Next",
+  "cropAdjustPage": "Page",
+  "cropAdjustRetake": "Retake",
+  "cropAdjustRotate": "Rotate",
+  "cropAdjustAutoCrop": "Auto crop",
+  "cropAdjustAddPage": "Add page",
+  "cropAdjustErrorOpenImage": "Could not open this image.",
+  "cropAdjustErrorCropImage": "Could not crop the image. Adjust the corners and try again."
 }

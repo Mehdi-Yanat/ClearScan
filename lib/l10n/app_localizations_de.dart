@@ -21,6 +21,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get settingsTitle => 'Einstellungen';
 
   @override
+  String get toolsTitle => 'Werkzeuge';
+
+  @override
   String get language => 'Sprache';
 
   @override
@@ -42,10 +45,30 @@ class AppLocalizationsDe extends AppLocalizations {
   String get off => 'Aus';
 
   @override
+  String get comingSoon => 'Demnächst verfügbar';
+
+  @override
   String get backupAndSync => 'Sicherung & Synchronisierung';
 
   @override
   String get appLock => 'App-Sperre';
+
+  @override
+  String get appLockAuthReason => 'Authentifizieren, um ClearScan zu entsperren.';
+
+  @override
+  String get appLockAuthenticationFailed => 'Authentifizierung fehlgeschlagen. Versuche erneut, ClearScan zu entsperren.';
+
+  @override
+  String appLockAuthenticationError(Object error) {
+    return 'Authentifizierung fehlgeschlagen: $error';
+  }
+
+  @override
+  String get appLockUnlockTitle => 'ClearScan ist gesperrt';
+
+  @override
+  String get appLockUnlockButton => 'ClearScan entsperren';
 
   @override
   String get appearance => 'Erscheinungsbild';
@@ -84,6 +107,11 @@ class AppLocalizationsDe extends AppLocalizations {
   String get helpCenterEmail => 'Hilfezentrum / E-Mail öffnen';
 
   @override
+  String helpEmailLaunchFailed(Object email) {
+    return 'Die E-Mail-App konnte nicht geöffnet werden. Schreibe stattdessen an $email.';
+  }
+
+  @override
   String get scanAnythingSaveEverything => 'Alles scannen. Alles speichern.';
 
   @override
@@ -91,6 +119,33 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get recentDocuments => 'Kürzliche Dokumente';
+
+  @override
+  String get openPdf => 'PDF öffnen';
+
+  @override
+  String get notificationsTitle => 'Benachrichtigungen';
+
+  @override
+  String get notificationsRetry => 'Erneut versuchen';
+
+  @override
+  String get notificationsEmpty => 'Du bist auf dem neuesten Stand.';
+
+  @override
+  String get notificationsMarkAllRead => 'Alle als gelesen markieren';
+
+  @override
+  String get notificationsClearAll => 'Alle Benachrichtigungen löschen';
+
+  @override
+  String get notificationScanTitle => 'Scan aufgenommen';
+
+  @override
+  String get notificationImportTitle => 'Bild importiert';
+
+  @override
+  String get notificationFolderTitle => 'Ordner erstellt';
 
   @override
   String get seeAll => 'Alle sehen';
@@ -327,4 +382,34 @@ class AppLocalizationsDe extends AppLocalizations {
   String settingsOpenLinkPlaceholder(Object title) {
     return '$title: Link hinzufügen';
   }
+
+  @override
+  String get cropAdjustBack => 'Zurück';
+
+  @override
+  String get cropAdjustTitle => 'Kanten anpassen';
+
+  @override
+  String get cropAdjustNext => 'Weiter';
+
+  @override
+  String get cropAdjustPage => 'Seite';
+
+  @override
+  String get cropAdjustRetake => 'Wiederholen';
+
+  @override
+  String get cropAdjustRotate => 'Drehen';
+
+  @override
+  String get cropAdjustAutoCrop => 'Automatisch zuschneiden';
+
+  @override
+  String get cropAdjustAddPage => 'Seite hinzufügen';
+
+  @override
+  String get cropAdjustErrorOpenImage => 'Konnte das Bild nicht öffnen.';
+
+  @override
+  String get cropAdjustErrorCropImage => 'Konnte das Bild nicht zuschneiden. Passe die Ecken an und versuche es erneut.';
 }
