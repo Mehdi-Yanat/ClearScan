@@ -1,0 +1,11 @@
+{
+  "@@locale": "en",
+  "appTitle": "ClearScan",
+  "scanButton": "Scan",
+  "homeTitle": "Home",
+  "settingsTitle": "Settings",
+  "language": "Language",
+  "english": "English",
+  "german": "German",
+  "arabic": "Arabic"
+}

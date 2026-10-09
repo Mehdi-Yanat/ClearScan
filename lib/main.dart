@@ -1,5 +1,6 @@
 import 'package:clear_scan/screens/documents_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'screens/home_screen.dart';
 import 'screens/onboarding_screen.dart';
@@ -7,6 +8,7 @@ import 'screens/profile_screens.dart';
 import 'screens/settings_screen.dart';
 import 'screens/splash_screen.dart';
 import 'theme/app_theme.dart'; // AppTheme, AppPreferences, themeModeNotifier
+import 'l10n/app_localizations.dart';
 
 // NOTE: `themeModeNotifier` now lives in theme/app_theme.dart so every screen
 // shares the same instance. Do NOT declare it again here.
@@ -22,7 +24,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // ValueListenableBuilder handles adding/removing the listener for us.
     return ValueListenableBuilder<ThemeMode>(
       valueListenable: themeModeNotifier,
       builder: (context, mode, _) => MaterialApp(
@@ -31,6 +32,17 @@ class MyApp extends StatelessWidget {
         theme: AppTheme.lightTheme(),
         darkTheme: AppTheme.darkTheme(),
         themeMode: mode,
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: const [
+          Locale('en'),
+          Locale('de'),
+          Locale('ar'),
+        ],
         routes: {
           '/home': (context) => const HomeScreen(),
           '/onboarding': (context) => const OnboardingPage(),
