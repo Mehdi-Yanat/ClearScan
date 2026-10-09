@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../theme/app_theme.dart';
-import 'scanner_screen.dart';
+import 'package:clear_scan/l10n/app_localizations.dart' as loc;
 
 // The illustrations draw a white "paper" in both themes, so everything that
 // sits on the paper uses fixed colors instead of theme-aware ones.
@@ -38,24 +38,26 @@ class _OnboardingPageState extends State<OnboardingPage> {
   final PageController _pageController = PageController();
   int _index = 0;
 
-  static const _slides = <_SlideData>[
+  List<_SlideData> _localizedSlides(BuildContext context) {
+  final l = loc.AppLocalizations.of(context)!;
+  return [
     _SlideData(
       kind: _SlideKind.scan,
-      title: 'Scan Anything',
-      subtitle: 'Turn paper into crisp, searchable PDFs\nin seconds, right from your phone.',
+      title: l.onboardingSlideScanTitle,
+      subtitle: l.onboardingSlideScanSubtitle,
     ),
     _SlideData(
       kind: _SlideKind.organize,
-      title: 'Organize Everything',
-      subtitle: 'Keep IDs, contracts and receipts\nneatly sorted in folders.',
+      title: l.onboardingSlideOrganizeTitle,
+      subtitle: l.onboardingSlideOrganizeSubtitle,
     ),
     _SlideData(
       kind: _SlideKind.sign,
-      title: 'Edit & Sign',
-      subtitle:
-          'Merge, compress, sign and share\nyour documents in a few taps.',
+      title: l.onboardingSlideSignTitle,
+      subtitle: l.onboardingSlideSignSubtitle,
     ),
   ];
+}
 
   @override
   void dispose() {
@@ -99,7 +101,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                   child: TextButton(
                     onPressed: _finish,
                     child: Text(
-                      'Skip',
+                      loc.AppLocalizations.of(context)!.onboardingSkip,
                       style: textTheme.titleMedium?.copyWith(
                         color: AppColors.textMuted(context),
                         fontSize: 14,
@@ -111,15 +113,15 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 Expanded(
                   child: PageView.builder(
                     controller: _pageController,
-                    itemCount: _slides.length,
+                    itemCount: _localizedSlides(context).length,
                     onPageChanged: (i) => setState(() => _index = i),
-                    itemBuilder: (context, i) => _Slide(data: _slides[i]),
+                    itemBuilder: (context, i) => _Slide(data: _localizedSlides(context)[i]),
                   ),
                 ),
                 const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: List.generate(_slides.length, (i) {
+                  children: List.generate(_localizedSlides(context).length, (i) {
                     final active = i == _index;
                     return AnimatedContainer(
                       duration: const Duration(milliseconds: 250),
@@ -155,12 +157,12 @@ class _OnboardingPageState extends State<OnboardingPage> {
                         fontWeight: FontWeight.w700,
                       ),
                     ),
-                    child: const Text('Get Started'),
+                    child: Text(loc.AppLocalizations.of(context)!.onboardingGetStarted),
                   ),
                 ),
                 const SizedBox(height: 18),
                 Text(
-                  'By continuing you agree to Terms & Privacy',
+                  loc.AppLocalizations.of(context)!.onboardingAgreeTerms,
                   textAlign: TextAlign.center,
                   style: textTheme.bodySmall?.copyWith(
                     color: AppColors.textHint(context),
@@ -437,11 +439,11 @@ class _OrganizeIllustration extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          tile(Icons.badge_outlined, 'ID Cards'),
+          tile(Icons.badge_outlined, loc.AppLocalizations.of(context)!.onboardingTileIdCards),
           const SizedBox(width: 12),
-          tile(Icons.folder_outlined, 'Contracts'),
+          tile(Icons.folder_outlined, loc.AppLocalizations.of(context)!.onboardingTileContracts),
           const SizedBox(width: 12),
-          tile(Icons.receipt_long_outlined, 'Receipts'),
+          tile(Icons.receipt_long_outlined, loc.AppLocalizations.of(context)!.onboardingTileReceipts),
         ],
       ),
     );
