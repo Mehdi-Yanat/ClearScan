@@ -1,8 +1,13 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../l10n/app_localizations.dart' as loc;
+import '../services/app_lock_service.dart';
 import '../theme/app_theme.dart'; // AppColors, AppPreferences, themeModeNotifier, localeNotifier
 import '../widgets/app_bottom_bar.dart';
 import 'scanner_screen.dart';
@@ -28,7 +33,7 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  static const _appVersion = '1.0.0';
+  String? _appVersion;
 
   final String _name = 'John Doe';
   final String _email = 'john.doe@email.com';
@@ -37,7 +42,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final double _totalGb = 5;
 
   SharedPreferences? _prefs;
-  bool _backupOn = false;
   bool _lockOn = false;
   String _language = 'English'; // display string
 
@@ -74,9 +78,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final p = await SharedPreferences.getInstance();
     if (!mounted) return;
     final locale = await AppPreferences.getLocale();
+    final packageInfo = await PackageInfo.fromPlatform();
     setState(() {
       _prefs = p;
-      _backupOn = p.getBool(AppSettings.autoBackup) ?? false;
+      _appVersion = packageInfo.version;
       _lockOn = p.getBool(AppSettings.appLock) ?? false;
       // Load locale code and map to display string
       _language = _localeToLanguage[locale] ?? 'English';
@@ -136,6 +141,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _loadPrefs();
   }
 
+  Future<void> _toggleAppLock() async {
+    final l10n = loc.AppLocalizations.of(context)!;
+    try {
+      if (_lockOn) {
+        await AppLockService.disable();
+      } else {
+        final authenticated = await AppLockService.enable(
+          l10n.appLockAuthReason,
+        );
+        if (!authenticated) {
+          _snack(l10n.appLockAuthenticationFailed);
+          return;
+        }
+      }
+      if (mounted) setState(() => _lockOn = !_lockOn);
+    } on Exception catch (error) {
+      _snack(l10n.appLockAuthenticationError(error.toString()));
+    }
+  }
+
   void _snack(String message) {
     if (!mounted) return;
     ScaffoldMessenger.of(context)
@@ -143,12 +168,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ..showSnackBar(SnackBar(content: Text(message)));
   }
 
+  Future<void> _openHelpAndSupport() async {
+    const email = 'mehdi.yanat3106@outlook.fr';
+    final l10n = loc.AppLocalizations.of(context)!;
+    final uri = Uri(
+      scheme: 'mailto',
+      path: email,
+      queryParameters: {'subject': 'ClearScan Support'},
+    );
+
+    try {
+      if (!await launchUrl(uri) && mounted) {
+        _snack(l10n.helpEmailLaunchFailed(email));
+      }
+    } on PlatformException catch (error) {
+      if (mounted) {
+        _snack(
+          '${l10n.helpEmailLaunchFailed(email)} (${error.code})',
+        );
+      }
+    }
+  }
+
   Future<void> _pickOption({
     required String title,
     required List<String> options,
     required String current,
     String? prefsKey, // null = the caller persists the value itself
-    required ValueChanged<String> onPicked,
+    required FutureOr<void> Function(String) onPicked,
   }) async {
     final picked = await showModalBottomSheet<String>(
       context: context,
@@ -206,8 +253,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
     );
     if (picked == null) return;
-    setState(() => onPicked(picked));
-    if (prefsKey != null) _prefs?.setString(prefsKey, picked);
+    try {
+      await onPicked(picked);
+      if (prefsKey != null) await _prefs?.setString(prefsKey, picked);
+    } on Exception catch (error) {
+      _snack('Could not save this setting: $error');
+    }
   }
 
   @override
@@ -219,10 +270,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
       _ProfileRowData(
         icon: Icons.cloud_outlined,
         label: loc.AppLocalizations.of(context)!.backupAndSync,
-        value: _backupOn
-            ? loc.AppLocalizations.of(context)!.on
-            : loc.AppLocalizations.of(context)!.off,
-        onTap: _openSettings,
+        value: loc.AppLocalizations.of(context)!.comingSoon,
+        valueColor: AppColors.danger,
+        onTap: null,
       ),
       _ProfileRowData(
         icon: Icons.shield_outlined,
@@ -230,7 +280,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         value: _lockOn
             ? loc.AppLocalizations.of(context)!.on
             : loc.AppLocalizations.of(context)!.off,
-        onTap: _openSettings,
+        onTap: _toggleAppLock,
       ),
       _ProfileRowData(
         icon: Icons.language_rounded,
@@ -241,14 +291,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
           options: const ['English', 'العربية', 'Deutsch'],
           current: _language,
           prefsKey: null,
-          onPicked: (v) {
+          onPicked: (v) async {
             setState(() {
               _language = v;
             });
             final locale = _languageToLocale[v] ?? const Locale('en');
             localeNotifier.value = locale;
-            // Persist the locale (we don't await because we don't want to block the UI)
-            AppPreferences.setLocale(locale);
+            await AppPreferences.setLocale(locale);
           },
         ),
       ),
@@ -270,14 +319,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
       ),
       _ProfileRowData(
-        icon: Icons.star_outline_rounded,
-        label: loc.AppLocalizations.of(context)!.rateClearScan,
-        onTap: () => _snack(loc.AppLocalizations.of(context)!.rateStoreListing),
-      ),
-      _ProfileRowData(
         icon: Icons.help_outline_rounded,
         label: loc.AppLocalizations.of(context)!.helpAndSupport,
-        onTap: () => _snack(loc.AppLocalizations.of(context)!.helpCenterEmail),
+        onTap: _openHelpAndSupport,
       ),
       _ProfileRowData(
         icon: Icons.info_outline_rounded,
@@ -459,6 +503,14 @@ class _AccountCard extends StatelessWidget {
                     ),
                   ),
                 ),
+                const SizedBox(height: 4),
+                Text(
+                  'Coming soon',
+                  style: TextStyle(
+                    fontSize: 10,
+                    color: AppColors.textMuted(context),
+                  ),
+                ),
               ],
             ),
           ),
@@ -529,6 +581,11 @@ class _StorageCard extends StatelessWidget {
               ],
             ),
           ),
+          const SizedBox(height: 4),
+          Text(
+            'Coming soon',
+            style: TextStyle(fontSize: 10, color: AppColors.textMuted(context)),
+          ),
         ],
       ),
     );
@@ -543,12 +600,14 @@ class _ProfileRowData {
     required this.label,
     required this.onTap,
     this.value,
+    this.valueColor,
   });
 
   final IconData icon;
   final String label;
   final String? value;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
+  final Color? valueColor;
 }
 
 class _ProfileRow extends StatelessWidget {

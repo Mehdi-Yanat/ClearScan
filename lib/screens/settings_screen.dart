@@ -6,13 +6,14 @@ import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../l10n/app_localizations.dart';
+import '../services/app_lock_service.dart';
 
 class AppSettings {
   static const autoDetectEdges = 'settings_auto_detect_edges';
   static const autoCapture = 'settings_auto_capture';
   static const quality = 'settings_default_quality';
   static const format = 'settings_default_format';
-  static const appLock = 'settings_app_lock';
+  static const appLock = AppLockService.preferenceKey;
   static const hideInRecents = 'settings_hide_in_recents';
   static const autoBackup = 'settings_auto_backup';
   static const themeMode = 'settings_theme_mode';
@@ -181,6 +182,26 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void _setBool(String key, bool value, void Function() apply) {
     setState(apply);
     _prefs?.setBool(key, value);
+  }
+
+  Future<void> _setAppLock(bool value) async {
+    final l10n = AppLocalizations.of(context)!;
+    try {
+      if (value) {
+        final authenticated = await AppLockService.enable(
+          l10n.appLockAuthReason,
+        );
+        if (!authenticated) {
+          _snack(l10n.appLockAuthenticationFailed);
+          return;
+        }
+      } else {
+        await AppLockService.disable();
+      }
+      if (mounted) setState(() => _appLock = value);
+    } on Exception catch (error) {
+      _snack(l10n.appLockAuthenticationError(error.toString()));
+    }
   }
 
   Future<void> _pickOption({
@@ -359,7 +380,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         onTap: () => _pickOption(
                           title: AppLocalizations.of(context)!
                               .settingsDefaultFormat,
-                          options:  [
+                          options: [
                             AppLocalizations.of(context)!.settingsFormatPdf,
                             AppLocalizations.of(context)!.settingsFormatJpg,
                           ],
@@ -377,9 +398,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       _ToggleRow(
                         label: AppLocalizations.of(context)!.settingsAppLock,
                         value: _appLock,
-                        onChanged: (v) {
-                          _setBool(AppSettings.appLock, v, () => _appLock = v);
-                        },
+                        onChanged: _setAppLock,
                       ),
                       _ToggleRow(
                         label: AppLocalizations.of(context)!

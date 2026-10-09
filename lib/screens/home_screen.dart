@@ -1,10 +1,23 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:clear_scan/screens/scanner_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 
+import 'crop_adjust_screen.dart';
+import 'document_viewer_screen.dart';
+import 'notifications_screen.dart';
 import '../l10n/app_localizations.dart' as loc;
+import '../services/document_storage.dart';
+import '../services/folder_repository.dart';
+import '../services/notification_service.dart';
+import '../services/recent_documents.dart';
 import '../theme/app_theme.dart';
 import '../widgets/app_bottom_bar.dart';
+import '../widgets/folder_name_dialog.dart';
 
 // Hero card stays dark navy in both themes, so its text/paper use fixed colors.
 const _heroBackground = Color(0xFF0F2A33);
@@ -25,17 +38,185 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  // Replace with real data from your document repository.
-  static const _recentDocs = <_RecentDoc>[
-    _RecentDoc('Contract Agreement', 'PDF', '2.4 MB', '10:30 AM'),
-    _RecentDoc('Passport – John Doe', 'PDF', '1.1 MB', 'Yesterday'),
-    _RecentDoc('Invoice #INV-2387', 'PDF', '1.8 MB', '2 days ago'),
-    _RecentDoc('Meeting Notes', 'DOCX', '320 KB', '3 days ago'),
-  ];
+  late Future<List<RecentDocument>> _recentDocumentsFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _recentDocumentsFuture = loadRecentDocuments();
+    unawaited(
+      loadNotifications().then<void>(
+        (_) {},
+        onError: (Object error, StackTrace stackTrace) {
+          if (mounted) _showNotificationError(error);
+        },
+      ),
+    );
+  }
+
+  void _refreshRecentDocuments() {
+    setState(() => _recentDocumentsFuture = loadRecentDocuments());
+  }
 
   void _openScanner() {
+    _openScannerWithMode(ScanMode.document);
+  }
+
+  void _openScannerWithMode(ScanMode mode) {
     Navigator.of(context)
-        .push(MaterialPageRoute<void>(builder: (_) => const ScannerScreen()));
+        .push(
+          MaterialPageRoute<void>(
+            builder: (_) => ScannerScreen(initialMode: mode),
+          ),
+        )
+        .then((_) {
+          if (mounted) _refreshRecentDocuments();
+        });
+  }
+
+  Future<void> _importImage() async {
+    try {
+      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+      if (image == null || !mounted) return;
+      final result = await Navigator.of(context).push<CropResult>(
+        MaterialPageRoute<CropResult>(
+          builder: (_) => CropAdjustScreen(imagePath: image.path),
+        ),
+      );
+      if (mounted) {
+        if (result?.path != null) {
+          final saved = await saveCroppedDocument(
+            imagePath: result!.path!,
+            name: 'Imported_${image.name}',
+          );
+          _refreshRecentDocuments();
+          try {
+            await addNotification(
+              AppNotificationType.imageImported,
+              detail: saved.uri.pathSegments.last,
+            );
+          } on Exception catch (error) {
+            if (mounted) {
+              _showNotificationError(error);
+            }
+          }
+        }
+      }
+    } on PlatformException catch (error) {
+      if (!mounted) return;
+      final message =
+          error.message ?? 'Could not select an image (${error.code}).';
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(SnackBar(content: Text(message)));
+    } on Exception catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(content: Text('Could not save the imported image: $error')),
+        );
+    }
+  }
+
+  Future<void> _createFolder() async {
+    final name = await showFolderNameDialog(context);
+    if (name == null || !mounted) return;
+
+    try {
+      await createDocumentFolder(name);
+      if (!mounted) return;
+      var savedNotification = true;
+      try {
+        await addNotification(
+          AppNotificationType.folderCreated,
+          detail: name.trim(),
+        );
+      } on Exception catch (error) {
+        if (mounted) {
+          _showNotificationError(error);
+        }
+        savedNotification = false;
+      }
+      if (!mounted) return;
+      if (savedNotification) {
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(SnackBar(content: Text('"${name.trim()}" created')));
+      }
+    } on FileSystemException catch (error) {
+      if (!mounted) return;
+      _showFolderError(error.message);
+    } on FormatException catch (error) {
+      if (!mounted) return;
+      _showFolderError(error.message);
+    }
+  }
+
+  void _showFolderError(String message) {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text(message)));
+  }
+
+  void _showNotificationError(Object error) {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(content: Text('Could not save notification: $error')),
+      );
+  }
+
+  Future<void> _showAddSheet() async {
+    ModalRoute<dynamic>? addSheetRoute;
+    final action = await showModalBottomSheet<String>(
+      context: context,
+      backgroundColor: AppColors.surface(context),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+      ),
+      builder: (sheetContext) {
+        addSheetRoute = ModalRoute.of(sheetContext);
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(height: 12),
+              const _AddSheetHandle(),
+              const SizedBox(height: 8),
+              _HomeAddTile(
+                icon: Icons.photo_camera_outlined,
+                label: loc.AppLocalizations.of(sheetContext)!.scanDocument,
+                onTap: () => Navigator.of(sheetContext).pop('scan'),
+              ),
+              _HomeAddTile(
+                icon: Icons.create_new_folder_outlined,
+                label: loc.AppLocalizations.of(sheetContext)!.newFolder,
+                onTap: () => Navigator.of(sheetContext).pop('folder'),
+              ),
+              _HomeAddTile(
+                icon: Icons.folder_open_outlined,
+                label: loc.AppLocalizations.of(sheetContext)!.importFile,
+                onTap: () => Navigator.of(sheetContext).pop('import'),
+              ),
+              const SizedBox(height: 8),
+            ],
+          ),
+        );
+      },
+    );
+    await addSheetRoute?.completed;
+    if (!mounted) return;
+    switch (action) {
+      case 'scan':
+        _openScanner();
+      case 'folder':
+        await _createFolder();
+      case 'import':
+        await _importImage();
+      case null:
+        break;
+    }
   }
 
   @override
@@ -54,9 +235,7 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: AppColors.background(context),
         floatingActionButton: FloatingActionButton(
           heroTag: 'home_add',
-          onPressed: () {
-            // TODO: open "add" sheet (new folder / import).
-          },
+          onPressed: _showAddSheet,
           backgroundColor: AppColors.primary(context),
           foregroundColor: _onPrimary(context),
           elevation: 3,
@@ -78,20 +257,62 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(height: 24),
               _SectionTitle(loc.AppLocalizations.of(context)!.quickActions),
               const SizedBox(height: 14),
-              _QuickActions(onScan: _openScanner),
+              _QuickActions(
+                onScan: _openScannerWithMode,
+                onImport: _importImage,
+              ),
               const SizedBox(height: 24),
               _SectionTitle(
                 loc.AppLocalizations.of(context)!.recentDocuments,
                 actionLabel: loc.AppLocalizations.of(context)!.seeAll,
               ),
               const SizedBox(height: 14),
-              const _RecentDocuments(docs: _recentDocs),
+              _RecentDocuments(
+                future: _recentDocumentsFuture,
+                onRetry: _refreshRecentDocuments,
+              ),
             ],
           ),
         ),
       ),
     );
   }
+}
+
+class _AddSheetHandle extends StatelessWidget {
+  const _AddSheetHandle();
+
+  @override
+  Widget build(BuildContext context) => Container(
+    width: 36,
+    height: 4,
+    decoration: BoxDecoration(
+      color: AppColors.border(context),
+      borderRadius: BorderRadius.circular(2),
+    ),
+  );
+}
+
+class _HomeAddTile extends StatelessWidget {
+  const _HomeAddTile({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) => ListTile(
+    leading: Icon(icon, color: AppColors.primary(context)),
+    title: Text(
+      label,
+      style: TextStyle(color: AppColors.ink(context), fontSize: 14),
+    ),
+    onTap: onTap,
+  );
 }
 
 // ───────────────────────────── Header ─────────────────────────────
@@ -137,16 +358,25 @@ class _HomeHeader extends StatelessWidget implements PreferredSizeWidget {
               ),
             ),
             const Spacer(),
-            IconButton(
-              onPressed: () {
-                // TODO: notifications
-              },
-              icon: Icon(
-                Icons.notifications_none_rounded,
-                size: 26,
-                color: AppColors.ink(context),
+            ValueListenableBuilder<int>(
+              valueListenable: notificationUnreadCount,
+              builder: (context, unread, _) => IconButton(
+                onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => const NotificationsScreen(),
+                  ),
+                ),
+                icon: Badge(
+                  isLabelVisible: unread > 0,
+                  label: Text(unread > 99 ? '99+' : '$unread'),
+                  child: Icon(
+                    Icons.notifications_none_rounded,
+                    size: 26,
+                    color: AppColors.ink(context),
+                  ),
+                ),
+                tooltip: loc.AppLocalizations.of(context)!.notificationsTitle,
               ),
-              tooltip: 'Notifications',
             ),
           ],
         ),
@@ -276,9 +506,10 @@ class _HeroPaper extends StatelessWidget {
 // ───────────────────────────── Quick actions ─────────────────────────────
 
 class _QuickActions extends StatelessWidget {
-  const _QuickActions({required this.onScan});
+  const _QuickActions({required this.onScan, required this.onImport});
 
-  final VoidCallback onScan;
+  final ValueChanged<ScanMode> onScan;
+  final VoidCallback onImport;
 
   @override
   Widget build(BuildContext context) {
@@ -286,24 +517,22 @@ class _QuickActions extends StatelessWidget {
       _QuickAction(
         Icons.badge_outlined,
         loc.AppLocalizations.of(context)!.idCards,
-        onScan,
+        () => onScan(ScanMode.idCard),
       ),
       _QuickAction(
         Icons.menu_book_outlined,
         loc.AppLocalizations.of(context)!.passport,
-        onScan,
+        () => onScan(ScanMode.passport),
       ),
       _QuickAction(
         Icons.qr_code_2_rounded,
         loc.AppLocalizations.of(context)!.qrCode,
-        onScan,
+        () => onScan(ScanMode.qr),
       ),
       _QuickAction(
         Icons.folder_open_outlined,
         loc.AppLocalizations.of(context)!.import,
-        () {
-          // TODO: file picker import
-        },
+        onImport,
       ),
     ];
 
@@ -363,43 +592,100 @@ class _QuickActionTile extends StatelessWidget {
 
 // ───────────────────────────── Recent documents ─────────────────────────────
 
-class _RecentDoc {
-  const _RecentDoc(this.name, this.type, this.size, this.when);
-
-  final String name;
-  final String type;
-  final String size;
-  final String when;
-}
-
 class _RecentDocuments extends StatelessWidget {
-  const _RecentDocuments({required this.docs});
+  const _RecentDocuments({required this.future, required this.onRetry});
 
-  final List<_RecentDoc> docs;
+  final Future<List<RecentDocument>> future;
+  final VoidCallback onRetry;
 
   @override
   Widget build(BuildContext context) {
-    // Material (not Container) so the InkWell ripples on the rows are visible.
-    return Material(
-      color: AppColors.surface(context),
-      clipBehavior: Clip.antiAlias,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(18),
-        side: BorderSide(color: AppColors.border(context)),
-      ),
+    return FutureBuilder<List<RecentDocument>>(
+      future: future,
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return _RecentDocumentsMessage(
+            icon: Icons.error_outline_rounded,
+            message: snapshot.error.toString(),
+            onRetry: onRetry,
+          );
+        }
+        if (!snapshot.hasData) {
+          return const Padding(
+            padding: EdgeInsets.all(24),
+            child: Center(child: CircularProgressIndicator()),
+          );
+        }
+        final docs = snapshot.data!;
+        if (docs.isEmpty) {
+          return _RecentDocumentsMessage(
+            icon: Icons.folder_open_outlined,
+            message: loc.AppLocalizations.of(context)!.noDocumentsFound,
+          );
+        }
+
+        // Material (not Container) so the InkWell ripples on the rows are visible.
+        return Material(
+          color: AppColors.surface(context),
+          clipBehavior: Clip.antiAlias,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(18),
+            side: BorderSide(color: AppColors.border(context)),
+          ),
+          child: Column(
+            children: [
+              for (var i = 0; i < docs.length; i++) ...[
+                _DocRow(
+                  doc: docs[i],
+                  onTap: () => Navigator.of(context).push<void>(
+                    MaterialPageRoute<void>(
+                      builder: (_) => DocumentViewerScreen(document: docs[i]),
+                    ),
+                  ),
+                ),
+                if (i < docs.length - 1)
+                  Divider(
+                    height: 1,
+                    thickness: 1,
+                    indent: 72,
+                    endIndent: 16,
+                    color: AppColors.border(context),
+                  ),
+              ],
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _RecentDocumentsMessage extends StatelessWidget {
+  const _RecentDocumentsMessage({
+    required this.icon,
+    required this.message,
+    this.onRetry,
+  });
+
+  final IconData icon;
+  final String message;
+  final VoidCallback? onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(24),
       child: Column(
         children: [
-          for (var i = 0; i < docs.length; i++) ...[
-            _DocRow(doc: docs[i]),
-            if (i < docs.length - 1)
-              Divider(
-                height: 1,
-                thickness: 1,
-                indent: 72,
-                endIndent: 16,
-                color: AppColors.border(context),
-              ),
-          ],
+          Icon(icon, color: AppColors.textMuted(context), size: 28),
+          const SizedBox(height: 8),
+          Text(
+            message,
+            textAlign: TextAlign.center,
+            style: TextStyle(color: AppColors.textMuted(context)),
+          ),
+          if (onRetry != null)
+            TextButton(onPressed: onRetry, child: const Text('Retry')),
         ],
       ),
     );
@@ -407,16 +693,23 @@ class _RecentDocuments extends StatelessWidget {
 }
 
 class _DocRow extends StatelessWidget {
-  const _DocRow({required this.doc});
+  const _DocRow({required this.doc, required this.onTap});
 
-  final _RecentDoc doc;
+  final RecentDocument doc;
+  final VoidCallback onTap;
+
+  String _formatSize(int bytes) {
+    if (bytes < 1024) return '$bytes B';
+    if (bytes < 1024 * 1024) return '${(bytes / 1024).round()} KB';
+    return '${(bytes / (1024 * 1024)).toStringAsFixed(1)} MB';
+  }
 
   @override
   Widget build(BuildContext context) {
+    final locale = Localizations.localeOf(context).toString();
+    final modified = DateFormat.yMMMd(locale).add_jm().format(doc.modifiedAt);
     return InkWell(
-      onTap: () {
-        // TODO: open document viewer
-      },
+      onTap: onTap,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(16, 10, 4, 10),
         child: Row(
@@ -439,7 +732,7 @@ class _DocRow extends StatelessWidget {
                   ),
                   const SizedBox(height: 3),
                   Text(
-                    '${doc.type}  •  ${doc.size}  •  ${doc.when}',
+                    '${doc.type}  •  ${_formatSize(doc.sizeBytes)}  •  $modified',
                     style: TextStyle(
                       fontSize: 11.5,
                       color: AppColors.textMuted(context),

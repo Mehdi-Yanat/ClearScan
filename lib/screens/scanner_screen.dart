@@ -4,26 +4,36 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
-import '../l10n/app_localizations.dart';
 
-enum _ScanMode {
+import 'crop_adjust_screen.dart';
+import '../l10n/app_localizations.dart';
+import '../services/document_storage.dart';
+import '../services/notification_service.dart';
+
+enum ScanMode {
   idCard(1.586),
   passport(0.72),
   document(0.707),
   qr(1.0),
   book(1.35);
 
-  const _ScanMode(this.aspect);
+  const ScanMode(this.aspect);
 
   final double aspect;
 }
 
 class ScannerScreen extends StatefulWidget {
-  const ScannerScreen({super.key, this.onCaptured});
+  const ScannerScreen({
+    super.key,
+    this.onCaptured,
+    this.initialMode = ScanMode.document,
+  });
 
   /// Called with the captured / picked image. Use it to open the crop screen.
   /// If null, a placeholder snackbar is shown.
   final void Function(XFile file, String mode)? onCaptured;
+
+  final ScanMode initialMode;
 
   @override
   State<ScannerScreen> createState() => _ScannerScreenState();
@@ -38,7 +48,7 @@ class _ScannerScreenState extends State<ScannerScreen>
   Future<void>? _initFuture;
   String? _error;
 
-  _ScanMode _mode = _ScanMode.document;
+  late ScanMode _mode = widget.initialMode;
   int _flashIndex = 0;
   bool _autoCapture = true;
   bool _busy = false;
@@ -122,7 +132,7 @@ class _ScannerScreenState extends State<ScannerScreen>
     try {
       HapticFeedback.mediumImpact();
       final file = await controller.takePicture();
-      _handleResult(file);
+      await _handleResult(file);
     } on CameraException catch (_) {
       _showSnack('Could not take the picture. Try again.');
     } finally {
@@ -132,17 +142,44 @@ class _ScannerScreenState extends State<ScannerScreen>
 
   Future<void> _pickFromGallery() async {
     final file = await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (file != null) _handleResult(file);
+    if (file != null) await _handleResult(file);
   }
 
-  void _handleResult(XFile file) {
+  Future<void> _handleResult(XFile file) async {
     if (!mounted) return;
     final callback = widget.onCaptured;
     if (callback != null) {
+      try {
+        await addNotification(
+          AppNotificationType.scanCompleted,
+          detail: _getScanModeLabel(_mode),
+        );
+      } on Exception catch (error) {
+        _showSnack('Could not save the scan notification: $error');
+      }
       callback(file, _getScanModeLabel(_mode));
-    } else {
-      // TODO: push the crop / adjust-edges screen with [file].
-      _showSnack('Captured: ${file.path.split('/').last}');
+      return;
+    }
+
+    final result = await Navigator.of(context).push<CropResult>(
+      MaterialPageRoute<CropResult>(
+        builder: (_) => CropAdjustScreen(imagePath: file.path),
+      ),
+    );
+    if (!mounted || result?.path == null) return;
+
+    try {
+      final saved = await saveCroppedDocument(
+        imagePath: result!.path!,
+        name: _getScanModeLabel(_mode),
+      );
+      await addNotification(
+        AppNotificationType.scanCompleted,
+        detail: _getScanModeLabel(_mode),
+      );
+      _showSnack('Saved ${saved.uri.pathSegments.last}');
+    } on Exception catch (error) {
+      _showSnack('Could not save the scanned document: $error');
     }
   }
 
@@ -159,66 +196,66 @@ class _ScannerScreenState extends State<ScannerScreen>
     _ => Icons.flash_off_rounded,
   };
 
-  String _getScanModeLabel(_ScanMode mode) {
+  String _getScanModeLabel(ScanMode mode) {
     final localizations = AppLocalizations.of(context);
     if (localizations == null) {
       // Fallback to English if localizations is not available
       switch (mode) {
-        case _ScanMode.idCard:
+        case ScanMode.idCard:
           return 'ID Card';
-        case _ScanMode.passport:
+        case ScanMode.passport:
           return 'Passport';
-        case _ScanMode.document:
+        case ScanMode.document:
           return 'Document';
-        case _ScanMode.qr:
+        case ScanMode.qr:
           return 'QR Code';
-        case _ScanMode.book:
+        case ScanMode.book:
           return 'Book';
       }
     }
     // Localizations is not null here
     switch (mode) {
-      case _ScanMode.idCard:
+      case ScanMode.idCard:
         return localizations.scanModeIdCardLabel;
-      case _ScanMode.passport:
+      case ScanMode.passport:
         return localizations.scanModePassportLabel;
-      case _ScanMode.document:
+      case ScanMode.document:
         return localizations.scanModeDocumentLabel;
-      case _ScanMode.qr:
+      case ScanMode.qr:
         return localizations.scanModeQrLabel;
-      case _ScanMode.book:
+      case ScanMode.book:
         return localizations.scanModeBookLabel;
     }
   }
 
-  String _getScanModeHint(_ScanMode mode) {
+  String _getScanModeHint(ScanMode mode) {
     final localizations = AppLocalizations.of(context);
     if (localizations == null) {
       // Fallback to English if localizations is not available
       switch (mode) {
-        case _ScanMode.idCard:
+        case ScanMode.idCard:
           return 'Place your ID card inside the frame';
-        case _ScanMode.passport:
+        case ScanMode.passport:
           return 'Align the photo page with the frame';
-        case _ScanMode.document:
+        case ScanMode.document:
           return 'Align the document with the frame';
-        case _ScanMode.qr:
+        case ScanMode.qr:
           return 'Point your camera at a QR code';
-        case _ScanMode.book:
+        case ScanMode.book:
           return 'Open the book and fit both pages in the frame';
       }
     }
     // Localizations is not null here
     switch (mode) {
-      case _ScanMode.idCard:
+      case ScanMode.idCard:
         return localizations.scanModeIdCardHint;
-      case _ScanMode.passport:
+      case ScanMode.passport:
         return localizations.scanModePassportHint;
-      case _ScanMode.document:
+      case ScanMode.document:
         return localizations.scanModeDocumentHint;
-      case _ScanMode.qr:
+      case ScanMode.qr:
         return localizations.scanModeQrHint;
-      case _ScanMode.book:
+      case ScanMode.book:
         return localizations.scanModeBookHint;
     }
   }
@@ -283,7 +320,7 @@ class _ScannerScreenState extends State<ScannerScreen>
                     const SizedBox(height: 18),
                     _Controls(
                       busy: _busy,
-                      showShutter: _mode != _ScanMode.qr,
+                      showShutter: _mode != ScanMode.qr,
                       autoCapture: _autoCapture,
                       onGallery: _pickFromGallery,
                       onShutter: _capture,
@@ -521,38 +558,38 @@ class _ModeSelector extends StatelessWidget {
     required this.onChanged,
   });
 
-  final _ScanMode selected;
+  final ScanMode selected;
   final Color accent;
-  final ValueChanged<_ScanMode> onChanged;
+  final ValueChanged<ScanMode> onChanged;
 
-  String _getModeLabel(_ScanMode mode, BuildContext context) {
+  String _getModeLabel(ScanMode mode, BuildContext context) {
     final localizations = AppLocalizations.of(context);
     if (localizations == null) {
       // Fallback to English if localizations is not available
       switch (mode) {
-        case _ScanMode.idCard:
+        case ScanMode.idCard:
           return 'ID Card';
-        case _ScanMode.passport:
+        case ScanMode.passport:
           return 'Passport';
-        case _ScanMode.document:
+        case ScanMode.document:
           return 'Document';
-        case _ScanMode.qr:
+        case ScanMode.qr:
           return 'QR Code';
-        case _ScanMode.book:
+        case ScanMode.book:
           return 'Book';
       }
     }
     // Localizations is not null here
     switch (mode) {
-      case _ScanMode.idCard:
+      case ScanMode.idCard:
         return localizations.scanModeIdCardLabel;
-      case _ScanMode.passport:
+      case ScanMode.passport:
         return localizations.scanModePassportLabel;
-      case _ScanMode.document:
+      case ScanMode.document:
         return localizations.scanModeDocumentLabel;
-      case _ScanMode.qr:
+      case ScanMode.qr:
         return localizations.scanModeQrLabel;
-      case _ScanMode.book:
+      case ScanMode.book:
         return localizations.scanModeBookLabel;
     }
   }
@@ -568,7 +605,7 @@ class _ModeSelector extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8),
       child: Row(
         children: [
-          for (final mode in _ScanMode.values)
+          for (final mode in ScanMode.values)
             Expanded(
               child: InkWell(
                 onTap: () => onChanged(mode),

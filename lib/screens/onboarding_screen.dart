@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:clear_scan/l10n/app_localizations.dart' as loc;
+
 import '../theme/app_theme.dart';
 
 // The illustrations draw a white "paper" in both themes, so everything that

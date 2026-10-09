@@ -1,9 +1,14 @@
+import 'dart:io';
+
 import 'package:clear_scan/widgets/app_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../l10n/app_localizations.dart' as loc;
+import '../services/folder_repository.dart';
+import '../services/notification_service.dart';
 import '../theme/app_theme.dart';
+import '../widgets/folder_name_dialog.dart';
 import 'scanner_screen.dart';
 
 /// Text/icon color that stays readable on the primary color in each theme
@@ -41,12 +46,6 @@ extension _FilterExtension on _Filter {
 enum _Sort { date, name, size }
 
 enum _Kind { pdf, image, doc }
-
-class _Folder {
-  _Folder(this.name, this.items);
-  String name;
-  int items;
-}
 
 class _DocFile {
   _DocFile(
@@ -89,14 +88,9 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
   _Sort _sort = _Sort.date;
   String _query = '';
 
-  // Replace with data from your document repository.
-  final List<_Folder> _folders = [
-    _Folder('ID Cards', 12),
-    _Folder('Passports', 8),
-    _Folder('Contracts', 15),
-    _Folder('Receipts', 27),
-    _Folder('Notes', 34),
-  ];
+  List<DocumentFolder> _folders = [];
+  bool _foldersLoading = true;
+  String? _folderError;
 
   final List<_DocFile> _files = [
     _DocFile('Contract Agreement', _Kind.pdf, 2458, '10:30 AM', favorite: true),
@@ -113,6 +107,12 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    _loadFolders();
+  }
+
+  @override
   void dispose() {
     _searchController.dispose();
     _searchFocus.dispose();
@@ -121,7 +121,7 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
 
   // ── derived data ──
 
-  List<_Folder> get _visibleFolders {
+  List<DocumentFolder> get _visibleFolders {
     if (_filter != _Filter.all) return const [];
     return _folders
         .where((f) => f.name.toLowerCase().contains(_query))
@@ -167,16 +167,73 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
       ..showSnackBar(SnackBar(content: Text(message), action: action));
   }
 
-  void _deleteFolder(_Folder folder) {
-    final index = _folders.indexOf(folder);
-    setState(() => _folders.remove(folder));
-    _snack(
-      '"${folder.name}" deleted',
-      action: SnackBarAction(
-        label: loc.AppLocalizations.of(context)!.undo,
-        onPressed: () => setState(() => _folders.insert(index, folder)),
+  Future<void> _loadFolders() async {
+    try {
+      final folders = await loadDocumentFolders();
+      if (!mounted) return;
+      setState(() {
+        _folders = folders;
+        _foldersLoading = false;
+        _folderError = null;
+      });
+    } catch (error) {
+      if (!mounted) return;
+      setState(() {
+        _foldersLoading = false;
+        _folderError = error.toString();
+      });
+    }
+  }
+
+  Future<void> _deleteFolder(DocumentFolder folder) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(loc.AppLocalizations.of(dialogContext)!.delete),
+        content: Text('Delete "${folder.name}" and its contents?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: Text(
+              MaterialLocalizations.of(dialogContext).cancelButtonLabel,
+            ),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            child: Text(loc.AppLocalizations.of(dialogContext)!.delete),
+          ),
+        ],
       ),
     );
+    if (confirmed != true || !mounted) return;
+    try {
+      await deleteDocumentFolder(folder);
+      await _loadFolders();
+    } on FileSystemException catch (error) {
+      if (mounted) _snack(error.message);
+    }
+  }
+
+  Future<void> _createFolder() async {
+    final name = await showFolderNameDialog(context);
+    if (name == null || !mounted) return;
+    try {
+      await createDocumentFolder(name);
+      await _loadFolders();
+      await addNotification(
+        AppNotificationType.folderCreated,
+        detail: name.trim(),
+      );
+      if (mounted) _snack('"${name.trim()}" created');
+    } on FileSystemException catch (error) {
+      if (mounted) _snack(error.message);
+    } on FormatException catch (error) {
+      if (mounted) _snack(error.message);
+    } on Exception catch (error) {
+      if (mounted) {
+        _snack('Folder created, but notification could not be saved: $error');
+      }
+    }
   }
 
   void _deleteFile(_DocFile file) {
@@ -248,7 +305,7 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
   }
 
   Future<void> _showAddSheet() async {
-    await showModalBottomSheet<void>(
+    final action = await showModalBottomSheet<String>(
       context: context,
       backgroundColor: AppColors.surface(context),
       shape: const RoundedRectangleBorder(
@@ -265,23 +322,21 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
               icon: Icons.photo_camera_outlined,
               label: loc.AppLocalizations.of(context)!.scanDocument,
               onTap: () {
-                Navigator.of(sheetContext).pop();
-                _openScanner();
+                Navigator.of(sheetContext).pop('scan');
               },
             ),
             _AddTile(
               icon: Icons.create_new_folder_outlined,
               label: loc.AppLocalizations.of(context)!.newFolder,
               onTap: () {
-                Navigator.of(sheetContext).pop();
-                // TODO: ask for a folder name, then add it to your repository.
+                Navigator.of(sheetContext).pop('folder');
               },
             ),
             _AddTile(
               icon: Icons.folder_open_outlined,
               label: loc.AppLocalizations.of(context)!.importFile,
               onTap: () {
-                Navigator.of(sheetContext).pop();
+                Navigator.of(sheetContext).pop('import');
                 // TODO: file picker import
               },
             ),
@@ -290,6 +345,9 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
         ),
       ),
     );
+    if (!mounted) return;
+    if (action == 'scan') _openScanner();
+    if (action == 'folder') await _createFolder();
   }
 
   // ── build ──
@@ -298,7 +356,11 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
   Widget build(BuildContext context) {
     final folders = _visibleFolders;
     final files = _visibleFiles;
-    final isEmpty = folders.isEmpty && files.isEmpty;
+    final isEmpty =
+        folders.isEmpty &&
+        files.isEmpty &&
+        !_foldersLoading &&
+        _folderError == null;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final iconBrightness = isDark ? Brightness.light : Brightness.dark;
 
@@ -361,6 +423,15 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
                     : ListView(
                         padding: const EdgeInsets.fromLTRB(24, 0, 24, 96),
                         children: [
+                          if (_foldersLoading)
+                            const Center(child: CircularProgressIndicator()),
+                          if (_folderError != null)
+                            Text(
+                              _folderError!,
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.error,
+                              ),
+                            ),
                           if (folders.isNotEmpty)
                             _Card(
                               children: [
@@ -637,7 +708,7 @@ class _FolderRow extends StatelessWidget {
     required this.onDelete,
   });
 
-  final _Folder folder;
+  final DocumentFolder folder;
   final VoidCallback onTap;
   final VoidCallback onDelete;
 
@@ -672,7 +743,7 @@ class _FolderRow extends StatelessWidget {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    '${folder.items} items',
+                    '${folder.itemCount} items',
                     style: TextStyle(
                       fontSize: 11.5,
                       color: AppColors.textMuted(context),
