@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 
 import '../theme/app_theme.dart';
 import 'scanner_screen.dart';
+import 'package:clear_scan/l10n/app_localizations.dart' as loc;
 
 /// Text/icon color that stays readable on the primary color in each theme
 /// (bright teal in dark mode needs dark text, deep teal in light mode needs white).
@@ -22,15 +23,19 @@ Color _fieldFill(BuildContext context) =>
 const _paperBorder = Color(0xFFE6ECEF);
 const _paperPrimary = Color(0xFF14909A);
 
-enum _Filter {
-  all('All'),
-  pdf('PDF'),
-  images('Images'),
-  docs('Docs'),
-  favorites('Favorites');
+enum _Filter { all, pdf, images, docs, favorites }
 
-  const _Filter(this.label);
-  final String label;
+extension _FilterExtension on _Filter {
+  String localizedLabel(BuildContext context) {
+    final l = loc.AppLocalizations.of(context)!;
+    return switch (this) {
+      _Filter.all => l.documentsFilterAll,
+      _Filter.pdf => l.documentsFilterPdf,
+      _Filter.images => l.documentsFilterImages,
+      _Filter.docs => l.documentsFilterDocs,
+      _Filter.favorites => l.documentsFilterFavorites,
+    };
+  }
 }
 
 enum _Sort { date, name, size }
@@ -168,7 +173,7 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
     _snack(
       '"${folder.name}" deleted',
       action: SnackBarAction(
-        label: 'Undo',
+        label: loc.AppLocalizations.of(context)!.undo,
         onPressed: () => setState(() => _folders.insert(index, folder)),
       ),
     );
@@ -180,7 +185,7 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
     _snack(
       '"${file.name}" deleted',
       action: SnackBarAction(
-        label: 'Undo',
+        label: loc.AppLocalizations.of(context)!.undo,
         onPressed: () => setState(() => _files.insert(index, file)),
       ),
     );
@@ -204,7 +209,7 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  'Sort by',
+                  loc.AppLocalizations.of(sheetContext)!.documentsSortBy,
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
@@ -213,11 +218,12 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
                 ),
               ),
             ),
-            for (final (value, label) in const [
-              (_Sort.date, 'Date'),
-              (_Sort.name, 'Name'),
-              (_Sort.size, 'Size'),
-            ])
+            final sortOptions = [
+              (_Sort.date, loc.AppLocalizations.of(sheetContext)!.sortDate),
+              (_Sort.name, loc.AppLocalizations.of(sheetContext)!.sortName),
+              (_Sort.size, loc.AppLocalizations.of(sheetContext)!.sortSize),
+            ];
+            for (final (value, label) in sortOptions)
               ListTile(
                 title: Text(
                   label,
@@ -258,7 +264,7 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
             const SizedBox(height: 8),
             _AddTile(
               icon: Icons.photo_camera_outlined,
-              label: 'Scan document',
+              label: loc.AppLocalizations.of(context)!.scanDocument,
               onTap: () {
                 Navigator.of(sheetContext).pop();
                 _openScanner();
@@ -266,7 +272,7 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
             ),
             _AddTile(
               icon: Icons.create_new_folder_outlined,
-              label: 'New folder',
+              label: loc.AppLocalizations.of(context)!.newFolder,
               onTap: () {
                 Navigator.of(sheetContext).pop();
                 // TODO: ask for a folder name, then add it to your repository.
@@ -274,7 +280,7 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
             ),
             _AddTile(
               icon: Icons.folder_open_outlined,
-              label: 'Import file',
+              label: loc.AppLocalizations.of(context)!.importFile,
               onTap: () {
                 Navigator.of(sheetContext).pop();
                 // TODO: file picker import
@@ -413,7 +419,7 @@ class _Header extends StatelessWidget {
       child: Row(
         children: [
           Text(
-            'Documents',
+            loc.AppLocalizations.of(context)!.documentsTitle,
             style: TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.w700,
@@ -428,7 +434,7 @@ class _Header extends StatelessWidget {
               size: 26,
               color: AppColors.ink(context),
             ),
-            tooltip: 'Search',
+            tooltip: loc.AppLocalizations.of(context)!.searchTooltip,
           ),
           PopupMenuButton<String>(
             icon: Icon(Icons.more_vert, color: AppColors.ink(context)),
@@ -437,8 +443,8 @@ class _Header extends StatelessWidget {
               // TODO: 'select' → multi-select mode
             },
             itemBuilder: (_) => const [
-              PopupMenuItem(value: 'select', child: Text('Select')),
-              PopupMenuItem(value: 'new', child: Text('New…')),
+              PopupMenuItem(value: 'select', child: Text(loc.AppLocalizations.of(context)!.selectOption)),
+              PopupMenuItem(value: 'new', child: Text(loc.AppLocalizations.of(context)!.newOption)),
             ],
           ),
         ],
@@ -472,7 +478,7 @@ class _SearchField extends StatelessWidget {
         cursorColor: AppColors.primary(context),
         style: TextStyle(fontSize: 13.5, color: AppColors.ink(context)),
         decoration: InputDecoration(
-          hintText: 'Search documents',
+          hintText: loc.AppLocalizations.of(context)!.searchHint,
           hintStyle: TextStyle(fontSize: 13.5, color: muted),
           prefixIcon: Icon(Icons.search_rounded, size: 20, color: muted),
           suffixIcon: ValueListenableBuilder<TextEditingValue>(
@@ -551,7 +557,7 @@ class _FilterChips extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 24),
         scrollDirection: Axis.horizontal,
         itemCount: _Filter.values.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 8),
+        separatorBuilder: (_, _) => const SizedBox(width: 8),
         itemBuilder: (context, i) {
           final filter = _Filter.values[i];
           final active = filter == selected;
@@ -569,7 +575,7 @@ class _FilterChips extends StatelessWidget {
                 ),
               ),
               child: Text(
-                filter.label,
+                filter.localizedLabel(context),
                 style: TextStyle(
                   fontSize: 12.5,
                   fontWeight: active ? FontWeight.w500 : FontWeight.w400,
@@ -766,9 +772,9 @@ class _MoreMenu extends StatelessWidget {
         // TODO: 'share', 'rename'
       },
       itemBuilder: (_) => const [
-        PopupMenuItem(value: 'share', child: Text('Share')),
-        PopupMenuItem(value: 'rename', child: Text('Rename')),
-        PopupMenuItem(value: 'delete', child: Text('Delete')),
+        PopupMenuItem(value: 'share', child: Text(loc.AppLocalizations.of(context)!.share)),
+        PopupMenuItem(value: 'rename', child: Text(loc.AppLocalizations.of(context)!.rename)),
+        PopupMenuItem(value: 'delete', child: Text(loc.AppLocalizations.of(context)!.delete)),
       ],
     );
   }
@@ -848,7 +854,7 @@ class _EmptyState extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           Text(
-            'No documents found',
+            loc.AppLocalizations.of(context)!.noDocumentsFound,
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w500,
