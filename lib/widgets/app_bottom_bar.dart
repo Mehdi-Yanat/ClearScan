@@ -68,10 +68,10 @@ class AppBottomBar extends StatelessWidget {
                         child: _NavItem(
                           Icons.build_outlined,
                           Icons.build_rounded,
-                          'Settings',
+                          'Workshop',
                           2,
                           selectedIndex,
-                          '/settings',
+                          '/workshop',
                         ),
                       ),
                       Expanded(
