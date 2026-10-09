@@ -1,0 +1,63 @@
+{
+  "colors": {
+    "ink": "#12303A",
+    "primary": "#14909A",
+    "primaryLight": "#E3F3F4",
+    "heroDark": "#0F2A33",
+    "background": "#F5F8FA",
+    "surface": "#FFFFFF",
+    "border": "#E6ECEF",
+    "textMuted": "#6B7C85",
+    "textHint": "#9AA8B0",
+    "danger": "#E5484D",
+    "warning": "#F5A524",
+    "success": "#2FB67C",
+    "splashDarkBg": "#0B1E26",
+    "primaryOnDark": "#2CC4CF"
+  },
+  "typography": {
+    "font": "Poppins",
+    "h1": {
+      "size": 28,
+      "weight": 700
+    },
+    "h2": {
+      "size": 20,
+      "weight": 700
+    },
+    "title": {
+      "size": 14,
+      "weight": 500
+    },
+    "body": {
+      "size": 13,
+      "weight": 400
+    },
+    "caption": {
+      "size": 11,
+      "weight": 400
+    }
+  },
+  "radius": {
+    "card": 18,
+    "button": 14,
+    "chip": 999,
+    "sheet": 28,
+    "thumb": 5
+  },
+  "spacing": {
+    "grid": 8,
+    "screenPadding": 24
+  },
+  "sizes": {
+    "bottomNav": 84,
+    "scanFab": 72,
+    "fab": 56,
+    "icon": 24,
+    "iconStroke": 1.8,
+    "artboard": [
+      390,
+      800
+    ]
+  }
+}
