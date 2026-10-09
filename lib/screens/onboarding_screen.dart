@@ -1,9 +1,10 @@
+import 'package:clear_scan/screens/scanner_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../theme/app_theme.dart';
 import 'package:clear_scan/l10n/app_localizations.dart' as loc;
+import '../theme/app_theme.dart';
 
 // The illustrations draw a white "paper" in both themes, so everything that
 // sits on the paper uses fixed colors instead of theme-aware ones.
@@ -39,25 +40,25 @@ class _OnboardingPageState extends State<OnboardingPage> {
   int _index = 0;
 
   List<_SlideData> _localizedSlides(BuildContext context) {
-  final l = loc.AppLocalizations.of(context)!;
-  return [
-    _SlideData(
-      kind: _SlideKind.scan,
-      title: l.onboardingSlideScanTitle,
-      subtitle: l.onboardingSlideScanSubtitle,
-    ),
-    _SlideData(
-      kind: _SlideKind.organize,
-      title: l.onboardingSlideOrganizeTitle,
-      subtitle: l.onboardingSlideOrganizeSubtitle,
-    ),
-    _SlideData(
-      kind: _SlideKind.sign,
-      title: l.onboardingSlideSignTitle,
-      subtitle: l.onboardingSlideSignSubtitle,
-    ),
-  ];
-}
+    final l = loc.AppLocalizations.of(context)!;
+    return [
+      _SlideData(
+        kind: _SlideKind.scan,
+        title: l.onboardingSlideScanTitle,
+        subtitle: l.onboardingSlideScanSubtitle,
+      ),
+      _SlideData(
+        kind: _SlideKind.organize,
+        title: l.onboardingSlideOrganizeTitle,
+        subtitle: l.onboardingSlideOrganizeSubtitle,
+      ),
+      _SlideData(
+        kind: _SlideKind.sign,
+        title: l.onboardingSlideSignTitle,
+        subtitle: l.onboardingSlideSignSubtitle,
+      ),
+    ];
+  }
 
   @override
   void dispose() {
@@ -115,13 +116,16 @@ class _OnboardingPageState extends State<OnboardingPage> {
                     controller: _pageController,
                     itemCount: _localizedSlides(context).length,
                     onPageChanged: (i) => setState(() => _index = i),
-                    itemBuilder: (context, i) => _Slide(data: _localizedSlides(context)[i]),
+                    itemBuilder: (context, i) =>
+                        _Slide(data: _localizedSlides(context)[i]),
                   ),
                 ),
                 const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: List.generate(_localizedSlides(context).length, (i) {
+                  children: List.generate(_localizedSlides(context).length, (
+                    i,
+                  ) {
                     final active = i == _index;
                     return AnimatedContainer(
                       duration: const Duration(milliseconds: 250),
@@ -157,7 +161,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
                         fontWeight: FontWeight.w700,
                       ),
                     ),
-                    child: Text(loc.AppLocalizations.of(context)!.onboardingGetStarted),
+                    child: Text(
+                      loc.AppLocalizations.of(context)!.onboardingGetStarted,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 18),
@@ -439,11 +445,20 @@ class _OrganizeIllustration extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          tile(Icons.badge_outlined, loc.AppLocalizations.of(context)!.onboardingTileIdCards),
+          tile(
+            Icons.badge_outlined,
+            loc.AppLocalizations.of(context)!.onboardingTileIdCards,
+          ),
           const SizedBox(width: 12),
-          tile(Icons.folder_outlined, loc.AppLocalizations.of(context)!.onboardingTileContracts),
+          tile(
+            Icons.folder_outlined,
+            loc.AppLocalizations.of(context)!.onboardingTileContracts,
+          ),
           const SizedBox(width: 12),
-          tile(Icons.receipt_long_outlined, loc.AppLocalizations.of(context)!.onboardingTileReceipts),
+          tile(
+            Icons.receipt_long_outlined,
+            loc.AppLocalizations.of(context)!.onboardingTileReceipts,
+          ),
         ],
       ),
     );
