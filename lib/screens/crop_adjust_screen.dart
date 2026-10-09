@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image/image.dart' as img;
 import 'package:path_provider/path_provider.dart';
+
 import '../l10n/app_localizations.dart';
 import '../theme/app_theme.dart';
 
@@ -54,11 +55,11 @@ class _CropAdjustScreenState extends State<CropAdjustScreen> {
   List<Offset> _quad = _defaultQuad();
 
   static List<Offset> _defaultQuad() => const [
-        Offset(0.08, 0.08),
-        Offset(0.92, 0.08),
-        Offset(0.92, 0.92),
-        Offset(0.08, 0.92),
-      ];
+    Offset(0.08, 0.08),
+    Offset(0.92, 0.08),
+    Offset(0.92, 0.92),
+    Offset(0.08, 0.92),
+  ];
 
   @override
   void initState() {
@@ -72,14 +73,21 @@ class _CropAdjustScreenState extends State<CropAdjustScreen> {
       final bytes = await compute(_bakeOrientation, raw);
       await _setBytes(bytes);
     } catch (_) {
-      if (mounted) setState(() => _error = AppLocalizations.of(context)!.cropAdjustErrorOpenImage);
+      if (mounted) {
+        setState(
+          () => _error = AppLocalizations.of(context)!.cropAdjustErrorOpenImage,
+        );
+      }
     }
   }
 
   Future<void> _setBytes(Uint8List bytes) async {
     final codec = await ui.instantiateImageCodec(bytes);
     final frame = await codec.getNextFrame();
-    final size = Size(frame.image.width.toDouble(), frame.image.height.toDouble());
+    final size = Size(
+      frame.image.width.toDouble(),
+      frame.image.height.toDouble(),
+    );
     frame.image.dispose();
     if (!mounted) return;
     setState(() {
@@ -121,11 +129,15 @@ class _CropAdjustScreenState extends State<CropAdjustScreen> {
         _cropPerspective,
         _CropJob(
           bytes: bytes,
-          points: [for (final p in ordered) [p.dx, p.dy]],
+          points: [
+            for (final p in ordered) [p.dx, p.dy],
+          ],
         ),
       );
       final dir = await getTemporaryDirectory();
-      final file = File('${dir.path}/crop_${DateTime.now().microsecondsSinceEpoch}.jpg');
+      final file = File(
+        '${dir.path}/crop_${DateTime.now().microsecondsSinceEpoch}.jpg',
+      );
       await file.writeAsBytes(cropped, flush: true);
       if (!mounted) return;
       Navigator.of(context).pop(CropResult(action: action, path: file.path));
@@ -134,12 +146,19 @@ class _CropAdjustScreenState extends State<CropAdjustScreen> {
         setState(() => _working = false);
         ScaffoldMessenger.of(context)
           ..hideCurrentSnackBar()
-          ..showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.cropAdjustErrorCropImage)));
+          ..showSnackBar(
+            SnackBar(
+              content: Text(
+                AppLocalizations.of(context)!.cropAdjustErrorCropImage,
+              ),
+            ),
+          );
       }
     }
   }
 
-  void _retake() => Navigator.of(context).pop(const CropResult(action: CropAction.retake));
+  void _retake() =>
+      Navigator.of(context).pop(const CropResult(action: CropAction.retake));
 
   /// Returns TL, TR, BR, BL regardless of how the points were dragged/rotated.
   List<Offset> _orderedQuad() {
@@ -158,9 +177,6 @@ class _CropAdjustScreenState extends State<CropAdjustScreen> {
     final accentColor = AppColors.primary(context);
     final backgroundColor = AppColors.background(context);
     final surfaceColor = AppColors.surface(context);
-    final inkColor = AppColors.ink(context);
-    final textMuted = AppColors.textMuted(context);
-    final textHint = AppColors.textHint(context);
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(
@@ -203,7 +219,9 @@ class _CropAdjustScreenState extends State<CropAdjustScreen> {
                               color: surfaceColor.withValues(alpha: 0.35),
                               borderRadius: BorderRadius.circular(10),
                             ),
-                            child: const Center(child: CircularProgressIndicator()),
+                            child: const Center(
+                              child: CircularProgressIndicator(),
+                            ),
                           ),
                         ),
                     ],
@@ -245,15 +263,30 @@ class _CropAdjustScreenState extends State<CropAdjustScreen> {
       builder: (context, box) {
         const pad = 22.0; // room so handles at the image edge stay reachable
         final avail = Size(box.maxWidth - pad * 2, box.maxHeight - pad * 2);
-        final scale = math.min(avail.width / _imageSize.width, avail.height / _imageSize.height);
-        final imgSize = Size(_imageSize.width * scale, _imageSize.height * scale);
-        final origin = Offset((box.maxWidth - imgSize.width) / 2, (box.maxHeight - imgSize.height) / 2);
+        final scale = math.min(
+          avail.width / _imageSize.width,
+          avail.height / _imageSize.height,
+        );
+        final imgSize = Size(
+          _imageSize.width * scale,
+          _imageSize.height * scale,
+        );
+        final origin = Offset(
+          (box.maxWidth - imgSize.width) / 2,
+          (box.maxHeight - imgSize.height) / 2,
+        );
         final imgRect = origin & imgSize;
 
-        Offset toPx(Offset n) => Offset(imgRect.left + n.dx * imgRect.width, imgRect.top + n.dy * imgRect.height);
+        Offset toPx(Offset n) => Offset(
+          imgRect.left + n.dx * imgRect.width,
+          imgRect.top + n.dy * imgRect.height,
+        );
 
         void moveBy(List<int> indices, Offset deltaPx) {
-          final dn = Offset(deltaPx.dx / imgRect.width, deltaPx.dy / imgRect.height);
+          final dn = Offset(
+            deltaPx.dx / imgRect.width,
+            deltaPx.dy / imgRect.height,
+          );
           var dx = dn.dx;
           var dy = dn.dy;
           for (final i in indices) {
@@ -269,7 +302,11 @@ class _CropAdjustScreenState extends State<CropAdjustScreen> {
 
         final px = [for (final p in _quad) toPx(p)];
 
-        Widget handle(Offset center, List<int> indices, {required bool corner}) {
+        Widget handle(
+          Offset center,
+          List<int> indices, {
+          required bool corner,
+        }) {
           final size = corner ? 44.0 : 40.0;
           return Positioned(
             left: center.dx - size / 2,
@@ -279,7 +316,9 @@ class _CropAdjustScreenState extends State<CropAdjustScreen> {
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
               onPanUpdate: (d) => moveBy(indices, d.delta),
-              child: Center(child: corner ? const _CornerDot() : const _EdgeDot()),
+              child: Center(
+                child: corner ? const _CornerDot() : const _EdgeDot(),
+              ),
             ),
           );
         }
@@ -288,11 +327,17 @@ class _CropAdjustScreenState extends State<CropAdjustScreen> {
           children: [
             Positioned.fromRect(
               rect: imgRect,
-              child: Image.memory(bytes, fit: BoxFit.fill, gaplessPlayback: true),
+              child: Image.memory(
+                bytes,
+                fit: BoxFit.fill,
+                gaplessPlayback: true,
+              ),
             ),
             Positioned.fill(
               child: IgnorePointer(
-                child: CustomPaint(painter: _QuadPainter(points: px, color: accentColor)),
+                child: CustomPaint(
+                  painter: _QuadPainter(points: px, color: accentColor),
+                ),
               ),
             ),
             // edges (drawn first so corners win overlaps)
@@ -314,7 +359,11 @@ class _CropAdjustScreenState extends State<CropAdjustScreen> {
 // ───────────────────────────── UI pieces ─────────────────────────────
 
 class _TopBar extends StatelessWidget {
-  const _TopBar({required this.enabled, required this.onBack, required this.onNext});
+  const _TopBar({
+    required this.enabled,
+    required this.onBack,
+    required this.onNext,
+  });
 
   final bool enabled;
   final VoidCallback onBack;
@@ -338,7 +387,11 @@ class _TopBar extends StatelessWidget {
             child: Text(
               AppLocalizations.of(context)!.cropAdjustTitle,
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700, color: ink),
+              style: TextStyle(
+                fontSize: 17,
+                fontWeight: FontWeight.w700,
+                color: ink,
+              ),
             ),
           ),
           TextButton(
@@ -376,7 +429,11 @@ class _PageBadge extends StatelessWidget {
       ),
       child: Text(
         '${AppLocalizations.of(context)!.cropAdjustPage} $page / $total',
-        style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w500, color: ink),
+        style: TextStyle(
+          fontSize: 11.5,
+          fontWeight: FontWeight.w500,
+          color: ink,
+        ),
       ),
     );
   }
@@ -403,10 +460,26 @@ class _BottomActions extends StatelessWidget {
     final ink = AppColors.ink(context);
     final muted = AppColors.textMuted(context);
     final items = [
-      (Icons.photo_camera_outlined, AppLocalizations.of(context)!.cropAdjustRetake, onRetake),
-      (Icons.rotate_right_rounded, AppLocalizations.of(context)!.cropAdjustRotate, onRotate),
-      (Icons.crop_free_rounded, AppLocalizations.of(context)!.cropAdjustAutoCrop, onAutoCrop),
-      (Icons.add_rounded, AppLocalizations.of(context)!.cropAdjustAddPage, onAddPage),
+      (
+        Icons.photo_camera_outlined,
+        AppLocalizations.of(context)!.cropAdjustRetake,
+        onRetake,
+      ),
+      (
+        Icons.rotate_right_rounded,
+        AppLocalizations.of(context)!.cropAdjustRotate,
+        onRotate,
+      ),
+      (
+        Icons.crop_free_rounded,
+        AppLocalizations.of(context)!.cropAdjustAutoCrop,
+        onAutoCrop,
+      ),
+      (
+        Icons.add_rounded,
+        AppLocalizations.of(context)!.cropAdjustAddPage,
+        onAddPage,
+      ),
     ];
 
     return Container(
@@ -489,7 +562,10 @@ class _EdgeDot extends StatelessWidget {
         child: Container(
           width: 8,
           height: 8,
-          decoration: BoxDecoration(color: primary, borderRadius: BorderRadius.circular(4)),
+          decoration: BoxDecoration(
+            color: primary,
+            borderRadius: BorderRadius.circular(4),
+          ),
         ),
       ),
     );
@@ -517,7 +593,10 @@ class _QuadPainter extends CustomPainter {
       Path()..addRect(Offset.zero & size),
       quad,
     );
-    canvas.drawPath(outside, Paint()..color = Colors.black.withValues(alpha: 0.5));
+    canvas.drawPath(
+      outside,
+      Paint()..color = Colors.black.withValues(alpha: 0.5),
+    );
 
     canvas.drawPath(quad, Paint()..color = color.withValues(alpha: 0.12));
     canvas.drawPath(
@@ -531,7 +610,8 @@ class _QuadPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _QuadPainter old) => !listEquals(old.points, points) || old.color != color;
+  bool shouldRepaint(covariant _QuadPainter old) =>
+      !listEquals(old.points, points) || old.color != color;
 }
 
 // ───────────────────────────── Image work (runs in isolates) ─────────────────────────────
@@ -568,10 +648,20 @@ Uint8List _cropPerspective(_CropJob job) {
   final p = [for (final pt in job.points) Offset(pt[0] * w, pt[1] * h)];
   final tl = p[0], tr = p[1], br = p[2], bl = p[3];
 
-  final outW = math.max((tr - tl).distance, (br - bl).distance).round().clamp(32, 6000);
-  final outH = math.max((bl - tl).distance, (br - tr).distance).round().clamp(32, 8000);
+  final outW = math
+      .max((tr - tl).distance, (br - bl).distance)
+      .round()
+      .clamp(32, 6000);
+  final outH = math
+      .max((bl - tl).distance, (br - tr).distance)
+      .round()
+      .clamp(32, 8000);
 
-  final dst = img.Image(width: outW, height: outH, numChannels: src.numChannels);
+  final dst = img.Image(
+    width: outW,
+    height: outH,
+    numChannels: src.numChannels,
+  );
   final result = img.copyRectify(
     src,
     topLeft: img.Point(tl.dx, tl.dy),
