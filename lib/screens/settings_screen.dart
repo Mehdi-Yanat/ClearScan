@@ -7,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../l10n/app_localizations.dart';
 import '../services/app_settings.dart';
-import '../services/app_lock_service.dart';
+import '../widgets/app_snackbar.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -21,7 +21,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   String _quality = AppSettings.defaultQuality;
   String _format = AppSettings.defaultFormat;
-  bool _appLock = false;
   bool _hideInRecents = false;
   bool _autoBackup = false;
   int? _cacheBytes;
@@ -40,7 +39,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
       _prefs = p;
       _quality = p.getString(AppSettings.quality) ?? AppSettings.defaultQuality;
       _format = p.getString(AppSettings.format) ?? AppSettings.defaultFormat;
-      _appLock = p.getBool(AppSettings.appLock) ?? false;
       _hideInRecents = p.getBool(AppSettings.hideInRecents) ?? false;
       _autoBackup = p.getBool(AppSettings.autoBackup) ?? false;
     });
@@ -156,9 +154,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   void _snack(String message) {
     if (!mounted) return;
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text(message)));
+    showAppSnackBar(context, message);
   }
 
   void _setBool(String key, bool value, void Function() apply) {
@@ -166,25 +162,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     _prefs?.setBool(key, value);
   }
 
-  Future<void> _setAppLock(bool value) async {
-    final l10n = AppLocalizations.of(context)!;
-    try {
-      if (value) {
-        final authenticated = await AppLockService.enable(
-          l10n.appLockAuthReason,
-        );
-        if (!authenticated) {
-          _snack(l10n.appLockAuthenticationFailed);
-          return;
-        }
-      } else {
-        await AppLockService.disable();
-      }
-      if (mounted) setState(() => _appLock = value);
-    } on Exception catch (error) {
-      _snack(l10n.appLockAuthenticationError(error.toString()));
-    }
-  }
 
   Future<void> _pickOption({
     required String title,
@@ -253,16 +230,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     _prefs?.setString(prefsKey, picked);
   }
 
-  void _openLink(String title) {
-    final l10n = AppLocalizations.of(context);
-    String message;
-    if (l10n != null) {
-      message = l10n.settingsOpenLinkPlaceholder(title);
-    } else {
-      message = '{title}: add your link';
-    }
-    _snack(message);
-  }
 
   // ── build ──
 
@@ -390,25 +357,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         label: AppLocalizations.of(context)!.settingsClearCache,
                         value: _formatBytes(_cacheBytes),
                         onTap: _clearCache,
-                      ),
-                    ],
-                  ),
-                  _Section(
-                    title: AppLocalizations.of(context)!.settingsSectionAbout,
-                    children: [
-                      _ValueRow(
-                        label: AppLocalizations.of(context)!
-                            .settingsPrivacyPolicy,
-                        onTap: () => _openLink(
-                          AppLocalizations.of(context)!.settingsPrivacyPolicy,
-                        ),
-                      ),
-                      _ValueRow(
-                        label: AppLocalizations.of(context)!
-                            .settingsTermsOfService,
-                        onTap: () => _openLink(
-                          AppLocalizations.of(context)!.settingsTermsOfService,
-                        ),
                       ),
                     ],
                   ),
