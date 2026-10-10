@@ -1,20 +1,28 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:camera/camera.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'crop_adjust_screen.dart';
 import 'enhance_save_screen.dart';
 import '../l10n/app_localizations.dart';
 import '../services/app_settings.dart';
+import '../services/card_quad_detector.dart';
 import '../services/document_storage.dart';
+import '../services/document_quad_detector.dart';
 import '../services/notification_service.dart';
 import '../widgets/app_snackbar.dart';
 
 enum ScanMode {
   idCard(1.586),
-  passport(0.72),
+  passport(1.42),
   document(0.707),
   qr(1.0),
   book(1.414);
@@ -22,6 +30,8 @@ enum ScanMode {
   const ScanMode(this.aspect);
 
   final double aspect;
+
+  bool get isCard => this == ScanMode.idCard;
 }
 
 class ScannerScreen extends StatefulWidget {
@@ -55,6 +65,17 @@ class _ScannerScreenState extends State<ScannerScreen>
   bool _showGrid = false;
   String _quality = AppSettings.defaultQuality;
   bool _busy = false;
+  final Map<ScanMode, String> _capturedFronts = {};
+  bool _processingCardFrame = false;
+  bool _cardStreamUnavailableShown = false;
+  bool _cardAnalysisErrorShown = false;
+  DateTime _lastCardFrameAt = DateTime.fromMillisecondsSinceEpoch(0);
+  int _cardAnalysisGeneration = 0;
+  int _stableCardFrames = 0;
+  List<Offset>? _previousCardCorners;
+  List<Offset>? _displayCardCorners;
+  Size? _cardFrameSize;
+  String? _cardGuidance;
 
   @override
   void initState() {
@@ -72,11 +93,13 @@ class _ScannerScreenState extends State<ScannerScreen>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    final controller = _camera;
-    if (controller == null || !controller.value.isInitialized) return;
-    if (state == AppLifecycleState.inactive) {
-      controller.dispose();
+    if (state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.paused ||
+        state == AppLifecycleState.detached) {
+      final controller = _camera;
       _camera = null;
+      _resetCardTracking();
+      unawaited(controller?.dispose());
     } else if (state == AppLifecycleState.resumed) {
       _initCamera();
     }
@@ -263,7 +286,10 @@ class _ScannerScreenState extends State<ScannerScreen>
       });
       setState(() {});
       await _initFuture;
-      if (mounted) setState(() {});
+      if (mounted) {
+        setState(() {});
+        if (_mode.isCard) await _startCardFrameStream(controller);
+      }
     } on CameraException catch (e) {
       if (!mounted) return;
       setState(() {
@@ -289,23 +315,253 @@ class _ScannerScreenState extends State<ScannerScreen>
     if (_busy || controller == null || !controller.value.isInitialized) return;
     setState(() => _busy = true);
     try {
+      if (controller.value.isStreamingImages) {
+        await controller.stopImageStream();
+      }
+      _resetCardTracking();
       HapticFeedback.mediumImpact();
       final file = await controller.takePicture();
       await _handleResult(file);
     } on CameraException catch (_) {
       _showSnack('Could not take the picture. Try again.');
+    } on Exception catch (error) {
+      _showSnack('Could not process the captured image: $error');
     } finally {
-      if (mounted) setState(() => _busy = false);
+      if (mounted) {
+        setState(() => _busy = false);
+        if (_mode.isCard && identical(_camera, controller)) {
+          await _startCardFrameStream(controller);
+        }
+      }
+    }
+  }
+
+  Future<void> _startCardFrameStream(CameraController controller) async {
+    if (!mounted ||
+        !_mode.isCard ||
+        !controller.value.isInitialized ||
+        controller.value.isStreamingImages) {
+      return;
+    }
+    try {
+      await controller.startImageStream(
+        (frame) => _processCardFrame(controller, frame),
+      );
+    } on CameraException catch (error) {
+      if (!_cardStreamUnavailableShown) {
+        _cardStreamUnavailableShown = true;
+        _showSnack('Live card guidance unavailable; use the shutter: $error');
+      }
+    }
+  }
+
+  void _processCardFrame(CameraController controller, CameraImage frame) {
+    final now = DateTime.now();
+    if (!mounted ||
+        _busy ||
+        !_mode.isCard ||
+        _processingCardFrame ||
+        now.difference(_lastCardFrameAt).inMilliseconds < 300 ||
+        frame.planes.isEmpty) {
+      return;
+    }
+    final plane = frame.planes.first;
+    final bytesPerPixel = plane.bytesPerPixel ?? 1;
+    if (bytesPerPixel < 1 || plane.bytesPerRow < frame.width * bytesPerPixel) {
+      return;
+    }
+    final lastByte =
+        (frame.height - 1) * plane.bytesPerRow +
+        (frame.width - 1) * bytesPerPixel;
+    if (frame.width < 1 || frame.height < 1 || lastByte >= plane.bytes.length) {
+      return;
+    }
+    _processingCardFrame = true;
+    _lastCardFrameAt = now;
+    _cardFrameSize = Size(frame.width.toDouble(), frame.height.toDouble());
+    final mode = _mode;
+    final generation = _cardAnalysisGeneration;
+    unawaited(
+      _assessCardFrame(
+        controller,
+        mode,
+        generation,
+        CardFrameInput(
+          luminanceBytes: Uint8List.fromList(plane.bytes),
+          width: frame.width,
+          height: frame.height,
+          bytesPerRow: plane.bytesPerRow,
+          bytesPerPixel: bytesPerPixel,
+        ),
+      ),
+    );
+  }
+
+  Future<void> _assessCardFrame(
+    CameraController controller,
+    ScanMode mode,
+    int generation,
+    CardFrameInput input,
+  ) async {
+    try {
+      final assessment = await CardQuadDetector.assessFrame(
+        input,
+        targetAspectRatio: mode.aspect,
+      );
+      if (!mounted ||
+          !identical(_camera, controller) ||
+          _mode != mode ||
+          generation != _cardAnalysisGeneration) {
+        return;
+      }
+      final guidance = _guidanceForCardFrame(assessment, mode);
+      final corners = assessment.corners;
+      final nearBoundary =
+          corners != null &&
+          corners.any(
+            (point) =>
+                point.dx <= 0.12 ||
+                point.dx >= 0.88 ||
+                point.dy <= 0.12 ||
+                point.dy >= 0.88,
+          );
+      final stable =
+          corners != null &&
+          !nearBoundary &&
+          assessment.confidence >= 0.52 &&
+          assessment.areaRatio >= 0.025 &&
+          assessment.areaRatio <= 0.62 &&
+          assessment.sharpness >= 18 &&
+          assessment.glareRatio <= 0.18 &&
+          assessment.brightness >= 38 &&
+          _cornersAreStable(corners, _previousCardCorners);
+      if (stable) {
+        _stableCardFrames++;
+      } else {
+        _stableCardFrames = 0;
+      }
+      _previousCardCorners = corners;
+      _displayCardCorners = _smoothCorners(corners, _displayCardCorners);
+      if (_cardGuidance != guidance) {
+        setState(() => _cardGuidance = guidance);
+      } else {
+        setState(() {});
+      }
+      if (_stableCardFrames >= 5 && !_busy) {
+        unawaited(_capture());
+      }
+    } on Exception catch (error) {
+      if (generation == _cardAnalysisGeneration) _resetCardTracking();
+      if (mounted && !_cardAnalysisErrorShown) {
+        _cardAnalysisErrorShown = true;
+        _showSnack('Could not analyze the card preview: $error');
+      }
+    } finally {
+      if (generation == _cardAnalysisGeneration) {
+        _processingCardFrame = false;
+      }
+    }
+  }
+
+  String _guidanceForCardFrame(CardFrameAssessment assessment, ScanMode mode) {
+    final l10n = AppLocalizations.of(context)!;
+    if (assessment.corners == null) return l10n.scanGuidanceKeepInFrame;
+    if (assessment.corners!.any(
+      (point) =>
+          point.dx <= 0.12 ||
+          point.dx >= 0.88 ||
+          point.dy <= 0.12 ||
+          point.dy >= 0.88,
+    )) {
+      return l10n.scanGuidanceMoveAwayFromEdge;
+    }
+    if (assessment.sharpness < 18) return l10n.scanGuidanceHoldSteady;
+    if (assessment.glareRatio > 0.18) return l10n.scanGuidanceReduceGlare;
+    if (assessment.brightness < 38) return l10n.scanGuidanceImproveLighting;
+    if (assessment.areaRatio < 0.025) return l10n.scanGuidanceMoveCloser;
+    if (assessment.areaRatio > 0.62) return l10n.scanGuidanceMoveBack;
+    return _capturedFronts.containsKey(mode)
+        ? l10n.scanModeBackSideHint
+        : l10n.scanGuidanceAlignCard;
+  }
+
+  bool _cornersAreStable(List<Offset> current, List<Offset>? previous) {
+    if (previous == null || previous.length != current.length) return false;
+    final meanMovement =
+        List.generate(
+          current.length,
+          (index) => (current[index] - previous[index]).distance,
+        ).reduce((a, b) => a + b) /
+        current.length;
+    return meanMovement < 0.012;
+  }
+
+  List<Offset>? _smoothCorners(List<Offset>? current, List<Offset>? previous) {
+    if (current == null) return null;
+    if (previous == null || !_cornersAreStable(current, previous)) {
+      return current;
+    }
+    return [
+      for (var i = 0; i < current.length; i++)
+        Offset.lerp(previous[i], current[i], 0.35)!,
+    ];
+  }
+
+  void _resetCardTracking() {
+    _cardAnalysisGeneration++;
+    _stableCardFrames = 0;
+    _previousCardCorners = null;
+    _displayCardCorners = null;
+    _cardFrameSize = null;
+    _processingCardFrame = false;
+  }
+
+  Future<void> _changeMode(ScanMode mode) async {
+    if (_mode == mode) return;
+    final controller = _camera;
+    _resetCardTracking();
+    try {
+      if (_mode.isCard != mode.isCard &&
+          controller?.value.isStreamingImages == true) {
+        await controller!.stopImageStream();
+      }
+      setState(() => _mode = mode);
+      if (mode.isCard && controller != null) {
+        await _startCardFrameStream(controller);
+      }
+    } on CameraException catch (error) {
+      _showSnack('Could not change scan mode (${error.code}).');
     }
   }
 
   Future<void> _pickFromGallery() async {
-    final file = await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (file != null) await _handleResult(file);
+    try {
+      final file = await ImagePicker().pickImage(source: ImageSource.gallery);
+      if (file != null) await _handleResult(file);
+    } on Exception catch (error) {
+      _showSnack('Could not select an image: $error');
+    }
   }
 
   Future<void> _handleResult(XFile file) async {
     if (!mounted) return;
+    String? preparedImagePath;
+    if (_isTwoSidedMode(_mode)) {
+      final croppedPath = await _cropImage(file.path);
+      if (!mounted || croppedPath == null) return;
+
+      final frontPath = _capturedFronts[_mode];
+      if (frontPath == null) {
+        setState(() => _capturedFronts[_mode] = croppedPath);
+        return;
+      }
+
+      final combinedFile = await _combineIdSides(frontPath, croppedPath);
+      setState(() => _capturedFronts.remove(_mode));
+      file = XFile(combinedFile.path);
+      preparedImagePath = combinedFile.path;
+    }
+
     final callback = widget.onCaptured;
     if (callback != null) {
       try {
@@ -320,19 +576,19 @@ class _ScannerScreenState extends State<ScannerScreen>
       return;
     }
 
-    final result = await Navigator.of(context).push<CropResult>(
-      MaterialPageRoute<CropResult>(
-        builder: (_) => CropAdjustScreen(imagePath: file.path),
-      ),
-    );
-    if (!mounted || result?.path == null) return;
+    final imagePath = preparedImagePath ?? await _cropImage(file.path);
+    if (!mounted || imagePath == null) return;
 
     try {
       await Navigator.of(context).push<bool>(
         MaterialPageRoute<bool>(
           builder: (_) => EnhanceSaveScreen(
-            imagePath: result!.path!,
+            imagePath: imagePath,
             initialFileName: _getScanModeLabel(_mode),
+            targetAspectRatio: _mode.aspect,
+            detectionMode: _mode.isCard
+                ? DocumentDetectionMode.card
+                : DocumentDetectionMode.paper,
             onSave: (imageBytes, fileName, format) async {
               final String savedName;
               if (format.toUpperCase() == 'PDF') {
@@ -368,6 +624,41 @@ class _ScannerScreenState extends State<ScannerScreen>
     }
   }
 
+  bool _isTwoSidedMode(ScanMode mode) => switch (mode) {
+    ScanMode.idCard => true,
+    _ => false,
+  };
+
+  Future<String?> _cropImage(String imagePath) async {
+    final result = await Navigator.of(context).push<CropResult>(
+      MaterialPageRoute<CropResult>(
+        builder: (_) => CropAdjustScreen(
+          imagePath: imagePath,
+          targetAspectRatio: _mode.aspect,
+          detectionMode: _mode.isCard
+              ? DocumentDetectionMode.card
+              : DocumentDetectionMode.paper,
+        ),
+      ),
+    );
+    return result?.path;
+  }
+
+  Future<File> _combineIdSides(String frontPath, String backPath) async {
+    final frontBytes = await File(frontPath).readAsBytes();
+    final backBytes = await File(backPath).readAsBytes();
+    final combinedBytes = await compute(_combineImageBytes, <Uint8List>[
+      frontBytes,
+      backBytes,
+    ]);
+    final directory = await getTemporaryDirectory();
+    final file = File(
+      '${directory.path}/id_scan_${DateTime.now().microsecondsSinceEpoch}.jpg',
+    );
+    await file.writeAsBytes(combinedBytes, flush: true);
+    return file;
+  }
+
   void _showSnack(String message) {
     if (!mounted) return;
     showAppSnackBar(context, message);
@@ -385,7 +676,7 @@ class _ScannerScreenState extends State<ScannerScreen>
       // Fallback to English if localizations is not available
       switch (mode) {
         case ScanMode.idCard:
-          return 'ID Card';
+          return 'ID';
         case ScanMode.passport:
           return 'Passport';
         case ScanMode.document:
@@ -417,9 +708,11 @@ class _ScannerScreenState extends State<ScannerScreen>
       // Fallback to English if localizations is not available
       switch (mode) {
         case ScanMode.idCard:
-          return 'Place your ID card inside the frame';
+          return _capturedFronts.containsKey(mode)
+              ? 'Front captured. Turn it over and capture the back.'
+              : 'Capture the front and back of your national ID; both sides are saved together.';
         case ScanMode.passport:
-          return 'Align the photo page with the frame';
+          return 'Frame the identity-information page with all edges visible';
         case ScanMode.document:
           return 'Align the document with the frame';
         case ScanMode.qr:
@@ -431,7 +724,9 @@ class _ScannerScreenState extends State<ScannerScreen>
     // Localizations is not null here
     switch (mode) {
       case ScanMode.idCard:
-        return localizations.scanModeIdCardHint;
+        return _capturedFronts.containsKey(mode)
+            ? localizations.scanModeBackSideHint
+            : localizations.scanModeIdCardHint;
       case ScanMode.passport:
         return localizations.scanModePassportHint;
       case ScanMode.document:
@@ -465,6 +760,18 @@ class _ScannerScreenState extends State<ScannerScreen>
           fit: StackFit.expand,
           children: [
             _buildPreview(context),
+            if (_mode.isCard && _displayCardCorners != null)
+              Positioned.fill(
+                child: IgnorePointer(
+                  child: CustomPaint(
+                    painter: _CardQuadPainter(
+                      corners: _displayCardCorners!,
+                      frameSize: _cardFrameSize,
+                      color: _accent,
+                    ),
+                  ),
+                ),
+              ),
             // Dim + frame + corner brackets
             Positioned.fill(
               child: SafeArea(
@@ -492,14 +799,18 @@ class _ScannerScreenState extends State<ScannerScreen>
                         ),
                       ),
                     ),
-                    _HintPill(text: _getScanModeHint(_mode)),
+                    _HintPill(
+                      text: _mode.isCard
+                          ? _cardGuidance ??
+                                AppLocalizations.of(context)!
+                                    .scanGuidanceAlignCard
+                          : _getScanModeHint(_mode),
+                    ),
                     const SizedBox(height: 18),
                     _ModeSelector(
                       selected: _mode,
                       accent: _accent,
-                      onChanged: (m) {
-                        setState(() => _mode = m);
-                      },
+                      onChanged: _changeMode,
                     ),
                     const SizedBox(height: 18),
                     _Controls(
@@ -585,6 +896,60 @@ class _ScannerScreenState extends State<ScannerScreen>
       ),
     );
   }
+}
+
+class _CardQuadPainter extends CustomPainter {
+  const _CardQuadPainter({
+    required this.corners,
+    required this.frameSize,
+    required this.color,
+  });
+
+  final List<Offset> corners;
+  final Size? frameSize;
+  final Color color;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final frame = frameSize;
+    if (frame == null || frame.width <= 0 || frame.height <= 0) return;
+    final imageAspect = frame.height / frame.width;
+    final viewportAspect = size.width / size.height;
+    final visibleWidth = imageAspect > viewportAspect
+        ? viewportAspect / imageAspect
+        : 1.0;
+    final visibleHeight = imageAspect > viewportAspect
+        ? 1.0
+        : imageAspect / viewportAspect;
+    final offsetX = (1 - visibleWidth) / 2;
+    final offsetY = (1 - visibleHeight) / 2;
+    final points = [
+      for (final corner in corners)
+        Offset(
+          ((1 - corner.dy) - offsetX) / visibleWidth * size.width,
+          (corner.dx - offsetY) / visibleHeight * size.height,
+        ),
+    ];
+    final path = Path()..moveTo(points.first.dx, points.first.dy);
+    for (final point in points.skip(1)) {
+      path.lineTo(point.dx, point.dy);
+    }
+    path.close();
+    canvas.drawPath(
+      path,
+      Paint()
+        ..color = color
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 3
+        ..strokeJoin = StrokeJoin.round,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant _CardQuadPainter oldDelegate) =>
+      oldDelegate.corners != corners ||
+      oldDelegate.frameSize != frameSize ||
+      oldDelegate.color != color;
 }
 
 // ───────────────────────────── Top bar ─────────────────────────────
@@ -777,7 +1142,7 @@ class _ModeSelector extends StatelessWidget {
       // Fallback to English if localizations is not available
       switch (mode) {
         case ScanMode.idCard:
-          return 'ID Card';
+          return 'ID';
         case ScanMode.passport:
           return 'Passport';
         case ScanMode.document:
@@ -810,44 +1175,45 @@ class _ModeSelector extends StatelessWidget {
         ? const Color(0xFFB7C4CA)
         : const Color(0xFF9AA8B0);
 
-    return Padding(
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
       padding: const EdgeInsets.symmetric(horizontal: 8),
       child: Row(
         children: [
           for (final mode in ScanMode.values)
-            Expanded(
-              child: InkWell(
-                onTap: () => onChanged(mode),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 6),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        _getModeLabel(mode, context),
-                        maxLines: 1,
-                        style: TextStyle(
-                          fontSize: 12.5,
-                          fontWeight: mode == selected
-                              ? FontWeight.w700
-                              : FontWeight.w400,
-                          color: mode == selected
-                              ? accent
-                              : unselectedColor, // ✅ Fixed
-                        ),
+            InkWell(
+              onTap: () => onChanged(mode),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 6,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      _getModeLabel(mode, context),
+                      maxLines: 1,
+                      softWrap: false,
+                      style: TextStyle(
+                        fontSize: 12.5,
+                        fontWeight: mode == selected
+                            ? FontWeight.w700
+                            : FontWeight.w400,
+                        color: mode == selected ? accent : unselectedColor,
                       ),
-                      const SizedBox(height: 6),
-                      AnimatedContainer(
-                        duration: const Duration(milliseconds: 200),
-                        width: mode == selected ? 26 : 0,
-                        height: 3,
-                        decoration: BoxDecoration(
-                          color: accent,
-                          borderRadius: BorderRadius.circular(2),
-                        ),
+                    ),
+                    const SizedBox(height: 6),
+                    AnimatedContainer(
+                      duration: const Duration(milliseconds: 200),
+                      width: mode == selected ? 26 : 0,
+                      height: 3,
+                      decoration: BoxDecoration(
+                        color: accent,
+                        borderRadius: BorderRadius.circular(2),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -973,4 +1339,36 @@ class _ShutterState extends State<_Shutter> {
       ),
     );
   }
+}
+
+Uint8List _combineImageBytes(List<Uint8List> sides) {
+  final front = img.decodeImage(sides[0]);
+  final back = img.decodeImage(sides[1]);
+  if (front == null || back == null) {
+    throw const FormatException('Could not read both captured document sides.');
+  }
+
+  final width = front.width > back.width ? front.width : back.width;
+  final frontImage = front.width == width
+      ? front
+      : img.copyResize(
+          front,
+          width: width,
+          interpolation: img.Interpolation.average,
+        );
+  final backImage = back.width == width
+      ? back
+      : img.copyResize(
+          back,
+          width: width,
+          interpolation: img.Interpolation.average,
+        );
+  final combined = img.Image(
+    width: width,
+    height: frontImage.height + backImage.height,
+    numChannels: 3,
+  );
+  img.compositeImage(combined, frontImage, dstX: 0, dstY: 0);
+  img.compositeImage(combined, backImage, dstX: 0, dstY: frontImage.height);
+  return Uint8List.fromList(img.encodeJpg(combined, quality: 95));
 }

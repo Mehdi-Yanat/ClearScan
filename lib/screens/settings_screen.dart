@@ -162,7 +162,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     _prefs?.setBool(key, value);
   }
 
-
   Future<void> _pickOption({
     required String title,
     required List<String> options,
@@ -229,7 +228,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     setState(() => onPicked(picked));
     _prefs?.setString(prefsKey, picked);
   }
-
 
   // ── build ──
 

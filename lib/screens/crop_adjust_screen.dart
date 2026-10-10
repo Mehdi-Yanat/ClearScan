@@ -35,11 +35,15 @@ class CropAdjustScreen extends StatefulWidget {
   const CropAdjustScreen({
     super.key,
     required this.imagePath,
+    this.targetAspectRatio,
+    this.detectionMode = DocumentDetectionMode.paper,
     this.pageNumber = 1,
     this.totalPages = 1,
   });
 
   final String imagePath;
+  final double? targetAspectRatio;
+  final DocumentDetectionMode detectionMode;
   final int pageNumber;
   final int totalPages;
 
@@ -120,7 +124,11 @@ class _CropAdjustScreenState extends State<CropAdjustScreen> {
     if (bytes == null || _working) return;
     setState(() => _working = true);
     try {
-      final detected = await DocumentQuadDetector.detect(bytes);
+      final detected = await DocumentQuadDetector.detect(
+        bytes,
+        targetAspectRatio: widget.targetAspectRatio,
+        mode: widget.detectionMode,
+      );
       if (!mounted) return;
       if (detected == null) {
         if (showFailure) _showAutoCropMessage();
@@ -180,6 +188,35 @@ class _CropAdjustScreenState extends State<CropAdjustScreen> {
 
   /// Returns TL, TR, BR, BL regardless of how the points were dragged/rotated.
   List<Offset> _orderedQuad() {
+    if (widget.detectionMode == DocumentDetectionMode.card) {
+      final center =
+          _quad.reduce((sum, point) => sum + point) / _quad.length.toDouble();
+      final ordered = [..._quad]
+        ..sort(
+          (a, b) => math
+              .atan2(a.dy - center.dy, a.dx - center.dx)
+              .compareTo(math.atan2(b.dy - center.dy, b.dx - center.dx)),
+        );
+      final edgeLengths = [
+        for (var i = 0; i < 4; i++)
+          Offset(
+            (ordered[(i + 1) % 4].dx - ordered[i].dx) * _imageSize.width,
+            (ordered[(i + 1) % 4].dy - ordered[i].dy) * _imageSize.height,
+          ).distance,
+      ];
+      final longEdgeStarts = [
+        for (var i = 0; i < 4; i++)
+          if (edgeLengths[i] >= edgeLengths[(i + 2) % 4]) i,
+      ];
+      final start = longEdgeStarts.reduce(
+        (best, current) =>
+            ordered[current].dx + ordered[current].dy <
+                ordered[best].dx + ordered[best].dy
+            ? current
+            : best,
+      );
+      return [for (var i = 0; i < 4; i++) ordered[(start + i) % 4]];
+    }
     final pts = [..._quad]..sort((a, b) => a.dy.compareTo(b.dy));
     final top = [pts[0], pts[1]]..sort((a, b) => a.dx.compareTo(b.dx));
     final bottom = [pts[2], pts[3]]..sort((a, b) => a.dx.compareTo(b.dx));

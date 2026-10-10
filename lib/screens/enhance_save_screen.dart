@@ -9,6 +9,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 import 'crop_adjust_screen.dart';
+import '../services/document_quad_detector.dart';
 import '../services/document_storage.dart';
 import '../widgets/app_snackbar.dart';
 import '../widgets/share_sheet.dart';
@@ -18,12 +19,16 @@ class EnhanceSaveScreen extends StatefulWidget {
     super.key,
     required this.imagePath,
     this.initialFileName = 'Scanned_Document',
+    this.targetAspectRatio,
+    this.detectionMode = DocumentDetectionMode.paper,
     this.onSave,
     this.onAddPage,
   });
 
   final String imagePath;
   final String initialFileName;
+  final double? targetAspectRatio;
+  final DocumentDetectionMode detectionMode;
   final Future<void> Function(
     Uint8List imageBytes,
     String fileName,
@@ -133,7 +138,11 @@ class _EnhanceSaveScreenState extends State<EnhanceSaveScreen> {
   Future<void> _openCropScreen() async {
     final result = await Navigator.of(context).push<CropResult>(
       MaterialPageRoute<CropResult>(
-        builder: (_) => CropAdjustScreen(imagePath: _imagePath),
+        builder: (_) => CropAdjustScreen(
+          imagePath: _imagePath,
+          targetAspectRatio: widget.targetAspectRatio,
+          detectionMode: widget.detectionMode,
+        ),
       ),
     );
     if (!mounted || result?.path == null) return;
