@@ -21,13 +21,14 @@ class MainActivity : FlutterFragmentActivity() {
 			when (call.method) {
 				"saveToDownloads" -> {
 					val filename = call.argument<String>("filename") ?: "scanned.pdf"
+					val mimeType = call.argument<String>("mimeType") ?: "application/pdf"
 					val bytes = call.argument<ByteArray>("bytes")
 					if (bytes == null) {
 						result.error("invalid_args", "Missing bytes", null)
 						return@setMethodCallHandler
 					}
 					try {
-						val uri = saveToDownloads(filename, bytes)
+						val uri = saveToDownloads(filename, mimeType, bytes)
 						result.success(uri?.toString())
 					} catch (e: Exception) {
 						result.error("save_failed", e.message, null)
@@ -214,11 +215,11 @@ class MainActivity : FlutterFragmentActivity() {
 		return documents
 	}
 
-	private fun saveToDownloads(filename: String, bytes: ByteArray): Uri? {
+	private fun saveToDownloads(filename: String, mimeType: String, bytes: ByteArray): Uri? {
 		val resolver = applicationContext.contentResolver
 		val contentValues = ContentValues().apply {
 			put(MediaStore.MediaColumns.DISPLAY_NAME, filename)
-			put(MediaStore.MediaColumns.MIME_TYPE, "application/pdf")
+			put(MediaStore.MediaColumns.MIME_TYPE, mimeType)
 			put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS)
 		}
 
