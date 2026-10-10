@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../widgets/bottom_action_bar.dart';
+import '../widgets/app_snackbar.dart';
 
 class DocumentViewerScreen extends StatefulWidget {
   const DocumentViewerScreen({
@@ -64,7 +65,6 @@ class _DocumentViewerScreenState extends State<DocumentViewerScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final bgColor = Theme.of(context).scaffoldBackgroundColor;
     final textColor = Theme.of(context).colorScheme.onSurface;
-    final mutedColor = Theme.of(context).colorScheme.onSurfaceVariant;
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(
@@ -506,8 +506,6 @@ class _DocumentViewerScreenState extends State<DocumentViewerScreen> {
   }
 
   void _showSnackBar(String message) {
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text(message)));
+    showAppSnackBar(context, message);
   }
 }
