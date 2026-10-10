@@ -298,7 +298,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get onboardingTileReceipts => 'الإيصالات';
 
   @override
-  String get scanModeIdCardLabel => 'بطاقة الهوية';
+  String get scanModeIdCardLabel => 'بطاقة الهوية الوطنية';
 
   @override
   String get scanModePassportLabel => 'جواز السفر';
@@ -313,19 +313,46 @@ class AppLocalizationsAr extends AppLocalizations {
   String get scanModeBookLabel => 'كتاب';
 
   @override
-  String get scanModeIdCardHint => 'ضع بطاقة الهوية داخل الإطار';
+  String get scanModeIdCardHint => 'التقط الوجه الأمامي للهوية.';
 
   @override
-  String get scanModePassportHint => 'محاذاة صفحة الصورة مع الإطار';
+  String get scanModeBackSideHint => 'تم التقاط الأمام. التقط الخلف.';
 
   @override
-  String get scanModeDocumentHint => 'محاذاة المستند مع الإطار';
+  String get scanModePassportHint => 'ضع صفحة بيانات الجواز في الإطار.';
 
   @override
-  String get scanModeQrHint => 'وجه كاميرتك نحو رمز الاستجابة السريعة';
+  String get scanModeDocumentHint => 'ضع المستند داخل الإطار.';
 
   @override
-  String get scanModeBookHint => 'افتح الكتاب واضبط صفحتين داخل الإطار';
+  String get scanModeQrHint => 'ضع رمز QR في الإطار.';
+
+  @override
+  String get scanModeBookHint => 'ضع الصفحتين داخل الإطار.';
+
+  @override
+  String get scanGuidanceHoldSteady => 'اثبت الكاميرا.';
+
+  @override
+  String get scanGuidanceReduceGlare => 'خفف الانعكاس.';
+
+  @override
+  String get scanGuidanceImproveLighting => 'حسّن الإضاءة.';
+
+  @override
+  String get scanGuidanceKeepInFrame => 'أبقِ البطاقة داخل الإطار.';
+
+  @override
+  String get scanGuidanceMoveCloser => 'اقترب.';
+
+  @override
+  String get scanGuidanceMoveBack => 'ابتعد.';
+
+  @override
+  String get scanGuidanceAlignCard => 'حاذِ البطاقة داخل الإطار.';
+
+  @override
+  String get scanGuidanceMoveAwayFromEdge => 'أبعد البطاقة عن الحافة.';
 
   @override
   String get settingsSectionScanning => 'المسح';

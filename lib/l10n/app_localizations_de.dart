@@ -300,7 +300,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get onboardingTileReceipts => 'Quittungen';
 
   @override
-  String get scanModeIdCardLabel => 'Ausweis';
+  String get scanModeIdCardLabel => 'Personalausweis';
 
   @override
   String get scanModePassportLabel => 'Reisepass';
@@ -315,20 +315,47 @@ class AppLocalizationsDe extends AppLocalizations {
   String get scanModeBookLabel => 'Buch';
 
   @override
-  String get scanModeIdCardHint => 'Lege deinen Ausweis in den Rahmen';
+  String get scanModeIdCardHint => 'Vorderseite des Ausweises aufnehmen.';
 
   @override
-  String get scanModePassportHint => 'Richte die Fotoseite zum Rahmen aus';
+  String get scanModeBackSideHint =>
+      'Vorderseite erfasst. Rückseite aufnehmen.';
 
   @override
-  String get scanModeDocumentHint => 'Richte das Dokument zum Rahmen aus';
+  String get scanModePassportHint => 'Datenseite des Reisepasses erfassen.';
 
   @override
-  String get scanModeQrHint => 'Richte deine Kamera auf einen QR-Code';
+  String get scanModeDocumentHint => 'Dokument in den Rahmen legen.';
 
   @override
-  String get scanModeBookHint =>
-      'Öffne das Buch und passe beide Seiten in den Rahmen';
+  String get scanModeQrHint => 'QR-Code erfassen.';
+
+  @override
+  String get scanModeBookHint => 'Beide Seiten in den Rahmen legen.';
+
+  @override
+  String get scanGuidanceHoldSteady => 'Ruhig halten.';
+
+  @override
+  String get scanGuidanceReduceGlare => 'Spiegelung vermeiden.';
+
+  @override
+  String get scanGuidanceImproveLighting => 'Beleuchtung verbessern.';
+
+  @override
+  String get scanGuidanceKeepInFrame => 'Karte im Rahmen halten.';
+
+  @override
+  String get scanGuidanceMoveCloser => 'Näher heran.';
+
+  @override
+  String get scanGuidanceMoveBack => 'Weiter weg.';
+
+  @override
+  String get scanGuidanceAlignCard => 'Karte im Rahmen ausrichten.';
+
+  @override
+  String get scanGuidanceMoveAwayFromEdge => 'Karte vom Rand weg.';
 
   @override
   String get settingsSectionScanning => 'SCANNEN';

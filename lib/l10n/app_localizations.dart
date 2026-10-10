@@ -649,7 +649,7 @@ abstract class AppLocalizations {
   /// No description provided for @scanModeIdCardLabel.
   ///
   /// In en, this message translates to:
-  /// **'ID Card'**
+  /// **'ID'**
   String get scanModeIdCardLabel;
 
   /// No description provided for @scanModePassportLabel.
@@ -679,32 +679,86 @@ abstract class AppLocalizations {
   /// No description provided for @scanModeIdCardHint.
   ///
   /// In en, this message translates to:
-  /// **'Place your ID card inside the frame'**
+  /// **'Capture ID front.'**
   String get scanModeIdCardHint;
+
+  /// No description provided for @scanModeBackSideHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Front captured. Capture back.'**
+  String get scanModeBackSideHint;
 
   /// No description provided for @scanModePassportHint.
   ///
   /// In en, this message translates to:
-  /// **'Align the photo page with the frame'**
+  /// **'Frame the passport data page.'**
   String get scanModePassportHint;
 
   /// No description provided for @scanModeDocumentHint.
   ///
   /// In en, this message translates to:
-  /// **'Align the document with the frame'**
+  /// **'Fit document in frame.'**
   String get scanModeDocumentHint;
 
   /// No description provided for @scanModeQrHint.
   ///
   /// In en, this message translates to:
-  /// **'Point your camera at a QR code'**
+  /// **'Frame the QR code.'**
   String get scanModeQrHint;
 
   /// No description provided for @scanModeBookHint.
   ///
   /// In en, this message translates to:
-  /// **'Open the book and fit both pages in the frame'**
+  /// **'Fit both pages in frame.'**
   String get scanModeBookHint;
+
+  /// No description provided for @scanGuidanceHoldSteady.
+  ///
+  /// In en, this message translates to:
+  /// **'Hold steady.'**
+  String get scanGuidanceHoldSteady;
+
+  /// No description provided for @scanGuidanceReduceGlare.
+  ///
+  /// In en, this message translates to:
+  /// **'Reduce glare.'**
+  String get scanGuidanceReduceGlare;
+
+  /// No description provided for @scanGuidanceImproveLighting.
+  ///
+  /// In en, this message translates to:
+  /// **'Improve the lighting.'**
+  String get scanGuidanceImproveLighting;
+
+  /// No description provided for @scanGuidanceKeepInFrame.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep card in frame.'**
+  String get scanGuidanceKeepInFrame;
+
+  /// No description provided for @scanGuidanceMoveCloser.
+  ///
+  /// In en, this message translates to:
+  /// **'Move closer.'**
+  String get scanGuidanceMoveCloser;
+
+  /// No description provided for @scanGuidanceMoveBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Move back.'**
+  String get scanGuidanceMoveBack;
+
+  /// No description provided for @scanGuidanceAlignCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Align card in frame.'**
+  String get scanGuidanceAlignCard;
+
+  /// No description provided for @scanGuidanceMoveAwayFromEdge.
+  ///
+  /// In en, this message translates to:
+  /// **'Move card from edge.'**
+  String get scanGuidanceMoveAwayFromEdge;
 
   /// No description provided for @settingsSectionScanning.
   ///

@@ -298,7 +298,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onboardingTileReceipts => 'Receipts';
 
   @override
-  String get scanModeIdCardLabel => 'ID Card';
+  String get scanModeIdCardLabel => 'ID';
 
   @override
   String get scanModePassportLabel => 'Passport';
@@ -313,20 +313,46 @@ class AppLocalizationsEn extends AppLocalizations {
   String get scanModeBookLabel => 'Book';
 
   @override
-  String get scanModeIdCardHint => 'Place your ID card inside the frame';
+  String get scanModeIdCardHint => 'Capture ID front.';
 
   @override
-  String get scanModePassportHint => 'Align the photo page with the frame';
+  String get scanModeBackSideHint => 'Front captured. Capture back.';
 
   @override
-  String get scanModeDocumentHint => 'Align the document with the frame';
+  String get scanModePassportHint => 'Frame the passport data page.';
 
   @override
-  String get scanModeQrHint => 'Point your camera at a QR code';
+  String get scanModeDocumentHint => 'Fit document in frame.';
 
   @override
-  String get scanModeBookHint =>
-      'Open the book and fit both pages in the frame';
+  String get scanModeQrHint => 'Frame the QR code.';
+
+  @override
+  String get scanModeBookHint => 'Fit both pages in frame.';
+
+  @override
+  String get scanGuidanceHoldSteady => 'Hold steady.';
+
+  @override
+  String get scanGuidanceReduceGlare => 'Reduce glare.';
+
+  @override
+  String get scanGuidanceImproveLighting => 'Improve the lighting.';
+
+  @override
+  String get scanGuidanceKeepInFrame => 'Keep card in frame.';
+
+  @override
+  String get scanGuidanceMoveCloser => 'Move closer.';
+
+  @override
+  String get scanGuidanceMoveBack => 'Move back.';
+
+  @override
+  String get scanGuidanceAlignCard => 'Align card in frame.';
+
+  @override
+  String get scanGuidanceMoveAwayFromEdge => 'Move card from edge.';
 
   @override
   String get settingsSectionScanning => 'SCANNING';
