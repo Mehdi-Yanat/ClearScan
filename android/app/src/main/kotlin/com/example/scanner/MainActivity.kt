@@ -40,6 +40,99 @@ class MainActivity : FlutterFragmentActivity() {
 						result.error("list_failed", e.message, null)
 					}
 				}
+				"renameDocument" -> {
+					val uriString = call.argument<String>("uri")
+					val name = call.argument<String>("name")
+					if (uriString == null || name == null) {
+						result.error("invalid_args", "Missing uri or name", null)
+						return@setMethodCallHandler
+					}
+					try {
+						val uri = Uri.parse(uriString)
+						val currentId = uri.lastPathSegment
+							?: throw IllegalArgumentException("Invalid document uri")
+						val collection = MediaStore.Downloads.getContentUri(
+							MediaStore.VOLUME_EXTERNAL_PRIMARY,
+						)
+						val duplicate = contentResolver.query(
+							collection,
+							arrayOf(MediaStore.MediaColumns._ID),
+							"${MediaStore.MediaColumns.DISPLAY_NAME} = ? AND ${MediaStore.MediaColumns._ID} != ?",
+							arrayOf(name, currentId),
+							null,
+						)?.use { cursor -> cursor.moveToFirst() } ?: false
+						if (duplicate) {
+							throw IllegalStateException("A document with that name already exists")
+						}
+						val values = ContentValues().apply {
+							put(MediaStore.MediaColumns.DISPLAY_NAME, name)
+						}
+						val updated = contentResolver.update(
+							uri,
+							values,
+							null,
+							null,
+						)
+						if (updated == 0) {
+							throw IllegalStateException("Document was not renamed")
+						}
+						result.success(true)
+					} catch (e: Exception) {
+						result.error("rename_failed", e.message, null)
+					}
+				}
+				"deleteDocument" -> {
+					val uriString = call.argument<String>("uri")
+					if (uriString == null) {
+						result.error("invalid_args", "Missing uri", null)
+						return@setMethodCallHandler
+					}
+					try {
+						val deleted = contentResolver.delete(
+							Uri.parse(uriString),
+							null,
+							null,
+						)
+						if (deleted == 0) {
+							throw IllegalStateException("Document was not deleted")
+						}
+						result.success(true)
+					} catch (e: Exception) {
+						result.error("delete_failed", e.message, null)
+					}
+				}
+				"shareDocument" -> {
+					val uriString = call.argument<String>("uri")
+					val name = call.argument<String>("name")
+					if (uriString == null || name == null) {
+						result.error("invalid_args", "Missing uri or name", null)
+						return@setMethodCallHandler
+					}
+					try {
+						val uri = Uri.parse(uriString)
+						val mimeType = when (name.substringAfterLast('.', "").lowercase()) {
+							"pdf" -> "application/pdf"
+							"png" -> "image/png"
+							"jpg", "jpeg" -> "image/jpeg"
+							else -> "*/*"
+						}
+						val sendIntent = Intent(Intent.ACTION_SEND).apply {
+							type = mimeType
+							putExtra(Intent.EXTRA_STREAM, uri)
+							putExtra(Intent.EXTRA_SUBJECT, name)
+							addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+							clipData = android.content.ClipData.newUri(
+								contentResolver,
+								name,
+								uri,
+							)
+						}
+						startActivity(Intent.createChooser(sendIntent, null))
+						result.success(true)
+					} catch (e: Exception) {
+						result.error("share_failed", e.message, null)
+					}
+				}
 				"openUri" -> {
 					val uriStr = call.argument<String>("uri")
 					if (uriStr == null) {
@@ -56,6 +149,21 @@ class MainActivity : FlutterFragmentActivity() {
 						result.success(true)
 					} catch (e: Exception) {
 						result.error("open_failed", e.message, null)
+					}
+				}
+				"readDocumentBytes" -> {
+					val uriStr = call.argument<String>("uri")
+					if (uriStr == null) {
+						result.error("invalid_args", "Missing uri", null)
+						return@setMethodCallHandler
+					}
+					try {
+						val bytes = contentResolver.openInputStream(Uri.parse(uriStr))
+							?.use { input -> input.readBytes() }
+							?: throw IllegalStateException("Could not read document")
+						result.success(bytes)
+					} catch (e: Exception) {
+						result.error("read_failed", e.message, null)
 					}
 				}
 				else -> result.notImplemented()
