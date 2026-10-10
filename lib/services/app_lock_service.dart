@@ -57,8 +57,7 @@ class AppLockGate extends StatefulWidget {
   State<AppLockGate> createState() => _AppLockGateState();
 }
 
-class _AppLockGateState extends State<AppLockGate>
-    with WidgetsBindingObserver {
+class _AppLockGateState extends State<AppLockGate> with WidgetsBindingObserver {
   late bool _locked;
   bool _authenticating = false;
   bool _wasBackgrounded = false;
@@ -134,9 +133,8 @@ class _AppLockGateState extends State<AppLockGate>
     } on Exception catch (error) {
       if (!mounted) return;
       setState(() {
-        _error = AppLocalizations.of(context)!.appLockAuthenticationError(
-          error.toString(),
-        );
+        _error = AppLocalizations.of(context)!
+            .appLockAuthenticationError(error.toString());
       });
     } finally {
       if (mounted) setState(() => _authenticating = false);
@@ -162,8 +160,11 @@ class _AppLockGateState extends State<AppLockGate>
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Icons.lock_outline_rounded,
-                          size: 56, color: colors.primary),
+                      Icon(
+                        Icons.lock_outline_rounded,
+                        size: 56,
+                        color: colors.primary,
+                      ),
                       const SizedBox(height: 20),
                       Text(
                         l10n.appLockUnlockTitle,

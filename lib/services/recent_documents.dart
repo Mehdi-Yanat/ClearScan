@@ -30,12 +30,14 @@ class RecentDocument {
 const _androidFilesChannel = MethodChannel('com.example.scanner/files');
 const _supportedExtensions = {'pdf', 'jpg', 'jpeg', 'png'};
 
-Future<List<RecentDocument>> loadRecentDocuments({int limit = 4}) async {
+Future<List<RecentDocument>> loadRecentDocuments({int? limit = 4}) async {
   final documents = Platform.isAndroid
       ? await _loadAndroidDocuments()
       : await _loadLocalDocuments();
   documents.sort((a, b) => b.modifiedAt.compareTo(a.modifiedAt));
-  return documents.take(limit).toList(growable: false);
+  return limit == null
+      ? documents
+      : documents.take(limit).toList(growable: false);
 }
 
 Future<List<RecentDocument>> _loadAndroidDocuments() async {
@@ -56,7 +58,10 @@ Future<List<RecentDocument>> _loadAndroidDocuments() async {
     }
     publicDownloads.add(
       RecentDocument(
-        name: entry['name']! as String,
+        name: (entry['name']! as String).replaceFirst(
+          RegExp(r'^scanned_document_'),
+          '',
+        ),
         path: entry['path']! as String,
         sizeBytes: entry['size']! as int,
         modifiedAt: DateTime.fromMillisecondsSinceEpoch(
@@ -101,4 +106,56 @@ Future<List<RecentDocument>> _loadLocalDocuments() async {
   }
 
   return documents;
+}
+
+Future<void> renameRecentDocument(
+  RecentDocument document,
+  String newName,
+) async {
+  final trimmedName = newName.trim();
+  if (trimmedName.isEmpty ||
+      RegExp(r'[/\\<>:"|?*\x00-\x1F]').hasMatch(trimmedName) ||
+      trimmedName == '.' ||
+      trimmedName == '..') {
+    throw const FormatException('Enter a valid document name.');
+  }
+
+  if (document.path.startsWith('content://')) {
+    final actualName = 'scanned_document_$trimmedName';
+    final renamed = await _androidFilesChannel.invokeMethod<bool>(
+      'renameDocument',
+      {'uri': document.path, 'name': actualName},
+    );
+    if (renamed != true) throw StateError('Document was not renamed.');
+    return;
+  }
+
+  final source = File(document.path);
+  final destination =
+      '${source.parent.path}${Platform.pathSeparator}$trimmedName';
+  if (await File(destination).exists()) {
+    throw FileSystemException('A document with that name already exists.');
+  }
+  await source.rename(destination);
+}
+
+Future<void> deleteRecentDocument(RecentDocument document) async {
+  if (document.path.startsWith('content://')) {
+    final deleted = await _androidFilesChannel.invokeMethod<bool>(
+      'deleteDocument',
+      {'uri': document.path},
+    );
+    if (deleted != true) throw StateError('Document was not deleted.');
+    return;
+  }
+  await File(document.path).delete();
+}
+
+Future<void> shareRecentDocument(RecentDocument document) async {
+  if (!Platform.isAndroid || !document.path.startsWith('content://')) return;
+  final shared = await _androidFilesChannel.invokeMethod<bool>(
+    'shareDocument',
+    {'uri': document.path, 'name': document.name},
+  );
+  if (shared != true) throw StateError('Document was not shared.');
 }
