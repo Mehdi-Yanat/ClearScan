@@ -11,6 +11,7 @@ import '../services/app_lock_service.dart';
 import '../services/app_settings.dart';
 import '../theme/app_theme.dart'; // AppColors, AppPreferences, themeModeNotifier, localeNotifier
 import '../widgets/app_bottom_bar.dart';
+import '../widgets/app_snackbar.dart';
 import 'scanner_screen.dart';
 import 'settings_screen.dart';
 
@@ -164,9 +165,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   void _snack(String message) {
     if (!mounted) return;
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text(message)));
+    showAppSnackBar(context, message);
   }
 
   Future<void> _openHelpAndSupport() async {

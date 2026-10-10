@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import '../l10n/app_localizations.dart' as loc;
 import '../services/notification_service.dart';
 import '../theme/app_theme.dart';
+import '../widgets/app_snackbar.dart';
 
 class NotificationsScreen extends StatefulWidget {
   const NotificationsScreen({super.key});
@@ -34,9 +35,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       setState(_refresh);
     } on Exception catch (error) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context)
-        ..hideCurrentSnackBar()
-        ..showSnackBar(SnackBar(content: Text(error.toString())));
+      showAppSnackBar(context, error.toString());
     }
   }
 

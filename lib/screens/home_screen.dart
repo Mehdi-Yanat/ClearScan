@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:clear_scan/screens/scanner_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:share_plus/share_plus.dart';
@@ -19,8 +20,10 @@ import '../services/notification_service.dart';
 import '../services/recent_documents.dart';
 import '../theme/app_theme.dart';
 import '../widgets/app_bottom_bar.dart';
+import '../widgets/app_snackbar.dart';
 import '../widgets/bottom_action_bar.dart';
 import '../widgets/folder_name_dialog.dart';
+import '../widgets/share_sheet.dart';
 
 // Hero card stays dark navy in both themes, so its text/paper use fixed colors.
 const _heroBackground = Color(0xFF0F2A33);
@@ -64,16 +67,41 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _shareDocument(RecentDocument document) async {
+    final action = await showShareSheet(
+      context,
+      title: document.name,
+      shareLabel: 'Share document',
+      exportLabel: 'Save to device',
+      fileType: document.type,
+      fileSizeBytes: document.sizeBytes,
+      previewImagePath: document.type == 'PDF' ? null : document.path,
+      previewFilePath: document.path,
+      loadPreviewPdfBytes: document.path.startsWith('content://')
+          ? () => readRecentDocumentBytes(document)
+          : null,
+    );
+    if (!mounted || action == null) return;
     try {
-      if (document.path.startsWith('content://')) {
+      if (action == ShareSheetAction.export) {
+        await saveRecentDocumentToDevice(document);
+        if (!mounted) return;
+        _refreshRecentDocuments();
+        _showFolderError('Saved to device');
+      } else if (document.path.startsWith('content://')) {
         await shareRecentDocument(document);
-        return;
+      } else {
+        await SharePlus.instance.share(
+          ShareParams(files: [XFile(document.path)], subject: document.name),
+        );
       }
-      await SharePlus.instance.share(
-        ShareParams(files: [XFile(document.path)], subject: document.name),
-      );
     } on Exception catch (error) {
-      if (mounted) _showFolderError('Could not share document: $error');
+      if (mounted) {
+        _showFolderError(
+          action == ShareSheetAction.export
+              ? 'Could not save to device: $error'
+              : 'Could not share document: $error',
+        );
+      }
     }
   }
 
@@ -170,19 +198,29 @@ class _HomeScreenState extends State<HomeScreen> {
               initialFileName:
                   'Imported_${image.name.replaceFirst(RegExp(r'\.[^.]+$'), '')}',
               onSave: (imageBytes, fileName, format) async {
-                final saved = await saveEnhancedDocument(
-                  imageBytes: imageBytes,
-                  name: fileName,
-                  format: format,
-                );
+                final String savedName;
+                if (format.toUpperCase() == 'PDF') {
+                  final saved = await saveEnhancedPdfToDevice(
+                    imageBytes: imageBytes,
+                    name: fileName,
+                  );
+                  savedName = saved.filename;
+                } else {
+                  final saved = await saveEnhancedDocument(
+                    imageBytes: imageBytes,
+                    name: fileName,
+                    format: format,
+                  );
+                  savedName = saved.uri.pathSegments.last;
+                }
                 _refreshRecentDocuments();
                 if (mounted) {
-                  _showFolderError('Saved ${saved.uri.pathSegments.last}');
+                  _showFolderError('Saved $savedName');
                 }
                 try {
                   await addNotification(
                     AppNotificationType.imageImported,
-                    detail: saved.uri.pathSegments.last,
+                    detail: savedName,
                   );
                 } on Exception catch (error) {
                   if (mounted) _showNotificationError(error);
@@ -196,16 +234,10 @@ class _HomeScreenState extends State<HomeScreen> {
       if (!mounted) return;
       final message =
           error.message ?? 'Could not select an image (${error.code}).';
-      ScaffoldMessenger.of(context)
-        ..hideCurrentSnackBar()
-        ..showSnackBar(SnackBar(content: Text(message)));
+      showAppSnackBar(context, message);
     } on Exception catch (error) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context)
-        ..hideCurrentSnackBar()
-        ..showSnackBar(
-          SnackBar(content: Text('Could not save the imported image: $error')),
-        );
+      showAppSnackBar(context, 'Could not save the imported image: $error');
     }
   }
 
@@ -230,9 +262,7 @@ class _HomeScreenState extends State<HomeScreen> {
       }
       if (!mounted) return;
       if (savedNotification) {
-        ScaffoldMessenger.of(context)
-          ..hideCurrentSnackBar()
-          ..showSnackBar(SnackBar(content: Text('"${name.trim()}" created')));
+        showAppSnackBar(context, '"${name.trim()}" created');
       }
     } on FileSystemException catch (error) {
       if (!mounted) return;
@@ -244,17 +274,11 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _showFolderError(String message) {
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text(message)));
+    showAppSnackBar(context, message);
   }
 
   void _showNotificationError(Object error) {
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(
-        SnackBar(content: Text('Could not save notification: $error')),
-      );
+    showAppSnackBar(context, 'Could not save notification: $error');
   }
 
   Future<void> _showAddSheet() async {
@@ -887,7 +911,7 @@ class _DocRow extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(16, 10, 4, 10),
         child: Row(
           children: [
-            const _DocThumb(),
+            _DocThumb(doc: doc),
             const SizedBox(width: 16),
             Expanded(
               child: Column(
@@ -977,20 +1001,99 @@ class _RenameDocumentDialogState extends State<_RenameDocumentDialog> {
 
 /// Mini paper thumbnail. Stays white in both themes (it represents a sheet of
 /// paper), so it uses fixed colors.
-class _DocThumb extends StatelessWidget {
-  const _DocThumb();
+class _DocThumb extends StatefulWidget {
+  const _DocThumb({required this.doc});
+
+  final RecentDocument doc;
+
+  @override
+  State<_DocThumb> createState() => _DocThumbState();
+}
+
+class _DocThumbState extends State<_DocThumb> {
+  Uint8List? _pdfBytes;
+  bool _pdfLoadFailed = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.doc.type == 'PDF' && widget.doc.path.startsWith('content://')) {
+      _loadPdfBytes();
+    }
+  }
+
+  Future<void> _loadPdfBytes() async {
+    try {
+      final bytes = await readRecentDocumentBytes(widget.doc);
+      if (mounted) setState(() => _pdfBytes = bytes);
+    } on Exception catch (error) {
+      debugPrint('Could not load PDF thumbnail for ${widget.doc.name}: $error');
+      if (mounted) setState(() => _pdfLoadFailed = true);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final doc = widget.doc;
+    final isImage = doc.type == 'JPG' || doc.type == 'PNG';
+    final isPdf = doc.type == 'PDF';
+    final canLoadImage = isImage && !doc.path.startsWith('content://');
     return Container(
       width: 40,
       height: 50,
-      padding: const EdgeInsets.fromLTRB(6, 8, 6, 6),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(5),
         border: Border.all(color: const Color(0xFFE6ECEF)),
       ),
+      clipBehavior: Clip.antiAlias,
+      child: isPdf && !_pdfLoadFailed
+          ? _buildPdfThumbnail(doc)
+          : canLoadImage
+          ? Image.file(
+              File(doc.path),
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) =>
+                  const _DocumentPlaceholder(),
+            )
+          : const _DocumentPlaceholder(),
+    );
+  }
+
+  Widget _buildPdfThumbnail(RecentDocument doc) {
+    if (doc.path.startsWith('content://') && _pdfBytes == null) {
+      return const Center(
+        child: SizedBox.square(
+          dimension: 14,
+          child: CircularProgressIndicator(strokeWidth: 1.5),
+        ),
+      );
+    }
+    return IgnorePointer(
+      child: PDFView(
+        filePath: doc.path.startsWith('content://') ? null : doc.path,
+        pdfData: doc.path.startsWith('content://') ? _pdfBytes : null,
+        defaultPage: 0,
+        enableSwipe: false,
+        autoSpacing: false,
+        pageFling: false,
+        fitPolicy: FitPolicy.BOTH,
+        onError: (error) {
+          debugPrint('Could not render PDF thumbnail for ${doc.name}: $error');
+          if (mounted) setState(() => _pdfLoadFailed = true);
+        },
+      ),
+    );
+  }
+}
+
+class _DocumentPlaceholder extends StatelessWidget {
+  const _DocumentPlaceholder();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(6, 8, 6, 6),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

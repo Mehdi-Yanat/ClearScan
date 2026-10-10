@@ -1,9 +1,17 @@
+import 'dart:async';
 import 'dart:io';
 
+import 'package:clear_scan/services/document_filters.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:image/image.dart' as img;
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
+
+import 'crop_adjust_screen.dart';
+import '../services/document_storage.dart';
+import '../widgets/app_snackbar.dart';
+import '../widgets/share_sheet.dart';
 
 class EnhanceSaveScreen extends StatefulWidget {
   const EnhanceSaveScreen({
@@ -28,43 +36,50 @@ class EnhanceSaveScreen extends StatefulWidget {
   State<EnhanceSaveScreen> createState() => _EnhanceSaveScreenState();
 }
 
-enum _FilterType { original, magic, bw, gray, vivid }
-
 class _EnhanceSaveScreenState extends State<EnhanceSaveScreen> {
   double _brightness = 0.5;
   double _contrast = 0.5;
+  late String _imagePath;
   final TextEditingController _fileNameController = TextEditingController();
-  String _selectedFormat = 'JPG';
   bool _saving = false;
+
+  // Live preview: a small, pre-rotated copy of the image is filtered in an
+  // isolate with the same pipeline used for saving.
+  Uint8List? _previewSource;
+  Uint8List? _previewBytes;
+  Timer? _debounce;
+  int _previewGeneration = 0;
+  int _sourceGeneration = 0;
+  bool _previewBusy = false;
 
   final List<_FilterOption> _filters = [
     _FilterOption(
-      type: _FilterType.original,
+      type: DocFilter.original,
       label: 'Original',
       color: Colors.white,
       iconColor: const Color(0xFF9AA8B0),
     ),
     _FilterOption(
-      type: _FilterType.magic,
+      type: DocFilter.magic,
       label: 'Magic',
       color: const Color(0xFFFFF3D6),
       iconColor: const Color(0xFF14909A),
       isSelected: true,
     ),
     _FilterOption(
-      type: _FilterType.bw,
+      type: DocFilter.bw,
       label: 'B&W',
       color: const Color(0xFFE8E8E8),
       iconColor: const Color(0xFF6B7C85),
     ),
     _FilterOption(
-      type: _FilterType.gray,
+      type: DocFilter.gray,
       label: 'Gray',
       color: const Color(0xFFD1D1D1),
       iconColor: const Color(0xFF6B7C85),
     ),
     _FilterOption(
-      type: _FilterType.vivid,
+      type: DocFilter.vivid,
       label: 'Vivid',
       color: const Color(0xFFD4F1F3),
       iconColor: const Color(0xFF14909A),
@@ -74,30 +89,106 @@ class _EnhanceSaveScreenState extends State<EnhanceSaveScreen> {
   @override
   void initState() {
     super.initState();
+    _imagePath = widget.imagePath;
     _fileNameController.text = widget.initialFileName;
+    _loadPreviewSource(_imagePath);
   }
 
   @override
   void dispose() {
+    _debounce?.cancel();
     _fileNameController.dispose();
     super.dispose();
   }
 
-  void _onFilterSelected(_FilterType type) {
+  DocFilter get _selectedFilter =>
+      _filters.firstWhere((filter) => filter.isSelected).type;
+
+  EnhanceJob _jobFor(
+    Uint8List bytes, {
+    int maxSide = kSaveMaxSide,
+    int quality = 92,
+  }) => EnhanceJob(
+    bytes: bytes,
+    filter: _selectedFilter,
+    brightness: _brightness,
+    contrast: _contrast,
+    maxSide: maxSide,
+    quality: quality,
+  );
+
+  Future<void> _loadPreviewSource(String imagePath) async {
+    final generation = ++_sourceGeneration;
+    try {
+      final bytes = await File(imagePath).readAsBytes();
+      final small = await compute(makePreviewSource, bytes);
+      if (!mounted || generation != _sourceGeneration) return;
+      _previewSource = small;
+      _schedulePreview(immediate: true);
+    } catch (_) {
+      // The original image stays visible; saving still works.
+    }
+  }
+
+  Future<void> _openCropScreen() async {
+    final result = await Navigator.of(context).push<CropResult>(
+      MaterialPageRoute<CropResult>(
+        builder: (_) => CropAdjustScreen(imagePath: _imagePath),
+      ),
+    );
+    if (!mounted || result?.path == null) return;
+
+    setState(() {
+      _imagePath = result!.path!;
+      _previewSource = null;
+      _previewBytes = null;
+      _previewBusy = false;
+      _previewGeneration++;
+    });
+    await _loadPreviewSource(_imagePath);
+  }
+
+  void _schedulePreview({bool immediate = false}) {
+    _debounce?.cancel();
+    _debounce = Timer(
+      immediate ? Duration.zero : const Duration(milliseconds: 120),
+      _renderPreview,
+    );
+  }
+
+  Future<void> _renderPreview() async {
+    final source = _previewSource;
+    if (source == null) return;
+    final generation = ++_previewGeneration;
+    setState(() => _previewBusy = true);
+    try {
+      final bytes = await compute(
+        processDocument,
+        _jobFor(source, maxSide: kPreviewMaxSide, quality: 80),
+      );
+      // Ignore results from an older slider position.
+      if (!mounted || generation != _previewGeneration) return;
+      setState(() {
+        _previewBytes = bytes;
+        _previewBusy = false;
+      });
+    } catch (_) {
+      if (mounted && generation == _previewGeneration) {
+        setState(() => _previewBusy = false);
+      }
+    }
+  }
+
+  void _onFilterSelected(DocFilter type) {
     setState(() {
       for (var filter in _filters) {
         filter.isSelected = filter.type == type;
       }
     });
+    _schedulePreview(immediate: true);
   }
 
-  _EnhancementValues get _enhancementValues => _EnhancementValues(
-    filter: _filters.firstWhere((filter) => filter.isSelected).type.index,
-    brightness: _brightness,
-    contrast: _contrast,
-  );
-
-  Future<void> _onSave() async {
+  Future<void> _onExportPdf() async {
     if (_saving) return;
     final fileName = _fileNameController.text.trim();
     if (fileName.isEmpty) {
@@ -105,23 +196,60 @@ class _EnhanceSaveScreenState extends State<EnhanceSaveScreen> {
       return;
     }
 
-    if (widget.onSave != null) {
-      setState(() => _saving = true);
-      try {
-        final sourceBytes = await File(widget.imagePath).readAsBytes();
-        final enhancedBytes = await compute(
-          _applyEnhancements,
-          _EnhancementJob(bytes: sourceBytes, values: _enhancementValues),
-        );
-        await widget.onSave!(enhancedBytes, fileName, _selectedFormat);
+    final action = await showShareSheet(
+      context,
+      title: 'Export PDF',
+      shareLabel: 'Share PDF',
+      exportLabel: 'Save PDF to Downloads',
+      fileType: 'PDF',
+      pageCount: 1,
+      previewBytes: _previewBytes,
+      previewImagePath: _imagePath,
+    );
+    if (!mounted || action == null) return;
+
+    setState(() => _saving = true);
+    try {
+      final sourceBytes = await File(_imagePath).readAsBytes();
+      final enhancedBytes = await compute(
+        processDocument,
+        _jobFor(sourceBytes),
+      );
+      if (action == ShareSheetAction.export) {
+        if (widget.onSave != null) {
+          await widget.onSave!(enhancedBytes, fileName, 'PDF');
+        } else {
+          await saveEnhancedPdfToDevice(
+            imageBytes: enhancedBytes,
+            name: fileName,
+          );
+        }
         if (mounted) Navigator.of(context).pop(true);
-      } on Exception catch (error) {
-        _showSnackBar('Could not save the document: $error');
-      } finally {
-        if (mounted) setState(() => _saving = false);
+      } else {
+        final pdfBytes = await createPdfFromImage(enhancedBytes);
+        final tempDir = await getTemporaryDirectory();
+        final safeName = fileName.replaceAll(RegExp(r'[\\/:*?"<>|]'), '_');
+        final pdfName = safeName.toLowerCase().endsWith('.pdf')
+            ? safeName
+            : '$safeName.pdf';
+        final pdfFile = File('${tempDir.path}/$pdfName');
+        await pdfFile.writeAsBytes(pdfBytes, flush: true);
+        try {
+          await SharePlus.instance.share(
+            ShareParams(files: [XFile(pdfFile.path)], subject: pdfName),
+          );
+        } finally {
+          try {
+            await pdfFile.delete();
+          } on FileSystemException catch (error) {
+            debugPrint('Could not remove temporary PDF: $error');
+          }
+        }
       }
-    } else {
-      _showSnackBar('Saving $fileName.$_selectedFormat...');
+    } catch (error) {
+      _showSnackBar('Could not export the PDF: $error');
+    } finally {
+      if (mounted) setState(() => _saving = false);
     }
   }
 
@@ -134,9 +262,7 @@ class _EnhanceSaveScreenState extends State<EnhanceSaveScreen> {
   }
 
   void _showSnackBar(String message) {
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text(message)));
+    showAppSnackBar(context, message);
   }
 
   @override
@@ -187,7 +313,10 @@ class _EnhanceSaveScreenState extends State<EnhanceSaveScreen> {
                       _buildSliderRow(
                         label: 'Brightness',
                         value: _brightness,
-                        onChanged: (v) => setState(() => _brightness = v),
+                        onChanged: (v) {
+                          setState(() => _brightness = v);
+                          _schedulePreview();
+                        },
                         textColor: textColor,
                       ),
 
@@ -197,7 +326,10 @@ class _EnhanceSaveScreenState extends State<EnhanceSaveScreen> {
                       _buildSliderRow(
                         label: 'Contrast',
                         value: _contrast,
-                        onChanged: (v) => setState(() => _contrast = v),
+                        onChanged: (v) {
+                          setState(() => _contrast = v);
+                          _schedulePreview();
+                        },
                         textColor: textColor,
                       ),
 
@@ -275,26 +407,46 @@ class _EnhanceSaveScreenState extends State<EnhanceSaveScreen> {
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(12),
-                child: ColorFiltered(
-                  colorFilter: ColorFilter.matrix(
-                    _enhancementColorMatrix(_enhancementValues),
-                  ),
-                  child: Image.file(
-                    File(widget.imagePath),
-                    fit: BoxFit.contain,
-                    errorBuilder: (context, error, stackTrace) =>
-                        const SizedBox(
-                          width: 280,
-                          height: 340,
-                          child: Center(
-                            child: Icon(
-                              Icons.broken_image_outlined,
-                              size: 64,
-                              color: Colors.black38,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    if (_previewBytes != null)
+                      Image.memory(
+                        _previewBytes!,
+                        fit: BoxFit.contain,
+                        gaplessPlayback: true,
+                      )
+                    else
+                      Image.file(
+                        File(_imagePath),
+                        fit: BoxFit.contain,
+                        errorBuilder: (context, error, stackTrace) =>
+                            const SizedBox(
+                              width: 280,
+                              height: 340,
+                              child: Center(
+                                child: Icon(
+                                  Icons.broken_image_outlined,
+                                  size: 64,
+                                  color: Colors.black38,
+                                ),
+                              ),
                             ),
+                      ),
+                    if (_previewBusy)
+                      const Positioned(
+                        top: 8,
+                        left: 8,
+                        child: SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Color(0xFF14909A),
                           ),
                         ),
-                  ),
+                      ),
+                  ],
                 ),
               ),
             ),
@@ -319,9 +471,7 @@ class _EnhanceSaveScreenState extends State<EnhanceSaveScreen> {
                 ],
               ),
               child: IconButton(
-                onPressed: () {
-                  // TODO: Implement crop functionality
-                },
+                onPressed: _openCropScreen,
                 icon: const Icon(
                   Icons.crop_rounded,
                   color: Colors.white,
@@ -436,41 +586,6 @@ class _EnhanceSaveScreenState extends State<EnhanceSaveScreen> {
               ),
             ),
           ),
-          const SizedBox(width: 12),
-          PopupMenuButton<String>(
-            initialValue: _selectedFormat,
-            onSelected: (format) => setState(() => _selectedFormat = format),
-            itemBuilder: (_) => const [
-              PopupMenuItem(value: 'JPG', child: Text('JPG')),
-              PopupMenuItem(value: 'PDF', child: Text('PDF')),
-            ],
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-              decoration: BoxDecoration(
-                color: const Color(0xFFE3F3F4),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    _selectedFormat,
-                    style: const TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w700,
-                      color: Color(0xFF14909A),
-                    ),
-                  ),
-                  const SizedBox(width: 4),
-                  const Icon(
-                    Icons.keyboard_arrow_down_rounded,
-                    color: Color(0xFF14909A),
-                    size: 20,
-                  ),
-                ],
-              ),
-            ),
-          ),
         ],
       ),
     );
@@ -512,10 +627,10 @@ class _EnhanceSaveScreenState extends State<EnhanceSaveScreen> {
               ),
             ),
             const SizedBox(width: 16),
-            // Save Button
+            // Export Button
             Expanded(
               child: ElevatedButton(
-                onPressed: _saving ? null : _onSave,
+                onPressed: _saving ? null : _onExportPdf,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF14909A),
                   foregroundColor: Colors.white,
@@ -535,7 +650,7 @@ class _EnhanceSaveScreenState extends State<EnhanceSaveScreen> {
                         ),
                       )
                     : Text(
-                        'Save $_selectedFormat',
+                        'Export PDF',
                         style: const TextStyle(
                           fontSize: 17,
                           fontWeight: FontWeight.w700,
@@ -550,124 +665,6 @@ class _EnhanceSaveScreenState extends State<EnhanceSaveScreen> {
   }
 }
 
-class _EnhancementValues {
-  const _EnhancementValues({
-    required this.filter,
-    required this.brightness,
-    required this.contrast,
-  });
-
-  final int filter;
-  final double brightness;
-  final double contrast;
-}
-
-class _EnhancementJob {
-  const _EnhancementJob({required this.bytes, required this.values});
-
-  final Uint8List bytes;
-  final _EnhancementValues values;
-}
-
-List<double> _enhancementColorMatrix(_EnhancementValues values) {
-  var base = <double>[1, 0, 0, 0, 1, 0, 0, 0, 1];
-  var presetContrast = 1.0;
-  var presetBrightness = 0.0;
-  switch (values.filter) {
-    case 1:
-      presetContrast = 1.12;
-      presetBrightness = 10;
-    case 2:
-      base = const [
-        0.299,
-        0.587,
-        0.114,
-        0.299,
-        0.587,
-        0.114,
-        0.299,
-        0.587,
-        0.114,
-      ];
-      presetContrast = 1.75;
-    case 3:
-      base = const [
-        0.299,
-        0.587,
-        0.114,
-        0.299,
-        0.587,
-        0.114,
-        0.299,
-        0.587,
-        0.114,
-      ];
-    case 4:
-      const saturation = 1.35;
-      const red = 0.299 * (1 - saturation);
-      const green = 0.587 * (1 - saturation);
-      const blue = 0.114 * (1 - saturation);
-      base = const [
-        red + saturation,
-        green,
-        blue,
-        red,
-        green + saturation,
-        blue,
-        red,
-        green,
-        blue + saturation,
-      ];
-  }
-
-  final contrast = values.contrast + 0.5;
-  final brightness = (values.brightness - 0.5) * 100;
-  final matrix = <double>[];
-  for (var row = 0; row < 3; row++) {
-    final offset = 128 * (1 - presetContrast) + presetBrightness;
-    matrix.addAll([
-      base[row * 3] * presetContrast * contrast,
-      base[row * 3 + 1] * presetContrast * contrast,
-      base[row * 3 + 2] * presetContrast * contrast,
-      0,
-      (offset - 128) * contrast + 128 + brightness,
-    ]);
-  }
-  matrix.addAll([0, 0, 0, 1, 0]);
-  return matrix;
-}
-
-Uint8List _applyEnhancements(_EnhancementJob job) {
-  final source = img.decodeImage(job.bytes);
-  if (source == null) throw const FormatException('Unsupported image');
-  final matrix = _enhancementColorMatrix(job.values);
-  for (var y = 0; y < source.height; y++) {
-    for (var x = 0; x < source.width; x++) {
-      final pixel = source.getPixel(x, y);
-      final red = pixel.r.toDouble();
-      final green = pixel.g.toDouble();
-      final blue = pixel.b.toDouble();
-      final outRed =
-          matrix[0] * red + matrix[1] * green + matrix[2] * blue + matrix[4];
-      final outGreen =
-          matrix[5] * red + matrix[6] * green + matrix[7] * blue + matrix[9];
-      final outBlue =
-          matrix[10] * red +
-          matrix[11] * green +
-          matrix[12] * blue +
-          matrix[14];
-      source.setPixelRgb(
-        x,
-        y,
-        outRed.round().clamp(0, 255),
-        outGreen.round().clamp(0, 255),
-        outBlue.round().clamp(0, 255),
-      );
-    }
-  }
-  return Uint8List.fromList(img.encodeJpg(source, quality: 94));
-}
-
 class _FilterOption {
   _FilterOption({
     required this.type,
@@ -677,7 +674,7 @@ class _FilterOption {
     this.isSelected = false,
   });
 
-  final _FilterType type;
+  final DocFilter type;
   final String label;
   final Color color;
   final Color iconColor;

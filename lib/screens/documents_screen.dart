@@ -11,7 +11,9 @@ import '../services/folder_repository.dart';
 import '../services/notification_service.dart';
 import '../services/recent_documents.dart';
 import '../theme/app_theme.dart';
+import '../widgets/app_snackbar.dart';
 import '../widgets/folder_name_dialog.dart';
+import '../widgets/share_sheet.dart';
 import 'document_viewer_screen.dart';
 import 'scanner_screen.dart';
 
@@ -133,9 +135,7 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
   }
 
   void _snack(String message, {SnackBarAction? action}) {
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text(message), action: action));
+    showAppSnackBar(context, message, action: action);
   }
 
   Future<void> _loadFolders() async {
@@ -238,8 +238,28 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
   }
 
   Future<void> _shareDocument(RecentDocument document) async {
+    final action = await showShareSheet(
+      context,
+      title: document.name,
+      shareLabel: 'Share document',
+      exportLabel: 'Save to device',
+      fileType: document.type,
+      fileSizeBytes: document.sizeBytes,
+      previewImagePath: document.type == 'PDF' ? null : document.path,
+      previewFilePath: document.path,
+      loadPreviewPdfBytes: document.path.startsWith('content://')
+          ? () => readRecentDocumentBytes(document)
+          : null,
+    );
+    if (!mounted || action == null) return;
     try {
-      if (document.path.startsWith('content://')) {
+      if (action == ShareSheetAction.export) {
+        await saveRecentDocumentToDevice(document);
+        if (mounted) {
+          await _loadFiles();
+          _snack('Saved to device');
+        }
+      } else if (document.path.startsWith('content://')) {
         await shareRecentDocument(document);
       } else {
         await SharePlus.instance.share(
@@ -247,7 +267,13 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
         );
       }
     } on Exception catch (error) {
-      if (mounted) _snack('Could not share document: $error');
+      if (mounted) {
+        _snack(
+          action == ShareSheetAction.export
+              ? 'Could not save to device: $error'
+              : 'Could not share document: $error',
+        );
+      }
     }
   }
 

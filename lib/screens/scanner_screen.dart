@@ -10,6 +10,7 @@ import '../l10n/app_localizations.dart';
 import '../services/app_settings.dart';
 import '../services/document_storage.dart';
 import '../services/notification_service.dart';
+import '../widgets/app_snackbar.dart';
 
 enum ScanMode {
   idCard(1.586),
@@ -333,17 +334,27 @@ class _ScannerScreenState extends State<ScannerScreen>
             imagePath: result!.path!,
             initialFileName: _getScanModeLabel(_mode),
             onSave: (imageBytes, fileName, format) async {
-              final saved = await saveEnhancedDocument(
-                imageBytes: imageBytes,
-                name: fileName,
-                format: format,
-              );
+              final String savedName;
+              if (format.toUpperCase() == 'PDF') {
+                final saved = await saveEnhancedPdfToDevice(
+                  imageBytes: imageBytes,
+                  name: fileName,
+                );
+                savedName = saved.filename;
+              } else {
+                final saved = await saveEnhancedDocument(
+                  imageBytes: imageBytes,
+                  name: fileName,
+                  format: format,
+                );
+                savedName = saved.uri.pathSegments.last;
+              }
               if (!mounted) return;
-              _showSnack('Saved ${saved.uri.pathSegments.last}');
+              _showSnack('Saved $savedName');
               try {
                 await addNotification(
                   AppNotificationType.scanCompleted,
-                  detail: fileName,
+                  detail: savedName,
                 );
               } on Exception catch (error) {
                 _showSnack('Could not save the scan notification: $error');
@@ -359,9 +370,7 @@ class _ScannerScreenState extends State<ScannerScreen>
 
   void _showSnack(String message) {
     if (!mounted) return;
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text(message)));
+    showAppSnackBar(context, message);
   }
 
   IconData get _flashIcon => switch (_flashModes[_flashIndex]) {

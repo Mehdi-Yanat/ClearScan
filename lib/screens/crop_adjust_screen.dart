@@ -11,6 +11,7 @@ import 'package:path_provider/path_provider.dart';
 import '../l10n/app_localizations.dart';
 import '../services/document_quad_detector.dart';
 import '../theme/app_theme.dart';
+import '../widgets/app_snackbar.dart';
 
 /// What the user chose when leaving the crop screen.
 enum CropAction { next, addPage, retake }
@@ -135,15 +136,10 @@ class _CropAdjustScreenState extends State<CropAdjustScreen> {
   }
 
   void _showAutoCropMessage() {
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(
-        SnackBar(
-          content: Text(
-            AppLocalizations.of(context)!.cropAdjustErrorDetectEdges,
-          ),
-        ),
-      );
+    showAppSnackBar(
+      context,
+      AppLocalizations.of(context)!.cropAdjustErrorDetectEdges,
+    );
   }
 
   Future<void> _finish(CropAction action) async {
@@ -171,15 +167,10 @@ class _CropAdjustScreenState extends State<CropAdjustScreen> {
     } catch (_) {
       if (mounted) {
         setState(() => _working = false);
-        ScaffoldMessenger.of(context)
-          ..hideCurrentSnackBar()
-          ..showSnackBar(
-            SnackBar(
-              content: Text(
-                AppLocalizations.of(context)!.cropAdjustErrorCropImage,
-              ),
-            ),
-          );
+        showAppSnackBar(
+          context,
+          AppLocalizations.of(context)!.cropAdjustErrorCropImage,
+        );
       }
     }
   }

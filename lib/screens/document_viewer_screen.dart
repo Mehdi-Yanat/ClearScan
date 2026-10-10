@@ -6,6 +6,8 @@ import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../services/recent_documents.dart';
+import '../widgets/app_snackbar.dart';
+import '../widgets/share_sheet.dart';
 
 class DocumentViewerScreen extends StatefulWidget {
   const DocumentViewerScreen({super.key, required this.document});
@@ -27,9 +29,28 @@ class _DocumentViewerScreenState extends State<DocumentViewerScreen> {
 
   Future<void> _shareDocument() async {
     if (_sharing) return;
+    final action = await showShareSheet(
+      context,
+      title: widget.document.name,
+      shareLabel: 'Share document',
+      exportLabel: 'Save to device',
+      fileType: widget.document.type,
+      fileSizeBytes: widget.document.sizeBytes,
+      previewImagePath: widget.document.type == 'PDF'
+          ? null
+          : widget.document.path,
+      previewFilePath: widget.document.path,
+      loadPreviewPdfBytes: widget.document.path.startsWith('content://')
+          ? () => readRecentDocumentBytes(widget.document)
+          : null,
+    );
+    if (!mounted || action == null) return;
     setState(() => _sharing = true);
     try {
-      if (widget.document.path.startsWith('content://')) {
+      if (action == ShareSheetAction.export) {
+        await saveRecentDocumentToDevice(widget.document);
+        if (mounted) showAppSnackBar(context, 'Saved to device');
+      } else if (widget.document.path.startsWith('content://')) {
         await shareRecentDocument(widget.document);
       } else {
         await SharePlus.instance.share(
@@ -41,11 +62,12 @@ class _DocumentViewerScreenState extends State<DocumentViewerScreen> {
       }
     } on Exception catch (error) {
       if (mounted) {
-        ScaffoldMessenger.of(context)
-          ..hideCurrentSnackBar()
-          ..showSnackBar(
-            SnackBar(content: Text('Could not share document: $error')),
-          );
+        showAppSnackBar(
+          context,
+          action == ShareSheetAction.export
+              ? 'Could not save to device: $error'
+              : 'Could not share document: $error',
+        );
       }
     } finally {
       if (mounted) setState(() => _sharing = false);

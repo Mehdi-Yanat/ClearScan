@@ -293,6 +293,10 @@ class _ConvertToolCard extends StatelessWidget {
           Text(
             tool.label,
             textAlign: TextAlign.center,
+            // Cards are only ~60-70dp wide with four per row, so labels wrap
+            // to two lines; cap it so a large system font can't overflow.
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
             style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w500,
@@ -321,6 +325,10 @@ class _EditToolCard extends StatelessWidget {
           Text(
             tool.label,
             textAlign: TextAlign.center,
+            // Cards are only ~60-70dp wide with four per row, so labels wrap
+            // to two lines; cap it so a large system font can't overflow.
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
             style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w500,
