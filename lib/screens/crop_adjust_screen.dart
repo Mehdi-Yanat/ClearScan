@@ -9,6 +9,7 @@ import 'package:image/image.dart' as img;
 import 'package:path_provider/path_provider.dart';
 
 import '../l10n/app_localizations.dart';
+import '../services/document_quad_detector.dart';
 import '../theme/app_theme.dart';
 
 /// What the user chose when leaving the crop screen.
@@ -26,8 +27,8 @@ class CropResult {
 /// Adjust-edges screen: drag 4 corners / 4 edge handles, rotate, auto crop,
 /// then pop with a [CropResult].
 ///
-///   final result = await Navigator.of(context).push<CropResult>(
-///     MaterialPageRoute(builder: (_) => CropAdjustScreen(imagePath: file.path)),
+///   final result = await Navigator.of(context).push(
+///     `MaterialPageRoute<CropResult>(builder: (_) => CropAdjustScreen(imagePath: file.path))`,
 ///   );
 class CropAdjustScreen extends StatefulWidget {
   const CropAdjustScreen({
@@ -72,6 +73,7 @@ class _CropAdjustScreenState extends State<CropAdjustScreen> {
       final raw = await File(widget.imagePath).readAsBytes();
       final bytes = await compute(_bakeOrientation, raw);
       await _setBytes(bytes);
+      await _autoCrop(showFailure: false);
     } catch (_) {
       if (mounted) {
         setState(
@@ -112,11 +114,36 @@ class _CropAdjustScreenState extends State<CropAdjustScreen> {
     }
   }
 
-  void _autoCrop() {
-    // TODO: plug in real edge detection here (ML Kit Document Scanner, OpenCV…)
-    // and set _quad from the detected corners (normalized 0..1).
-    HapticFeedback.selectionClick();
-    setState(() => _quad = _defaultQuad());
+  Future<void> _autoCrop({bool showFailure = true}) async {
+    final bytes = _bytes;
+    if (bytes == null || _working) return;
+    setState(() => _working = true);
+    try {
+      final detected = await DocumentQuadDetector.detect(bytes);
+      if (!mounted) return;
+      if (detected == null) {
+        if (showFailure) _showAutoCropMessage();
+        return;
+      }
+      HapticFeedback.selectionClick();
+      setState(() => _quad = detected);
+    } on Exception {
+      if (mounted) _showAutoCropMessage();
+    } finally {
+      if (mounted) setState(() => _working = false);
+    }
+  }
+
+  void _showAutoCropMessage() {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          content: Text(
+            AppLocalizations.of(context)!.cropAdjustErrorDetectEdges,
+          ),
+        ),
+      );
   }
 
   Future<void> _finish(CropAction action) async {
@@ -234,7 +261,7 @@ class _CropAdjustScreenState extends State<CropAdjustScreen> {
                 enabled: _bytes != null && !_working,
                 onRetake: _retake,
                 onRotate: _rotate,
-                onAutoCrop: _autoCrop,
+                onAutoCrop: () => _autoCrop(),
                 onAddPage: () => _finish(CropAction.addPage),
               ),
               const SizedBox(height: 16),

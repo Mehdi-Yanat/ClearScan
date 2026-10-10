@@ -6,8 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:share_plus/share_plus.dart';
 
 import 'crop_adjust_screen.dart';
+import 'enhance_save_screen.dart';
 import 'document_viewer_screen.dart';
 import 'notifications_screen.dart';
 import '../l10n/app_localizations.dart' as loc;
@@ -17,6 +19,7 @@ import '../services/notification_service.dart';
 import '../services/recent_documents.dart';
 import '../theme/app_theme.dart';
 import '../widgets/app_bottom_bar.dart';
+import '../widgets/bottom_action_bar.dart';
 import '../widgets/folder_name_dialog.dart';
 
 // Hero card stays dark navy in both themes, so its text/paper use fixed colors.
@@ -55,7 +58,82 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _refreshRecentDocuments() {
-    setState(() => _recentDocumentsFuture = loadRecentDocuments());
+    setState(() {
+      _recentDocumentsFuture = loadRecentDocuments();
+    });
+  }
+
+  Future<void> _shareDocument(RecentDocument document) async {
+    try {
+      if (document.path.startsWith('content://')) {
+        await shareRecentDocument(document);
+        return;
+      }
+      await SharePlus.instance.share(
+        ShareParams(files: [XFile(document.path)], subject: document.name),
+      );
+    } on Exception catch (error) {
+      if (mounted) _showFolderError('Could not share document: $error');
+    }
+  }
+
+  Future<void> _renameDocument(RecentDocument document) async {
+    final localizations = loc.AppLocalizations.of(context)!;
+    final extensionIndex = document.name.lastIndexOf('.');
+    final extension = extensionIndex > 0
+        ? document.name.substring(extensionIndex)
+        : '';
+    final name = await showDialog<String>(
+      context: context,
+      builder: (_) => _RenameDocumentDialog(
+        title: localizations.rename,
+        initialName: extensionIndex > 0
+            ? document.name.substring(0, extensionIndex)
+            : document.name,
+      ),
+    );
+    if (name == null || !mounted) return;
+
+    try {
+      await renameRecentDocument(document, '$name$extension');
+      if (!mounted) return;
+      _refreshRecentDocuments();
+      _showFolderError(localizations.documentRenameSuccess('$name$extension'));
+    } on Exception catch (error) {
+      if (mounted) _showFolderError('Could not rename document: $error');
+    }
+  }
+
+  Future<void> _deleteDocument(RecentDocument document) async {
+    final localizations = loc.AppLocalizations.of(context)!;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(localizations.delete),
+        content: Text(localizations.documentDeleteConfirmation(document.name)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: Text(
+              MaterialLocalizations.of(dialogContext).cancelButtonLabel,
+            ),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            child: Text(localizations.delete),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+    try {
+      await deleteRecentDocument(document);
+      if (!mounted) return;
+      _refreshRecentDocuments();
+      _showFolderError(localizations.documentDeleteSuccess(document.name));
+    } on Exception catch (error) {
+      if (mounted) _showFolderError('Could not delete document: $error');
+    }
   }
 
   void _openScanner() {
@@ -84,23 +162,35 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       );
       if (mounted) {
-        if (result?.path != null) {
-          final saved = await saveCroppedDocument(
-            imagePath: result!.path!,
-            name: 'Imported_${image.name}',
-          );
-          _refreshRecentDocuments();
-          try {
-            await addNotification(
-              AppNotificationType.imageImported,
-              detail: saved.uri.pathSegments.last,
-            );
-          } on Exception catch (error) {
-            if (mounted) {
-              _showNotificationError(error);
-            }
-          }
-        }
+        if (result?.path == null) return;
+        await Navigator.of(context).push<bool>(
+          MaterialPageRoute<bool>(
+            builder: (_) => EnhanceSaveScreen(
+              imagePath: result!.path!,
+              initialFileName:
+                  'Imported_${image.name.replaceFirst(RegExp(r'\.[^.]+$'), '')}',
+              onSave: (imageBytes, fileName, format) async {
+                final saved = await saveEnhancedDocument(
+                  imageBytes: imageBytes,
+                  name: fileName,
+                  format: format,
+                );
+                _refreshRecentDocuments();
+                if (mounted) {
+                  _showFolderError('Saved ${saved.uri.pathSegments.last}');
+                }
+                try {
+                  await addNotification(
+                    AppNotificationType.imageImported,
+                    detail: saved.uri.pathSegments.last,
+                  );
+                } on Exception catch (error) {
+                  if (mounted) _showNotificationError(error);
+                }
+              },
+            ),
+          ),
+        );
       }
     } on PlatformException catch (error) {
       if (!mounted) return;
@@ -270,6 +360,9 @@ class _HomeScreenState extends State<HomeScreen> {
               _RecentDocuments(
                 future: _recentDocumentsFuture,
                 onRetry: _refreshRecentDocuments,
+                onShareDocument: _shareDocument,
+                onRenameDocument: _renameDocument,
+                onDeleteDocument: _deleteDocument,
               ),
             ],
           ),
@@ -593,10 +686,19 @@ class _QuickActionTile extends StatelessWidget {
 // ───────────────────────────── Recent documents ─────────────────────────────
 
 class _RecentDocuments extends StatelessWidget {
-  const _RecentDocuments({required this.future, required this.onRetry});
+  const _RecentDocuments({
+    required this.future,
+    required this.onRetry,
+    required this.onShareDocument,
+    required this.onRenameDocument,
+    required this.onDeleteDocument,
+  });
 
   final Future<List<RecentDocument>> future;
   final VoidCallback onRetry;
+  final ValueChanged<RecentDocument> onShareDocument;
+  final ValueChanged<RecentDocument> onRenameDocument;
+  final ValueChanged<RecentDocument> onDeleteDocument;
 
   @override
   Widget build(BuildContext context) {
@@ -642,6 +744,7 @@ class _RecentDocuments extends StatelessWidget {
                       builder: (_) => DocumentViewerScreen(document: docs[i]),
                     ),
                   ),
+                  onActions: () => _showDocumentActions(context, docs[i]),
                 ),
                 if (i < docs.length - 1)
                   Divider(
@@ -656,6 +759,71 @@ class _RecentDocuments extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+
+  void _showDocumentActions(BuildContext context, RecentDocument document) {
+    final localizations = loc.AppLocalizations.of(context)!;
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: AppColors.surface(context),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (sheetContext) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.only(top: 16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Text(
+                  document.name,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.ink(context),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
+              BottomActionBar(
+                actions: [
+                  BottomActionBarItem(
+                    icon: Icons.share_outlined,
+                    label: localizations.share,
+                    onTap: () {
+                      Navigator.of(sheetContext).pop();
+                      onShareDocument(document);
+                    },
+                  ),
+                  BottomActionBarItem(
+                    icon: Icons.drive_file_rename_outline,
+                    label: localizations.rename,
+                    onTap: () {
+                      Navigator.of(sheetContext).pop();
+                      onRenameDocument(document);
+                    },
+                  ),
+                  BottomActionBarItem(
+                    icon: Icons.delete_outline_rounded,
+                    label: localizations.delete,
+                    iconColor: const Color(0xFFE5484D),
+                    backgroundColor: const Color(0xFFFFE5E5),
+                    onTap: () {
+                      Navigator.of(sheetContext).pop();
+                      onDeleteDocument(document);
+                    },
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
@@ -693,10 +861,15 @@ class _RecentDocumentsMessage extends StatelessWidget {
 }
 
 class _DocRow extends StatelessWidget {
-  const _DocRow({required this.doc, required this.onTap});
+  const _DocRow({
+    required this.doc,
+    required this.onTap,
+    required this.onActions,
+  });
 
   final RecentDocument doc;
   final VoidCallback onTap;
+  final VoidCallback onActions;
 
   String _formatSize(int bytes) {
     if (bytes < 1024) return '$bytes B';
@@ -741,33 +914,63 @@ class _DocRow extends StatelessWidget {
                 ],
               ),
             ),
-            PopupMenuButton<String>(
+            IconButton(
               icon: Icon(
                 Icons.more_vert,
                 size: 20,
                 color: AppColors.textMuted(context),
               ),
-              onSelected: (_) {
-                // TODO: share / rename / delete
-              },
-              itemBuilder: (_) => [
-                PopupMenuItem(
-                  value: 'share',
-                  child: Text(loc.AppLocalizations.of(context)!.share),
-                ),
-                PopupMenuItem(
-                  value: 'rename',
-                  child: Text(loc.AppLocalizations.of(context)!.rename),
-                ),
-                PopupMenuItem(
-                  value: 'delete',
-                  child: Text(loc.AppLocalizations.of(context)!.delete),
-                ),
-              ],
+              tooltip: MaterialLocalizations.of(context).showMenuTooltip,
+              onPressed: onActions,
             ),
           ],
         ),
       ),
+    );
+  }
+}
+
+class _RenameDocumentDialog extends StatefulWidget {
+  const _RenameDocumentDialog({required this.title, required this.initialName});
+
+  final String title;
+  final String initialName;
+
+  @override
+  State<_RenameDocumentDialog> createState() => _RenameDocumentDialogState();
+}
+
+class _RenameDocumentDialogState extends State<_RenameDocumentDialog> {
+  late final TextEditingController _controller = TextEditingController(
+    text: widget.initialName,
+  );
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text(widget.title),
+      content: TextField(
+        controller: _controller,
+        autofocus: true,
+        textCapitalization: TextCapitalization.sentences,
+        onSubmitted: (value) => Navigator.of(context).pop(value),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
+        ),
+        FilledButton(
+          onPressed: () => Navigator.of(context).pop(_controller.text),
+          child: Text(MaterialLocalizations.of(context).saveButtonLabel),
+        ),
+      ],
     );
   }
 }

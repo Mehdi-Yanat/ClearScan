@@ -13,24 +13,26 @@ class WorkshopScreen extends StatefulWidget {
 }
 
 class _WorkshopScreenState extends State<WorkshopScreen> {
+  void _openScanner() {
+    Navigator.of(context)
+        .push(MaterialPageRoute<void>(builder: (_) => const ScannerScreen()));
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final bgColor = Theme.of(context).scaffoldBackgroundColor;
-    final textColor = Theme.of(context).colorScheme.onSurface;
-    final mutedColor = Theme.of(context).colorScheme.onSurfaceVariant;
+    final iconBrightness = isDark ? Brightness.light : Brightness.dark;
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(
-        statusBarColor: bgColor,
-        statusBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
-        systemNavigationBarColor: bgColor,
-        systemNavigationBarIconBrightness: isDark
-            ? Brightness.light
-            : Brightness.dark,
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: iconBrightness,
+        // The bottom bar is painted with the surface color.
+        systemNavigationBarColor: AppColors.surface(context),
+        systemNavigationBarIconBrightness: iconBrightness,
       ),
       child: Scaffold(
-        backgroundColor: bgColor,
+        backgroundColor: AppColors.background(context),
         bottomNavigationBar: AppBottomBar(
           selectedIndex: 2,
           onScan: _openScanner,
@@ -40,33 +42,26 @@ class _WorkshopScreenState extends State<WorkshopScreen> {
           child: ListView(
             padding: const EdgeInsets.fromLTRB(24, 8, 24, 32),
             children: [
-              // Title
               Text(
                 'Workshop',
                 style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.w700,
-                  color: textColor,
+                  color: AppColors.ink(context),
                 ),
               ),
               const SizedBox(height: 32),
-
-              // Convert Section
-              _buildSectionTitle('Convert', textColor),
+              const _SectionTitle('Convert'),
               const SizedBox(height: 16),
               _buildConvertGrid(),
               const SizedBox(height: 32),
-
-              // Edit PDF Section
-              _buildSectionTitle('Edit PDF', textColor),
+              const _SectionTitle('Edit PDF'),
               const SizedBox(height: 16),
               _buildEditPdfGrid(),
               const SizedBox(height: 32),
-
-              // More Tools Section
-              _buildSectionTitle('More Tools', textColor),
+              const _SectionTitle('More Tools'),
               const SizedBox(height: 16),
-              _buildMoreToolsList(mutedColor),
+              _buildMoreToolsList(),
             ],
           ),
         ),
@@ -74,55 +69,35 @@ class _WorkshopScreenState extends State<WorkshopScreen> {
     );
   }
 
-  void _openScanner() {
-    Navigator.of(context)
-        .push(MaterialPageRoute<void>(builder: (_) => const ScannerScreen()));
-  }
-
-  Widget _buildSectionTitle(String title, Color textColor) {
-    return Text(
-      title,
-      style: TextStyle(
-        fontSize: 20,
-        fontWeight: FontWeight.w700,
-        color: textColor,
-      ),
-    );
-  }
-
   // ───────────────────────────── Convert Section ─────────────────────────────
 
   Widget _buildConvertGrid() {
-    final tools = [
+    const tools = [
       _ConvertTool(
         icon: Icons.picture_as_pdf_rounded,
         label: 'Image to PDF',
-        backgroundColor: const Color(0xFFFFE5E5),
-        iconColor: const Color(0xFFE5484D),
+        accent: Color(0xFFE5484D),
       ),
       _ConvertTool(
         icon: Icons.image_rounded,
         label: 'PDF to Image',
-        backgroundColor: const Color(0xFFE5F6EC),
-        iconColor: const Color(0xFF2FB67C),
+        accent: Color(0xFF2FB67C),
       ),
       _ConvertTool(
         icon: Icons.description_rounded,
         label: 'PDF to Word',
-        backgroundColor: const Color(0xFFE5EDFF),
-        iconColor: const Color(0xFF4A7dff),
+        accent: Color(0xFF4A7DFF),
       ),
       _ConvertTool(
         icon: Icons.table_chart_rounded,
         label: 'PDF to Excel',
-        backgroundColor: const Color(0xFFE5F6EC),
-        iconColor: const Color(0xFF2FB67C),
+        accent: Color(0xFF2FB67C),
       ),
     ];
 
     return Row(
       children: [
-        for (int i = 0; i < tools.length; i++) ...[
+        for (var i = 0; i < tools.length; i++) ...[
           if (i > 0) const SizedBox(width: 12),
           Expanded(child: _ConvertToolCard(tool: tools[i])),
         ],
@@ -133,7 +108,7 @@ class _WorkshopScreenState extends State<WorkshopScreen> {
   // ───────────────────────────── Edit PDF Section ─────────────────────────────
 
   Widget _buildEditPdfGrid() {
-    final tools = [
+    const tools = [
       _EditTool(icon: Icons.merge_type_rounded, label: 'Merge PDF'),
       _EditTool(icon: Icons.call_split_rounded, label: 'Split PDF'),
       _EditTool(icon: Icons.compress_rounded, label: 'Compress PDF'),
@@ -146,11 +121,11 @@ class _WorkshopScreenState extends State<WorkshopScreen> {
 
     return Column(
       children: [
-        for (int row = 0; row < 2; row++) ...[
+        for (var row = 0; row < 2; row++) ...[
           if (row > 0) const SizedBox(height: 12),
           Row(
             children: [
-              for (int col = 0; col < 4; col++) ...[
+              for (var col = 0; col < 4; col++) ...[
                 if (col > 0) const SizedBox(width: 12),
                 Expanded(child: _EditToolCard(tool: tools[row * 4 + col])),
               ],
@@ -163,8 +138,8 @@ class _WorkshopScreenState extends State<WorkshopScreen> {
 
   // ───────────────────────────── More Tools Section ─────────────────────────────
 
-  Widget _buildMoreToolsList(Color mutedColor) {
-    final tools = [
+  Widget _buildMoreToolsList() {
+    const tools = [
       _MoreTool(
         icon: Icons.edit_rounded,
         title: 'Sign Document',
@@ -187,25 +162,24 @@ class _WorkshopScreenState extends State<WorkshopScreen> {
       ),
     ];
 
-    return Container(
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.3),
-        ),
-      ),
+    // Material (not a decorated Container) so the row ripples are visible.
+    return Material(
+      color: AppColors.surface(context),
       clipBehavior: Clip.antiAlias,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+        side: BorderSide(color: AppColors.border(context)),
+      ),
       child: Column(
         children: [
-          for (int i = 0; i < tools.length; i++) ...[
+          for (var i = 0; i < tools.length; i++) ...[
             _MoreToolRow(tool: tools[i]),
             if (i < tools.length - 1)
               Divider(
                 height: 1,
                 thickness: 1,
-                indent: 68,
-                color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.3),
+                indent: 60,
+                color: AppColors.border(context),
               ),
           ],
         ],
@@ -217,28 +191,30 @@ class _WorkshopScreenState extends State<WorkshopScreen> {
 // ───────────────────────────── Models ─────────────────────────────
 
 class _ConvertTool {
-  _ConvertTool({
+  const _ConvertTool({
     required this.icon,
     required this.label,
-    required this.backgroundColor,
-    required this.iconColor,
+    required this.accent,
   });
 
   final IconData icon;
   final String label;
-  final Color backgroundColor;
-  final Color iconColor;
+  final Color accent;
 }
 
 class _EditTool {
-  _EditTool({required this.icon, required this.label});
+  const _EditTool({required this.icon, required this.label});
 
   final IconData icon;
   final String label;
 }
 
 class _MoreTool {
-  _MoreTool({required this.icon, required this.title, required this.subtitle});
+  const _MoreTool({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+  });
 
   final IconData icon;
   final String title;
@@ -247,6 +223,49 @@ class _MoreTool {
 
 // ───────────────────────────── Widgets ─────────────────────────────
 
+class _SectionTitle extends StatelessWidget {
+  const _SectionTitle(this.title);
+
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      title,
+      style: TextStyle(
+        fontSize: 20,
+        fontWeight: FontWeight.w700,
+        color: AppColors.ink(context),
+      ),
+    );
+  }
+}
+
+/// Rounded surface card with a visible ripple (Material + InkWell).
+class _ToolCardShell extends StatelessWidget {
+  const _ToolCardShell({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: AppColors.surface(context),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(color: AppColors.border(context)),
+      ),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(16),
+        onTap: () {
+          // TODO: Navigate to specific tool
+        },
+        child: SizedBox(height: 108, child: child),
+      ),
+    );
+  }
+}
+
 class _ConvertToolCard extends StatelessWidget {
   const _ConvertToolCard({required this.tool});
 
@@ -254,44 +273,33 @@ class _ConvertToolCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        // TODO: Navigate to specific tool
-      },
-      borderRadius: BorderRadius.circular(16),
-      child: Container(
-        height: 108,
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surface,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.3),
+    return _ToolCardShell(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: 48,
+            height: 48,
+            decoration: BoxDecoration(
+              // Translucent tint of the accent: soft pastel in light mode and
+              // a subtle glow in dark mode (the old fixed pastels were
+              // blinding on the dark surface).
+              color: tool.accent.withValues(alpha: 0.15),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(tool.icon, color: tool.accent, size: 24),
           ),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              width: 48,
-              height: 48,
-              decoration: BoxDecoration(
-                color: tool.backgroundColor,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Icon(tool.icon, color: tool.iconColor, size: 24),
+          const SizedBox(height: 12),
+          Text(
+            tool.label,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+              color: AppColors.ink(context),
             ),
-            const SizedBox(height: 12),
-            Text(
-              tool.label,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
-                color: Theme.of(context).colorScheme.onSurface,
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -304,36 +312,22 @@ class _EditToolCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        // TODO: Navigate to specific tool
-      },
-      borderRadius: BorderRadius.circular(16),
-      child: Container(
-        height: 108,
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surface,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.3),
-          ),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(tool.icon, color: const Color(0xFF14909A), size: 28),
-            const SizedBox(height: 12),
-            Text(
-              tool.label,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
-                color: Theme.of(context).colorScheme.onSurface,
-              ),
+    return _ToolCardShell(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(tool.icon, color: AppColors.primary(context), size: 28),
+          const SizedBox(height: 12),
+          Text(
+            tool.label,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+              color: AppColors.ink(context),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -356,7 +350,7 @@ class _MoreToolRow extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Row(
             children: [
-              Icon(tool.icon, color: const Color(0xFF14909A), size: 24),
+              Icon(tool.icon, color: AppColors.primary(context), size: 24),
               const SizedBox(width: 16),
               Expanded(
                 child: Column(
@@ -368,7 +362,7 @@ class _MoreToolRow extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w600,
-                        color: Theme.of(context).colorScheme.onSurface,
+                        color: AppColors.ink(context),
                       ),
                     ),
                     const SizedBox(height: 2),
@@ -376,7 +370,7 @@ class _MoreToolRow extends StatelessWidget {
                       tool.subtitle,
                       style: TextStyle(
                         fontSize: 13,
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        color: AppColors.textMuted(context),
                       ),
                     ),
                   ],
@@ -384,7 +378,7 @@ class _MoreToolRow extends StatelessWidget {
               ),
               Icon(
                 Icons.chevron_right_rounded,
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                color: AppColors.textHint(context),
                 size: 22,
               ),
             ],

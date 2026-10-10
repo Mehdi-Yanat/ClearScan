@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../widgets/app_bottom_bar.dart';
+import '../widgets/bottom_action_bar.dart';
 import 'scanner_screen.dart';
 
 class FolderMultiSelectScreen extends StatefulWidget {
@@ -182,48 +183,32 @@ class _FolderMultiSelectScreenState extends State<FolderMultiSelectScreen> {
   }
 
   Widget _buildBottomActionBar() {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    return Container(
+    return BottomActionBar(
+      style: BottomActionBarStyle.floating,
       margin: const EdgeInsets.fromLTRB(24, 0, 24, 100),
-      padding: const EdgeInsets.symmetric(vertical: 16),
-      decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1A3A42) : const Color(0xFF0F2A33),
-        borderRadius: BorderRadius.circular(32),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.2),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          _ActionButton(
-            icon: Icons.share_outlined,
-            label: 'Share',
-            onTap: _onShare,
-          ),
-          _ActionButton(
-            icon: Icons.merge_type_rounded,
-            label: 'Merge',
-            onTap: _onMerge,
-          ),
-          _ActionButton(
-            icon: Icons.download_outlined,
-            label: 'Export',
-            onTap: _onExport,
-          ),
-          _ActionButton(
-            icon: Icons.delete_outline_rounded,
-            label: 'Delete',
-            iconColor: const Color(0xFFFF6B6B),
-            onTap: _onDelete,
-          ),
-        ],
-      ),
+      actions: [
+        BottomActionBarItem(
+          icon: Icons.share_outlined,
+          label: 'Share',
+          onTap: _onShare,
+        ),
+        BottomActionBarItem(
+          icon: Icons.merge_type_rounded,
+          label: 'Merge',
+          onTap: _onMerge,
+        ),
+        BottomActionBarItem(
+          icon: Icons.download_outlined,
+          label: 'Export',
+          onTap: _onExport,
+        ),
+        BottomActionBarItem(
+          icon: Icons.delete_outline_rounded,
+          label: 'Delete',
+          iconColor: const Color(0xFFFF6B6B),
+          onTap: _onDelete,
+        ),
+      ],
     );
   }
 
@@ -345,7 +330,8 @@ class _DocumentListItem extends StatelessWidget {
             border: Border.all(
               color: isSelected
                   ? const Color(0xFF14909A).withValues(alpha: 0.3)
-                  : Theme.of(context).colorScheme.outline.withValues(alpha: 0.3),
+                  : Theme.of(context).colorScheme.outline
+                        .withValues(alpha: 0.3),
             ),
           ),
           child: Row(
@@ -432,46 +418,6 @@ class _DocumentListItem extends StatelessWidget {
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class _ActionButton extends StatelessWidget {
-  const _ActionButton({
-    required this.icon,
-    required this.label,
-    required this.onTap,
-    this.iconColor,
-  });
-
-  final IconData icon;
-  final String label;
-  final VoidCallback onTap;
-  final Color? iconColor;
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, color: iconColor ?? Colors.white, size: 24),
-            const SizedBox(height: 4),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
-                color: iconColor ?? Colors.white,
-              ),
-            ),
-          ],
         ),
       ),
     );

@@ -6,22 +6,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../l10n/app_localizations.dart';
+import '../services/app_settings.dart';
 import '../services/app_lock_service.dart';
-
-class AppSettings {
-  static const autoDetectEdges = 'settings_auto_detect_edges';
-  static const autoCapture = 'settings_auto_capture';
-  static const quality = 'settings_default_quality';
-  static const format = 'settings_default_format';
-  static const appLock = AppLockService.preferenceKey;
-  static const hideInRecents = 'settings_hide_in_recents';
-  static const autoBackup = 'settings_auto_backup';
-  static const themeMode = 'settings_theme_mode';
-
-  static const defaultQuality = 'High';
-  static const defaultFormat = 'PDF';
-  static const ThemeMode defaultThemeMode = ThemeMode.system;
-}
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -33,8 +19,6 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   SharedPreferences? _prefs;
 
-  bool _autoDetectEdges = true;
-  bool _autoCapture = false;
   String _quality = AppSettings.defaultQuality;
   String _format = AppSettings.defaultFormat;
   bool _appLock = false;
@@ -54,8 +38,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     if (!mounted) return;
     setState(() {
       _prefs = p;
-      _autoDetectEdges = p.getBool(AppSettings.autoDetectEdges) ?? true;
-      _autoCapture = p.getBool(AppSettings.autoCapture) ?? false;
       _quality = p.getString(AppSettings.quality) ?? AppSettings.defaultQuality;
       _format = p.getString(AppSettings.format) ?? AppSettings.defaultFormat;
       _appLock = p.getBool(AppSettings.appLock) ?? false;
@@ -336,26 +318,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     title: AppLocalizations.of(context)!
                         .settingsSectionScanning,
                     children: [
-                      _ToggleRow(
-                        label: AppLocalizations.of(context)!
-                            .settingsAutoDetectEdges,
-                        value: _autoDetectEdges,
-                        onChanged: (v) => _setBool(
-                          AppSettings.autoDetectEdges,
-                          v,
-                          () => _autoDetectEdges = v,
-                        ),
-                      ),
-                      _ToggleRow(
-                        label: AppLocalizations.of(context)!
-                            .settingsAutoCapture,
-                        value: _autoCapture,
-                        onChanged: (v) => _setBool(
-                          AppSettings.autoCapture,
-                          v,
-                          () => _autoCapture = v,
-                        ),
-                      ),
                       _ValueRow(
                         label: AppLocalizations.of(context)!
                             .settingsDefaultQuality,
@@ -395,11 +357,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     title: AppLocalizations.of(context)!
                         .settingsSectionSecurity,
                     children: [
-                      _ToggleRow(
-                        label: AppLocalizations.of(context)!.settingsAppLock,
-                        value: _appLock,
-                        onChanged: _setAppLock,
-                      ),
                       _ToggleRow(
                         label: AppLocalizations.of(context)!
                             .settingsHideInRecents,

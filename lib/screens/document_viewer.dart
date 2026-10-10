@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../widgets/bottom_action_bar.dart';
+
 class DocumentViewerScreen extends StatefulWidget {
   const DocumentViewerScreen({
     super.key,
@@ -369,53 +371,36 @@ class _DocumentViewerScreenState extends State<DocumentViewerScreen> {
   }
 
   Widget _buildBottomActionBar() {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 16),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        border: Border(
-          top: BorderSide(
-            color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2),
-          ),
+    return BottomActionBar(
+      actions: [
+        BottomActionBarItem(
+          icon: Icons.share_outlined,
+          label: 'Share',
+          onTap: widget.onShare ?? () => _showSnackBar('Share'),
         ),
-      ),
-      child: SafeArea(
-        top: false,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            _ActionButton(
-              icon: Icons.share_outlined,
-              label: 'Share',
-              onTap: widget.onShare ?? () => _showSnackBar('Share'),
-            ),
-            _ActionButton(
-              icon: Icons.edit_outlined,
-              label: 'Sign',
-              onTap: widget.onSign ?? () => _showSnackBar('Sign'),
-            ),
-            _ActionButton(
-              icon: Icons.document_scanner_outlined,
-              label: 'OCR',
-              onTap: widget.onOcr ?? () => _showSnackBar('OCR'),
-            ),
-            _ActionButton(
-              icon: Icons.edit_rounded,
-              label: 'Edit',
-              onTap: widget.onEdit ?? () => _showSnackBar('Edit'),
-            ),
-            _ActionButton(
-              icon: Icons.delete_outline_rounded,
-              label: 'Delete',
-              iconColor: const Color(0xFFE5484D),
-              backgroundColor: const Color(0xFFFFE5E5),
-              onTap: widget.onDelete ?? () => _showDeleteDialog(),
-            ),
-          ],
+        BottomActionBarItem(
+          icon: Icons.edit_outlined,
+          label: 'Sign',
+          onTap: widget.onSign ?? () => _showSnackBar('Sign'),
         ),
-      ),
+        BottomActionBarItem(
+          icon: Icons.document_scanner_outlined,
+          label: 'OCR',
+          onTap: widget.onOcr ?? () => _showSnackBar('OCR'),
+        ),
+        BottomActionBarItem(
+          icon: Icons.edit_rounded,
+          label: 'Edit',
+          onTap: widget.onEdit ?? () => _showSnackBar('Edit'),
+        ),
+        BottomActionBarItem(
+          icon: Icons.delete_outline_rounded,
+          label: 'Delete',
+          iconColor: const Color(0xFFE5484D),
+          backgroundColor: const Color(0xFFFFE5E5),
+          onTap: widget.onDelete ?? _showDeleteDialog,
+        ),
+      ],
     );
   }
 
@@ -435,7 +420,8 @@ class _DocumentViewerScreenState extends State<DocumentViewerScreen> {
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.3),
+                color: Theme.of(context).colorScheme.outline
+                    .withValues(alpha: 0.3),
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -523,62 +509,5 @@ class _DocumentViewerScreenState extends State<DocumentViewerScreen> {
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
       ..showSnackBar(SnackBar(content: Text(message)));
-  }
-}
-
-// ───────────────────────────── Widgets ─────────────────────────────
-
-class _ActionButton extends StatelessWidget {
-  const _ActionButton({
-    required this.icon,
-    required this.label,
-    required this.onTap,
-    this.iconColor,
-    this.backgroundColor,
-  });
-
-  final IconData icon;
-  final String label;
-  final VoidCallback onTap;
-  final Color? iconColor;
-  final Color? backgroundColor;
-
-  @override
-  Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final defaultBg = isDark
-        ? const Color(0xFF1A3A42)
-        : const Color(0xFFE3F3F4);
-    final defaultIconColor = isDark
-        ? const Color(0xFF2CC4CF)
-        : const Color(0xFF14909A);
-
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(16),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 56,
-            height: 56,
-            decoration: BoxDecoration(
-              color: backgroundColor ?? defaultBg,
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Icon(icon, color: iconColor ?? defaultIconColor, size: 24),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w500,
-              color: Theme.of(context).colorScheme.onSurface,
-            ),
-          ),
-        ],
-      ),
-    );
   }
 }

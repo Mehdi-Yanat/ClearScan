@@ -8,6 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../l10n/app_localizations.dart' as loc;
 import '../services/app_lock_service.dart';
+import '../services/app_settings.dart';
 import '../theme/app_theme.dart'; // AppColors, AppPreferences, themeModeNotifier, localeNotifier
 import '../widgets/app_bottom_bar.dart';
 import 'scanner_screen.dart';
@@ -183,9 +184,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       }
     } on PlatformException catch (error) {
       if (mounted) {
-        _snack(
-          '${l10n.helpEmailLaunchFailed(email)} (${error.code})',
-        );
+        _snack('${l10n.helpEmailLaunchFailed(email)} (${error.code})');
       }
     }
   }

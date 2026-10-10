@@ -3,12 +3,16 @@ import 'dart:io';
 import 'package:clear_scan/widgets/app_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../l10n/app_localizations.dart' as loc;
 import '../services/folder_repository.dart';
 import '../services/notification_service.dart';
+import '../services/recent_documents.dart';
 import '../theme/app_theme.dart';
 import '../widgets/folder_name_dialog.dart';
+import 'document_viewer_screen.dart';
 import 'scanner_screen.dart';
 
 /// Text/icon color that stays readable on the primary color in each theme
@@ -30,6 +34,8 @@ const _paperPrimary = Color(0xFF14909A);
 
 enum _Filter { all, pdf, images, docs, favorites }
 
+enum _Kind { pdf, image }
+
 extension _FilterExtension on _Filter {
   String localizedLabel(BuildContext context) {
     final l = loc.AppLocalizations.of(context)!;
@@ -44,34 +50,6 @@ extension _FilterExtension on _Filter {
 }
 
 enum _Sort { date, name, size }
-
-enum _Kind { pdf, image, doc }
-
-class _DocFile {
-  _DocFile(
-    this.name,
-    this.kind,
-    this.sizeKb,
-    this.when, {
-    this.favorite = false,
-  });
-
-  String name;
-  final _Kind kind;
-  final int sizeKb;
-  final String when;
-  bool favorite;
-
-  String get typeLabel => switch (kind) {
-    _Kind.pdf => 'PDF',
-    _Kind.image => 'JPG',
-    _Kind.doc => 'DOCX',
-  };
-
-  String get sizeLabel => sizeKb >= 1024
-      ? '${(sizeKb / 1024).toStringAsFixed(1)} MB'
-      : '$sizeKb KB';
-}
 
 class DocumentsScreen extends StatefulWidget {
   const DocumentsScreen({super.key});
@@ -91,25 +69,16 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
   List<DocumentFolder> _folders = [];
   bool _foldersLoading = true;
   String? _folderError;
-
-  final List<_DocFile> _files = [
-    _DocFile('Contract Agreement', _Kind.pdf, 2458, '10:30 AM', favorite: true),
-    _DocFile('Passport – John Doe', _Kind.pdf, 1126, 'Yesterday'),
-    _DocFile('Invoice #INV-2387', _Kind.pdf, 1843, '2 days ago'),
-    _DocFile('Meeting Notes', _Kind.doc, 320, '3 days ago'),
-    _DocFile(
-      'Receipt – Hardware Store',
-      _Kind.image,
-      860,
-      '4 days ago',
-      favorite: true,
-    ),
-  ];
+  List<RecentDocument> _files = [];
+  final Set<String> _favoritePaths = {};
+  bool _filesLoading = true;
+  String? _filesError;
 
   @override
   void initState() {
     super.initState();
     _loadFolders();
+    _loadFiles();
   }
 
   @override
@@ -128,37 +97,39 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
         .toList();
   }
 
-  List<_DocFile> get _visibleFiles {
+  List<RecentDocument> get _visibleFiles {
     final list = _files.where((f) {
       final matchesQuery = f.name.toLowerCase().contains(_query);
       final matchesFilter = switch (_filter) {
         _Filter.all => true,
-        _Filter.pdf => f.kind == _Kind.pdf,
-        _Filter.images => f.kind == _Kind.image,
-        _Filter.docs => f.kind == _Kind.doc,
-        _Filter.favorites => f.favorite,
+        _Filter.pdf => f.type == 'PDF',
+        _Filter.images => f.type == 'JPG' || f.type == 'PNG',
+        _Filter.docs => false,
+        _Filter.favorites => _favoritePaths.contains(f.path),
       };
       return matchesQuery && matchesFilter;
     }).toList();
 
     switch (_sort) {
       case _Sort.date:
-        break; // sample data is already newest-first; sort by a real timestamp in production
+        list.sort((a, b) => b.modifiedAt.compareTo(a.modifiedAt));
       case _Sort.name:
         list.sort(
           (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()),
         );
       case _Sort.size:
-        list.sort((a, b) => b.sizeKb.compareTo(a.sizeKb));
+        list.sort((a, b) => b.sizeBytes.compareTo(a.sizeBytes));
     }
     return list;
   }
 
   // ── actions ──
 
-  void _openScanner() {
-    Navigator.of(context)
-        .push(MaterialPageRoute<void>(builder: (_) => const ScannerScreen()));
+  Future<void> _openScanner() async {
+    await Navigator.of(context).push<void>(
+      MaterialPageRoute<void>(builder: (_) => const ScannerScreen()),
+    );
+    if (mounted) await _loadFiles();
   }
 
   void _snack(String message, {SnackBarAction? action}) {
@@ -181,6 +152,27 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
       setState(() {
         _foldersLoading = false;
         _folderError = error.toString();
+      });
+    }
+  }
+
+  Future<void> _loadFiles() async {
+    setState(() {
+      _filesLoading = true;
+      _filesError = null;
+    });
+    try {
+      final files = await loadRecentDocuments(limit: null);
+      if (!mounted) return;
+      setState(() {
+        _files = files;
+        _filesLoading = false;
+      });
+    } on Exception catch (error) {
+      if (!mounted) return;
+      setState(() {
+        _filesLoading = false;
+        _filesError = error.toString();
       });
     }
   }
@@ -236,16 +228,110 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
     }
   }
 
-  void _deleteFile(_DocFile file) {
-    final index = _files.indexOf(file);
-    setState(() => _files.remove(file));
-    _snack(
-      '"${file.name}" deleted',
-      action: SnackBarAction(
-        label: loc.AppLocalizations.of(context)!.undo,
-        onPressed: () => setState(() => _files.insert(index, file)),
+  Future<void> _openDocument(RecentDocument document) async {
+    await Navigator.of(context).push<void>(
+      MaterialPageRoute<void>(
+        builder: (_) => DocumentViewerScreen(document: document),
       ),
     );
+    if (mounted) await _loadFiles();
+  }
+
+  Future<void> _shareDocument(RecentDocument document) async {
+    try {
+      if (document.path.startsWith('content://')) {
+        await shareRecentDocument(document);
+      } else {
+        await SharePlus.instance.share(
+          ShareParams(files: [XFile(document.path)], subject: document.name),
+        );
+      }
+    } on Exception catch (error) {
+      if (mounted) _snack('Could not share document: $error');
+    }
+  }
+
+  Future<void> _deleteFile(RecentDocument document) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(loc.AppLocalizations.of(dialogContext)!.delete),
+        content: Text(
+          loc.AppLocalizations.of(dialogContext)!
+              .documentDeleteConfirmation(document.name),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: Text(
+              MaterialLocalizations.of(dialogContext).cancelButtonLabel,
+            ),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            child: Text(loc.AppLocalizations.of(dialogContext)!.delete),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+    try {
+      await deleteRecentDocument(document);
+      if (!mounted) return;
+      setState(() => _favoritePaths.remove(document.path));
+      await _loadFiles();
+      if (mounted) {
+        _snack(
+          loc.AppLocalizations.of(context)!
+              .documentDeleteSuccess(document.name),
+        );
+      }
+    } on Exception catch (error) {
+      if (mounted) _snack('Could not delete document: $error');
+    }
+  }
+
+  Future<void> _renameFile(RecentDocument document) async {
+    final extensionIndex = document.name.lastIndexOf('.');
+    final extension = extensionIndex > 0
+        ? document.name.substring(extensionIndex)
+        : '';
+    var name = extensionIndex > 0
+        ? document.name.substring(0, extensionIndex)
+        : document.name;
+    final newName = await showDialog<String>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(loc.AppLocalizations.of(dialogContext)!.rename),
+        content: TextFormField(
+          initialValue: name,
+          autofocus: true,
+          onChanged: (value) => name = value,
+          decoration: const InputDecoration(labelText: 'File name'),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: Text(
+              MaterialLocalizations.of(dialogContext).cancelButtonLabel,
+            ),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(name.trim()),
+            child: Text(loc.AppLocalizations.of(dialogContext)!.rename),
+          ),
+        ],
+      ),
+    );
+    if (newName == null || newName.isEmpty || !mounted) return;
+    try {
+      await renameRecentDocument(document, '$newName$extension');
+      if (!mounted) return;
+      await _loadFiles();
+      if (mounted) _snack('Document renamed');
+    } on Exception catch (error) {
+      if (mounted) _snack('Could not rename document: $error');
+    }
   }
 
   Future<void> _showSortSheet() async {
@@ -360,7 +446,9 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
         folders.isEmpty &&
         files.isEmpty &&
         !_foldersLoading &&
-        _folderError == null;
+        _folderError == null &&
+        !_filesLoading &&
+        _filesError == null;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final iconBrightness = isDark ? Brightness.light : Brightness.dark;
 
@@ -432,6 +520,33 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
                                 color: Theme.of(context).colorScheme.error,
                               ),
                             ),
+                          if (_filesLoading)
+                            const Center(
+                              child: Padding(
+                                padding: EdgeInsets.all(24),
+                                child: CircularProgressIndicator(),
+                              ),
+                            ),
+                          if (_filesError != null)
+                            Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: Column(
+                                children: [
+                                  Text(
+                                    _filesError!,
+                                    style: TextStyle(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .error,
+                                    ),
+                                  ),
+                                  TextButton(
+                                    onPressed: _loadFiles,
+                                    child: const Text('Retry'),
+                                  ),
+                                ],
+                              ),
+                            ),
                           if (folders.isNotEmpty)
                             _Card(
                               children: [
@@ -453,13 +568,18 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
                                 for (final file in files)
                                   _FileRow(
                                     file: file,
-                                    onTap: () {
-                                      // TODO: open document viewer
-                                    },
+                                    favorite: _favoritePaths.contains(
+                                      file.path,
+                                    ),
+                                    onTap: () => _openDocument(file),
                                     onToggleFavorite: () => setState(
-                                      () => file.favorite = !file.favorite,
+                                      () => _favoritePaths.contains(file.path)
+                                          ? _favoritePaths.remove(file.path)
+                                          : _favoritePaths.add(file.path),
                                     ),
                                     onDelete: () => _deleteFile(file),
+                                    onShare: () => _shareDocument(file),
+                                    onRename: () => _renameFile(file),
                                   ),
                               ],
                             ),
@@ -763,25 +883,39 @@ class _FolderRow extends StatelessWidget {
 class _FileRow extends StatelessWidget {
   const _FileRow({
     required this.file,
+    required this.favorite,
     required this.onTap,
     required this.onToggleFavorite,
     required this.onDelete,
+    required this.onShare,
+    required this.onRename,
   });
 
-  final _DocFile file;
+  final RecentDocument file;
+  final bool favorite;
   final VoidCallback onTap;
   final VoidCallback onToggleFavorite;
   final VoidCallback onDelete;
+  final VoidCallback onShare;
+  final VoidCallback onRename;
+
+  String _formatSize(int bytes) {
+    if (bytes < 1024) return '$bytes B';
+    if (bytes < 1024 * 1024) return '${(bytes / 1024).round()} KB';
+    return '${(bytes / (1024 * 1024)).toStringAsFixed(1)} MB';
+  }
 
   @override
   Widget build(BuildContext context) {
+    final locale = Localizations.localeOf(context).toString();
+    final modified = DateFormat.yMMMd(locale).add_jm().format(file.modifiedAt);
     return InkWell(
       onTap: onTap,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(16, 10, 4, 10),
         child: Row(
           children: [
-            _Thumb(kind: file.kind),
+            _Thumb(kind: file.type == 'PDF' ? _Kind.pdf : _Kind.image),
             const SizedBox(width: 16),
             Expanded(
               child: Column(
@@ -799,7 +933,7 @@ class _FileRow extends StatelessWidget {
                   ),
                   const SizedBox(height: 3),
                   Text(
-                    '${file.typeLabel}  •  ${file.sizeLabel}  •  ${file.when}',
+                    '${file.type}  •  ${_formatSize(file.sizeBytes)}  •  $modified',
                     style: TextStyle(
                       fontSize: 11.5,
                       color: AppColors.textMuted(context),
@@ -811,18 +945,16 @@ class _FileRow extends StatelessWidget {
             IconButton(
               onPressed: onToggleFavorite,
               visualDensity: VisualDensity.compact,
-              tooltip: file.favorite
-                  ? 'Remove from favorites'
-                  : 'Add to favorites',
+              tooltip: favorite ? 'Remove from favorites' : 'Add to favorites',
               icon: Icon(
-                file.favorite ? Icons.star_rounded : Icons.star_outline_rounded,
+                favorite ? Icons.star_rounded : Icons.star_outline_rounded,
                 size: 22,
-                color: file.favorite
+                color: favorite
                     ? AppColors.warning
                     : AppColors.textHint(context),
               ),
             ),
-            _MoreMenu(onDelete: onDelete),
+            _MoreMenu(onDelete: onDelete, onShare: onShare, onRename: onRename),
           ],
         ),
       ),
@@ -831,9 +963,11 @@ class _FileRow extends StatelessWidget {
 }
 
 class _MoreMenu extends StatelessWidget {
-  const _MoreMenu({required this.onDelete});
+  const _MoreMenu({required this.onDelete, this.onShare, this.onRename});
 
   final VoidCallback onDelete;
+  final VoidCallback? onShare;
+  final VoidCallback? onRename;
 
   @override
   Widget build(BuildContext context) {
@@ -844,18 +978,21 @@ class _MoreMenu extends StatelessWidget {
         color: AppColors.textMuted(context),
       ),
       onSelected: (value) {
+        if (value == 'share') onShare?.call();
+        if (value == 'rename') onRename?.call();
         if (value == 'delete') onDelete();
-        // TODO: 'share', 'rename'
       },
       itemBuilder: (_) => [
-        PopupMenuItem(
-          value: 'share',
-          child: Text(loc.AppLocalizations.of(context)!.share),
-        ),
-        PopupMenuItem(
-          value: 'rename',
-          child: Text(loc.AppLocalizations.of(context)!.rename),
-        ),
+        if (onShare != null)
+          PopupMenuItem(
+            value: 'share',
+            child: Text(loc.AppLocalizations.of(context)!.share),
+          ),
+        if (onRename != null)
+          PopupMenuItem(
+            value: 'rename',
+            child: Text(loc.AppLocalizations.of(context)!.rename),
+          ),
         PopupMenuItem(
           value: 'delete',
           child: Text(loc.AppLocalizations.of(context)!.delete),

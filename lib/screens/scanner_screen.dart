@@ -1,12 +1,13 @@
-import 'dart:async';
-
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'crop_adjust_screen.dart';
+import 'enhance_save_screen.dart';
 import '../l10n/app_localizations.dart';
+import '../services/app_settings.dart';
 import '../services/document_storage.dart';
 import '../services/notification_service.dart';
 
@@ -15,7 +16,7 @@ enum ScanMode {
   passport(0.72),
   document(0.707),
   qr(1.0),
-  book(1.35);
+  book(1.414);
 
   const ScanMode(this.aspect);
 
@@ -50,14 +51,15 @@ class _ScannerScreenState extends State<ScannerScreen>
 
   late ScanMode _mode = widget.initialMode;
   int _flashIndex = 0;
-  bool _autoCapture = true;
+  bool _showGrid = false;
+  String _quality = AppSettings.defaultQuality;
   bool _busy = false;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _initCamera();
+    _loadScannerSettings();
   }
 
   @override
@@ -79,7 +81,163 @@ class _ScannerScreenState extends State<ScannerScreen>
     }
   }
 
+  Future<void> _loadScannerSettings() async {
+    try {
+      final preferences = await SharedPreferences.getInstance();
+      if (!mounted) return;
+      setState(() {
+        _showGrid = preferences.getBool(AppSettings.grid) ?? false;
+        _quality =
+            preferences.getString(AppSettings.quality) ??
+            AppSettings.defaultQuality;
+      });
+    } on Exception catch (error) {
+      _showSnack('Could not load scanner settings: $error');
+    }
+    if (mounted) await _initCamera();
+  }
+
+  ResolutionPreset _resolutionForQuality(String quality) {
+    final l10n = AppLocalizations.of(context);
+    if (quality == l10n?.settingsQualityLow ||
+        quality.toLowerCase() == 'low' ||
+        quality.toLowerCase() == 'niedrig' ||
+        quality == 'منخفضة') {
+      return ResolutionPreset.medium;
+    }
+    if (quality == l10n?.settingsQualityMedium ||
+        quality.toLowerCase() == 'medium' ||
+        quality.toLowerCase() == 'mittel' ||
+        quality == 'متوسطة') {
+      return ResolutionPreset.high;
+    }
+    return ResolutionPreset.veryHigh;
+  }
+
+  Future<void> _savePreference(
+    String key,
+    Object value,
+    String errorMessage,
+  ) async {
+    try {
+      final preferences = await SharedPreferences.getInstance();
+      final saved = switch (value) {
+        bool boolean => await preferences.setBool(key, boolean),
+        String text => await preferences.setString(key, text),
+        _ => false,
+      };
+      if (!saved) throw Exception('Preference write was rejected.');
+    } on Exception catch (error) {
+      _showSnack('$errorMessage: $error');
+    }
+  }
+
+  Future<void> _setGrid(bool enabled) async {
+    setState(() => _showGrid = enabled);
+    await _savePreference(
+      AppSettings.grid,
+      enabled,
+      'Could not save grid setting',
+    );
+  }
+
+  Future<void> _setQuality(String quality) async {
+    if (_quality == quality) return;
+    setState(() => _quality = quality);
+    await _savePreference(
+      AppSettings.quality,
+      quality,
+      'Could not save scan quality',
+    );
+    final oldCamera = _camera;
+    _camera = null;
+    _initFuture = null;
+    await oldCamera?.dispose();
+    if (mounted) await _initCamera();
+  }
+
+  Future<void> _showScannerSettings() async {
+    final l10n = AppLocalizations.of(context);
+    if (l10n == null) return;
+    final qualityOptions = <String>[
+      l10n.settingsQualityLow,
+      l10n.settingsQualityMedium,
+      l10n.settingsQualityHigh,
+    ];
+    await showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+      ),
+      builder: (context) => SafeArea(
+        child: SingleChildScrollView(
+          child: StatefulBuilder(
+            builder: (context, updateSheet) => Padding(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Center(
+                    child: Container(
+                      width: 40,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.secondaryContainer,
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(8, 18, 8, 6),
+                    child: Text(
+                      l10n.settingsSectionScanning,
+                      style: Theme.of(context).textTheme.titleSmall,
+                    ),
+                  ),
+                  SwitchListTile(
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+                    title: Text(l10n.scannerGrid),
+                    value: _showGrid,
+                    onChanged: (value) {
+                      _setGrid(value);
+                      updateSheet(() {});
+                    },
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(8, 8, 8, 4),
+                    child: Text(
+                      l10n.settingsDefaultQuality,
+                      style: Theme.of(context).textTheme.titleSmall,
+                    ),
+                  ),
+                  for (final option in qualityOptions)
+                    ListTile(
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+                      title: Text(option),
+                      trailing: option == _quality
+                          ? Icon(
+                              Icons.check_rounded,
+                              color: Theme.of(context).colorScheme.primary,
+                            )
+                          : null,
+                      onTap: () {
+                        _setQuality(option);
+                        updateSheet(() {});
+                      },
+                    ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   Future<void> _initCamera() async {
+    if (!mounted) return;
     setState(() => _error = null);
     try {
       final cameras = await availableCameras();
@@ -93,9 +251,9 @@ class _ScannerScreenState extends State<ScannerScreen>
       );
       final controller = CameraController(
         back,
-        ResolutionPreset.veryHigh,
+        _resolutionForQuality(_quality),
         enableAudio: false,
-        imageFormatGroup: ImageFormatGroup.jpeg,
+        imageFormatGroup: ImageFormatGroup.yuv420,
       );
       _camera = controller;
       _initFuture = controller.initialize().then((_) async {
@@ -169,17 +327,33 @@ class _ScannerScreenState extends State<ScannerScreen>
     if (!mounted || result?.path == null) return;
 
     try {
-      final saved = await saveCroppedDocument(
-        imagePath: result!.path!,
-        name: _getScanModeLabel(_mode),
+      await Navigator.of(context).push<bool>(
+        MaterialPageRoute<bool>(
+          builder: (_) => EnhanceSaveScreen(
+            imagePath: result!.path!,
+            initialFileName: _getScanModeLabel(_mode),
+            onSave: (imageBytes, fileName, format) async {
+              final saved = await saveEnhancedDocument(
+                imageBytes: imageBytes,
+                name: fileName,
+                format: format,
+              );
+              if (!mounted) return;
+              _showSnack('Saved ${saved.uri.pathSegments.last}');
+              try {
+                await addNotification(
+                  AppNotificationType.scanCompleted,
+                  detail: fileName,
+                );
+              } on Exception catch (error) {
+                _showSnack('Could not save the scan notification: $error');
+              }
+            },
+          ),
+        ),
       );
-      await addNotification(
-        AppNotificationType.scanCompleted,
-        detail: _getScanModeLabel(_mode),
-      );
-      _showSnack('Saved ${saved.uri.pathSegments.last}');
     } on Exception catch (error) {
-      _showSnack('Could not save the scanned document: $error');
+      _showSnack('Could not open the enhance screen: $error');
     }
   }
 
@@ -292,9 +466,7 @@ class _ScannerScreenState extends State<ScannerScreen>
                       onClose: () =>
                           Navigator.of(context).pushReplacementNamed('/home'),
                       onFlash: _cycleFlash,
-                      onSettings: () {
-                        // TODO: scanner settings (quality, grid, auto-capture)
-                      },
+                      onSettings: _showScannerSettings,
                     ),
                     Expanded(
                       child: TweenAnimationBuilder<double>(
@@ -306,6 +478,7 @@ class _ScannerScreenState extends State<ScannerScreen>
                           painter: _ScanFramePainter(
                             aspect: aspect,
                             color: _accent,
+                            showGrid: _showGrid,
                           ),
                         ),
                       ),
@@ -315,17 +488,16 @@ class _ScannerScreenState extends State<ScannerScreen>
                     _ModeSelector(
                       selected: _mode,
                       accent: _accent,
-                      onChanged: (m) => setState(() => _mode = m),
+                      onChanged: (m) {
+                        setState(() => _mode = m);
+                      },
                     ),
                     const SizedBox(height: 18),
                     _Controls(
                       busy: _busy,
                       showShutter: _mode != ScanMode.qr,
-                      autoCapture: _autoCapture,
                       onGallery: _pickFromGallery,
                       onShutter: _capture,
-                      onToggleAuto: () =>
-                          setState(() => _autoCapture = !_autoCapture),
                     ),
                     const SizedBox(height: 20),
                   ],
@@ -460,10 +632,15 @@ class _TopBar extends StatelessWidget {
 // ───────────────────────────── Frame overlay ─────────────────────────────
 
 class _ScanFramePainter extends CustomPainter {
-  _ScanFramePainter({required this.aspect, required this.color});
+  _ScanFramePainter({
+    required this.aspect,
+    required this.color,
+    required this.showGrid,
+  });
 
   final double aspect;
   final Color color;
+  final bool showGrid;
 
   Rect _frame(Size size) {
     final maxW = size.width * 0.8;
@@ -483,8 +660,8 @@ class _ScanFramePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final rect = _frame(size);
-    final rrect = RRect.fromRectAndRadius(rect, const Radius.circular(8));
+    final frame = _frame(size);
+    final rrect = RRect.fromRectAndRadius(frame, const Radius.circular(8));
 
     // Darken everything outside the frame.
     final dim = Path.combine(
@@ -498,6 +675,29 @@ class _ScanFramePainter extends CustomPainter {
 
     // Soft fill inside.
     canvas.drawRRect(rrect, Paint()..color = color.withValues(alpha: 0.08));
+
+    if (showGrid) {
+      canvas.save();
+      canvas.clipRRect(rrect);
+      final gridPaint = Paint()
+        ..color = color.withValues(alpha: 0.55)
+        ..strokeWidth = 1;
+      for (var i = 1; i < 3; i++) {
+        final x = frame.left + frame.width * i / 3;
+        final y = frame.top + frame.height * i / 3;
+        canvas.drawLine(
+          Offset(x, frame.top),
+          Offset(x, frame.bottom),
+          gridPaint,
+        );
+        canvas.drawLine(
+          Offset(frame.left, y),
+          Offset(frame.right, y),
+          gridPaint,
+        );
+      }
+      canvas.restore();
+    }
 
     // Corner brackets.
     final paint = Paint()
@@ -513,15 +713,15 @@ class _ScanFramePainter extends CustomPainter {
       ..lineTo(c.dx, c.dy)
       ..lineTo(c.dx + len * dx, c.dy);
 
-    canvas.drawPath(corner(rect.topLeft, 1, 1), paint);
-    canvas.drawPath(corner(rect.topRight, -1, 1), paint);
-    canvas.drawPath(corner(rect.bottomLeft, 1, -1), paint);
-    canvas.drawPath(corner(rect.bottomRight, -1, -1), paint);
+    canvas.drawPath(corner(frame.topLeft, 1, 1), paint);
+    canvas.drawPath(corner(frame.topRight, -1, 1), paint);
+    canvas.drawPath(corner(frame.bottomLeft, 1, -1), paint);
+    canvas.drawPath(corner(frame.bottomRight, -1, -1), paint);
   }
 
   @override
   bool shouldRepaint(covariant _ScanFramePainter old) =>
-      old.aspect != aspect || old.color != color;
+      old.aspect != aspect || old.color != color || old.showGrid != showGrid;
 }
 
 class _HintPill extends StatelessWidget {
@@ -654,18 +854,14 @@ class _Controls extends StatelessWidget {
   const _Controls({
     required this.busy,
     required this.showShutter,
-    required this.autoCapture,
     required this.onGallery,
     required this.onShutter,
-    required this.onToggleAuto,
   });
 
   final bool busy;
   final bool showShutter;
-  final bool autoCapture;
   final VoidCallback onGallery;
   final VoidCallback onShutter;
-  final VoidCallback onToggleAuto;
 
   @override
   Widget build(BuildContext context) {
@@ -683,26 +879,19 @@ class _Controls extends StatelessWidget {
               size: 24,
             ),
           ),
-          AnimatedOpacity(
-            opacity: showShutter ? 1 : 0,
-            duration: const Duration(milliseconds: 150),
-            child: IgnorePointer(
-              ignoring: !showShutter,
-              child: _Shutter(busy: busy, onTap: onShutter),
-            ),
-          ),
-          _GlassButton(
-            onTap: onToggleAuto,
-            radius: 26,
-            child: Text(
-              autoCapture ? 'Auto' : 'Manual',
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 11.5,
-                fontWeight: FontWeight.w500,
+          Expanded(
+            child: Center(
+              child: AnimatedOpacity(
+                opacity: showShutter ? 1 : 0,
+                duration: const Duration(milliseconds: 150),
+                child: IgnorePointer(
+                  ignoring: !showShutter,
+                  child: _Shutter(busy: busy, onTap: onShutter),
+                ),
               ),
             ),
           ),
+          const SizedBox(width: 52),
         ],
       ),
     );
