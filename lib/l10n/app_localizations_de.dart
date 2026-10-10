@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -54,10 +55,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get appLock => 'App-Sperre';
 
   @override
-  String get appLockAuthReason => 'Authentifizieren, um ClearScan zu entsperren.';
+  String get appLockAuthReason =>
+      'Authentifizieren, um ClearScan zu entsperren.';
 
   @override
-  String get appLockAuthenticationFailed => 'Authentifizierung fehlgeschlagen. Versuche erneut, ClearScan zu entsperren.';
+  String get appLockAuthenticationFailed =>
+      'Authentifizierung fehlgeschlagen. Versuche erneut, ClearScan zu entsperren.';
 
   @override
   String appLockAuthenticationError(Object error) {
@@ -172,7 +175,23 @@ class AppLocalizationsDe extends AppLocalizations {
   String get delete => 'Löschen';
 
   @override
-  String get fast_and_smart => 'Schnelles, intelligentes und sicheres\nDokumentenscannen.';
+  String documentDeleteConfirmation(Object name) {
+    return '\"$name\" löschen? Dies kann nicht rückgängig gemacht werden.';
+  }
+
+  @override
+  String documentRenameSuccess(Object name) {
+    return 'Umbenannt in $name';
+  }
+
+  @override
+  String documentDeleteSuccess(Object name) {
+    return '$name gelöscht';
+  }
+
+  @override
+  String get fast_and_smart =>
+      'Schnelles, intelligentes und sicheres\nDokumentenscannen.';
 
   @override
   String get documentsTitle => 'Dokumente';
@@ -244,19 +263,22 @@ class AppLocalizationsDe extends AppLocalizations {
   String get onboardingSlideScanTitle => 'Alles scannen';
 
   @override
-  String get onboardingSlideScanSubtitle => 'Wandle Papier in klare, durchsuchbare PDFs\nin Sekunden, direkt von deinem Telefon.';
+  String get onboardingSlideScanSubtitle =>
+      'Wandle Papier in klare, durchsuchbare PDFs\nin Sekunden, direkt von deinem Telefon.';
 
   @override
   String get onboardingSlideOrganizeTitle => 'Alles organisieren';
 
   @override
-  String get onboardingSlideOrganizeSubtitle => 'Behalte Ausweise, Verträge und Quittungen\nordentlich sortiert in Ordnern.';
+  String get onboardingSlideOrganizeSubtitle =>
+      'Behalte Ausweise, Verträge und Quittungen\nordentlich sortiert in Ordnern.';
 
   @override
   String get onboardingSlideSignTitle => 'Bearbeiten & Unterschreiben';
 
   @override
-  String get onboardingSlideSignSubtitle => 'Zusammenführen, komprimieren, unterschreiben und teilen\nDeine Dokumente in wenigen Tipps.';
+  String get onboardingSlideSignSubtitle =>
+      'Zusammenführen, komprimieren, unterschreiben und teilen\nDeine Dokumente in wenigen Tipps.';
 
   @override
   String get onboardingSkip => 'Überspringen';
@@ -265,7 +287,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get onboardingGetStarted => 'Los geht\'s';
 
   @override
-  String get onboardingAgreeTerms => 'Indem du fortfährst, stimmst du den Nutzungsbedingungen und der Datenschutzerklärung zu.';
+  String get onboardingAgreeTerms =>
+      'Indem du fortfährst, stimmst du den Nutzungsbedingungen und der Datenschutzerklärung zu.';
 
   @override
   String get onboardingTileIdCards => 'Ausweise';
@@ -304,7 +327,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get scanModeQrHint => 'Richte deine Kamera auf einen QR-Code';
 
   @override
-  String get scanModeBookHint => 'Öffne das Buch und passe beide Seiten in den Rahmen';
+  String get scanModeBookHint =>
+      'Öffne das Buch und passe beide Seiten in den Rahmen';
 
   @override
   String get settingsSectionScanning => 'SCANNEN';
@@ -317,12 +341,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get settingsSectionAbout => 'ÜBER';
-
-  @override
-  String get settingsAutoDetectEdges => 'Kanten automatisch erkennen';
-
-  @override
-  String get settingsAutoCapture => 'Automatische Erfassung';
 
   @override
   String get settingsAppLock => 'App-Sperre (PIN / Biometrie)';
@@ -358,6 +376,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get settingsQualityHigh => 'Hoch';
 
   @override
+  String get scannerGrid => 'Raster anzeigen';
+
+  @override
   String get settingsFormatPdf => 'PDF';
 
   @override
@@ -367,7 +388,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get settingsClearCacheTitle => 'Cache leeren?';
 
   @override
-  String get settingsClearCacheMessage => 'Temporäre Dateien werden gelöscht. Ihre Dokumente bleiben unverändert.';
+  String get settingsClearCacheMessage =>
+      'Temporäre Dateien werden gelöscht. Ihre Dokumente bleiben unverändert.';
 
   @override
   String get settingsCancel => 'Abbrechen';
@@ -411,5 +433,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get cropAdjustErrorOpenImage => 'Konnte das Bild nicht öffnen.';
 
   @override
-  String get cropAdjustErrorCropImage => 'Konnte das Bild nicht zuschneiden. Passe die Ecken an und versuche es erneut.';
+  String get cropAdjustErrorCropImage =>
+      'Konnte das Bild nicht zuschneiden. Passe die Ecken an und versuche es erneut.';
+
+  @override
+  String get cropAdjustErrorDetectEdges =>
+      'Dokumentkanten konnten nicht erkannt werden. Passe die Ecken manuell an.';
 }

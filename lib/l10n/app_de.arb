@@ -63,6 +63,24 @@
   "share": "Teilen",
   "rename": "Umbenennen",
   "delete": "Löschen",
+  "documentDeleteConfirmation": "\"{name}\" löschen? Dies kann nicht rückgängig gemacht werden.",
+  "@documentDeleteConfirmation": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "documentRenameSuccess": "Umbenannt in {name}",
+  "@documentRenameSuccess": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "documentDeleteSuccess": "{name} gelöscht",
+  "@documentDeleteSuccess": {
+    "placeholders": {
+      "name": {}
+    }
+  },
   "fast_and_smart":"Schnelles, intelligentes und sicheres\nDokumentenscannen.",
   "documentsTitle": "Dokumente",
   "documentsSortBy": "Sortieren nach",
@@ -112,8 +130,6 @@
   "settingsSectionSecurity": "SICHERHEIT",
   "settingsSectionStorageSync": "SPEICHER & SYNC",
   "settingsSectionAbout": "ÜBER",
-  "settingsAutoDetectEdges": "Kanten automatisch erkennen",
-  "settingsAutoCapture": "Automatische Erfassung",
   "settingsAppLock": "App-Sperre (PIN / Biometrie)",
   "settingsHideInRecents": "Ausblenden in Kürzlich verwendet",
   "settingsAutoBackup": "Automatisches Backup",
@@ -125,6 +141,7 @@
   "settingsQualityLow": "Niedrig",
   "settingsQualityMedium": "Mittel",
   "settingsQualityHigh": "Hoch",
+  "scannerGrid": "Raster anzeigen",
   "settingsFormatPdf": "PDF",
   "settingsFormatJpg": "JPG",
   "settingsClearCacheTitle": "Cache leeren?",
@@ -147,5 +164,6 @@
   "cropAdjustAutoCrop": "Automatisch zuschneiden",
   "cropAdjustAddPage": "Seite hinzufügen",
   "cropAdjustErrorOpenImage": "Konnte das Bild nicht öffnen.",
-  "cropAdjustErrorCropImage": "Konnte das Bild nicht zuschneiden. Passe die Ecken an und versuche es erneut."
+  "cropAdjustErrorCropImage": "Konnte das Bild nicht zuschneiden. Passe die Ecken an und versuche es erneut.",
+  "cropAdjustErrorDetectEdges": "Dokumentkanten konnten nicht erkannt werden. Passe die Ecken manuell an."
 }

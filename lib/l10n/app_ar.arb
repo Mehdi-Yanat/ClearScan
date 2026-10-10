@@ -63,6 +63,24 @@
   "share": "مشاركة",
   "rename": "إعادة التسمية",
   "delete": "حذف",
+  "documentDeleteConfirmation": "هل تريد حذف {name}؟ لا يمكن التراجع عن هذا الإجراء.",
+  "@documentDeleteConfirmation": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "documentRenameSuccess": "تمت إعادة التسمية إلى {name}",
+  "@documentRenameSuccess": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "documentDeleteSuccess": "تم حذف {name}",
+  "@documentDeleteSuccess": {
+    "placeholders": {
+      "name": {}
+    }
+  },
   "fast_and_smart":"مسح سريع وذكي وآمن\nللمستندات.",
   "documentsTitle": "المستندات",
   "documentsSortBy": "ترتيب حسب",
@@ -112,8 +130,6 @@
   "settingsSectionSecurity": "الأمان",
   "settingsSectionStorageSync": "التخزين والمزامنة",
   "settingsSectionAbout": "حول",
-  "settingsAutoDetectEdges": "كشف تلقائي للحواف",
-  "settingsAutoCapture": "الالتقاط التلقائي",
   "settingsAppLock": "قفل التطبيق (رقم سري / بصمة)",
   "settingsHideInRecents": "إخفاء من المشغل",
   "settingsAutoBackup": "النسخ الاحتياطي التلقائي",
@@ -125,6 +141,7 @@
   "settingsQualityLow": "منخفضة",
   "settingsQualityMedium": "متوسطة",
   "settingsQualityHigh": "عالية",
+  "scannerGrid": "إظهار الشبكة",
   "settingsFormatPdf": "PDF",
   "settingsFormatJpg": "JPG",
   "settingsClearCacheTitle": "مسح التخزين المؤقت؟",
@@ -147,5 +164,6 @@
   "cropAdjustAutoCrop": "قص تلقائي",
   "cropAdjustAddPage": "إضافة صفحة",
   "cropAdjustErrorOpenImage": "لم يتم فتح الصورة.",
-  "cropAdjustErrorCropImage": "لم يتم قص الصورة. اضبط الزوايا وحاول مرة أخرى."
+  "cropAdjustErrorCropImage": "لم يتم قص الصورة. اضبط الزوايا وحاول مرة أخرى.",
+  "cropAdjustErrorDetectEdges": "تعذر اكتشاف حواف المستند. اضبط الزوايا يدويًا."
 }

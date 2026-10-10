@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -57,7 +58,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get appLockAuthReason => 'تحقق من هويتك لفتح ClearScan.';
 
   @override
-  String get appLockAuthenticationFailed => 'فشل التحقق. حاول مرة أخرى لفتح ClearScan.';
+  String get appLockAuthenticationFailed =>
+      'فشل التحقق. حاول مرة أخرى لفتح ClearScan.';
 
   @override
   String appLockAuthenticationError(Object error) {
@@ -172,6 +174,21 @@ class AppLocalizationsAr extends AppLocalizations {
   String get delete => 'حذف';
 
   @override
+  String documentDeleteConfirmation(Object name) {
+    return 'هل تريد حذف $name؟ لا يمكن التراجع عن هذا الإجراء.';
+  }
+
+  @override
+  String documentRenameSuccess(Object name) {
+    return 'تمت إعادة التسمية إلى $name';
+  }
+
+  @override
+  String documentDeleteSuccess(Object name) {
+    return 'تم حذف $name';
+  }
+
+  @override
   String get fast_and_smart => 'مسح سريع وذكي وآمن\nللمستندات.';
 
   @override
@@ -244,19 +261,22 @@ class AppLocalizationsAr extends AppLocalizations {
   String get onboardingSlideScanTitle => 'امسح كل شيء';
 
   @override
-  String get onboardingSlideScanSubtitle => 'حول الورق إلى PDFs واضحة وقابلة للبحث\nفي ثوانٍ، مباشرة من هاتفك.';
+  String get onboardingSlideScanSubtitle =>
+      'حول الورق إلى PDFs واضحة وقابلة للبحث\nفي ثوانٍ، مباشرة من هاتفك.';
 
   @override
   String get onboardingSlideOrganizeTitle => 'نظم كل شيء';
 
   @override
-  String get onboardingSlideOrganizeSubtitle => 'احتفظ ببطاقات الهوية والعقود والإيصالات\nمرتبة بشكل منظم في المجلدات.';
+  String get onboardingSlideOrganizeSubtitle =>
+      'احتفظ ببطاقات الهوية والعقود والإيصالات\nمرتبة بشكل منظم في المجلدات.';
 
   @override
   String get onboardingSlideSignTitle => 'عدل ووقع';
 
   @override
-  String get onboardingSlideSignSubtitle => 'دمج، ضغط، التوقيع والمشاركة\nمستنداتك في بضع نقرات.';
+  String get onboardingSlideSignSubtitle =>
+      'دمج، ضغط، التوقيع والمشاركة\nمستنداتك في بضع نقرات.';
 
   @override
   String get onboardingSkip => 'تخطي';
@@ -265,7 +285,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get onboardingGetStarted => 'ابدأ الآن';
 
   @override
-  String get onboardingAgreeTerms => 'بالمتابعة، أنت توافق على الشروط وسياسة الخصوصية';
+  String get onboardingAgreeTerms =>
+      'بالمتابعة، أنت توافق على الشروط وسياسة الخصوصية';
 
   @override
   String get onboardingTileIdCards => 'بطاقات الهوية';
@@ -319,12 +340,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get settingsSectionAbout => 'حول';
 
   @override
-  String get settingsAutoDetectEdges => 'كشف تلقائي للحواف';
-
-  @override
-  String get settingsAutoCapture => 'الالتقاط التلقائي';
-
-  @override
   String get settingsAppLock => 'قفل التطبيق (رقم سري / بصمة)';
 
   @override
@@ -358,6 +373,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get settingsQualityHigh => 'عالية';
 
   @override
+  String get scannerGrid => 'إظهار الشبكة';
+
+  @override
   String get settingsFormatPdf => 'PDF';
 
   @override
@@ -367,7 +385,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get settingsClearCacheTitle => 'مسح التخزين المؤقت؟';
 
   @override
-  String get settingsClearCacheMessage => 'سيتم حذف الملفات المؤقتة. مستنداتك لن تتأثر.';
+  String get settingsClearCacheMessage =>
+      'سيتم حذف الملفات المؤقتة. مستنداتك لن تتأثر.';
 
   @override
   String get settingsCancel => 'إلغاء';
@@ -411,5 +430,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get cropAdjustErrorOpenImage => 'لم يتم فتح الصورة.';
 
   @override
-  String get cropAdjustErrorCropImage => 'لم يتم قص الصورة. اضبط الزوايا وحاول مرة أخرى.';
+  String get cropAdjustErrorCropImage =>
+      'لم يتم قص الصورة. اضبط الزوايا وحاول مرة أخرى.';
+
+  @override
+  String get cropAdjustErrorDetectEdges =>
+      'تعذر اكتشاف حواف المستند. اضبط الزوايا يدويًا.';
 }

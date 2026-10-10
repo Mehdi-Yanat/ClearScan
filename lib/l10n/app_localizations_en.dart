@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -57,7 +58,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appLockAuthReason => 'Authenticate to unlock ClearScan.';
 
   @override
-  String get appLockAuthenticationFailed => 'Authentication failed. Try again to unlock ClearScan.';
+  String get appLockAuthenticationFailed =>
+      'Authentication failed. Try again to unlock ClearScan.';
 
   @override
   String appLockAuthenticationError(Object error) {
@@ -172,6 +174,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get delete => 'Delete';
 
   @override
+  String documentDeleteConfirmation(Object name) {
+    return 'Delete $name? This cannot be undone.';
+  }
+
+  @override
+  String documentRenameSuccess(Object name) {
+    return 'Renamed to $name';
+  }
+
+  @override
+  String documentDeleteSuccess(Object name) {
+    return 'Deleted $name';
+  }
+
+  @override
   String get fast_and_smart => 'Fast, smart and secure\ndocument scanning.';
 
   @override
@@ -244,19 +261,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onboardingSlideScanTitle => 'Scan Anything';
 
   @override
-  String get onboardingSlideScanSubtitle => 'Turn paper into crisp, searchable PDFs\nin seconds, right from your phone.';
+  String get onboardingSlideScanSubtitle =>
+      'Turn paper into crisp, searchable PDFs\nin seconds, right from your phone.';
 
   @override
   String get onboardingSlideOrganizeTitle => 'Organize Everything';
 
   @override
-  String get onboardingSlideOrganizeSubtitle => 'Keep IDs, contracts and receipts\nneatly sorted in folders.';
+  String get onboardingSlideOrganizeSubtitle =>
+      'Keep IDs, contracts and receipts\nneatly sorted in folders.';
 
   @override
   String get onboardingSlideSignTitle => 'Edit & Sign';
 
   @override
-  String get onboardingSlideSignSubtitle => 'Merge, compress, sign and share\nyour documents in a few taps.';
+  String get onboardingSlideSignSubtitle =>
+      'Merge, compress, sign and share\nyour documents in a few taps.';
 
   @override
   String get onboardingSkip => 'Skip';
@@ -265,7 +285,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onboardingGetStarted => 'Get Started';
 
   @override
-  String get onboardingAgreeTerms => 'By continuing you agree to Terms & Privacy';
+  String get onboardingAgreeTerms =>
+      'By continuing you agree to Terms & Privacy';
 
   @override
   String get onboardingTileIdCards => 'ID Cards';
@@ -304,7 +325,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get scanModeQrHint => 'Point your camera at a QR code';
 
   @override
-  String get scanModeBookHint => 'Open the book and fit both pages in the frame';
+  String get scanModeBookHint =>
+      'Open the book and fit both pages in the frame';
 
   @override
   String get settingsSectionScanning => 'SCANNING';
@@ -317,12 +339,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsSectionAbout => 'ABOUT';
-
-  @override
-  String get settingsAutoDetectEdges => 'Auto-detect edges';
-
-  @override
-  String get settingsAutoCapture => 'Auto-capture';
 
   @override
   String get settingsAppLock => 'App lock (PIN / biometric)';
@@ -358,6 +374,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsQualityHigh => 'High';
 
   @override
+  String get scannerGrid => 'Show grid';
+
+  @override
   String get settingsFormatPdf => 'PDF';
 
   @override
@@ -367,7 +386,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsClearCacheTitle => 'Clear cache?';
 
   @override
-  String get settingsClearCacheMessage => 'Temporary files will be deleted. Your documents are not affected.';
+  String get settingsClearCacheMessage =>
+      'Temporary files will be deleted. Your documents are not affected.';
 
   @override
   String get settingsCancel => 'Cancel';
@@ -411,5 +431,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cropAdjustErrorOpenImage => 'Could not open this image.';
 
   @override
-  String get cropAdjustErrorCropImage => 'Could not crop the image. Adjust the corners and try again.';
+  String get cropAdjustErrorCropImage =>
+      'Could not crop the image. Adjust the corners and try again.';
+
+  @override
+  String get cropAdjustErrorDetectEdges =>
+      'Could not detect document edges. Adjust the corners manually.';
 }

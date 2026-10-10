@@ -63,6 +63,24 @@
   "share": "Share",
   "rename": "Rename",
   "delete": "Delete",
+  "documentDeleteConfirmation": "Delete {name}? This cannot be undone.",
+  "@documentDeleteConfirmation": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "documentRenameSuccess": "Renamed to {name}",
+  "@documentRenameSuccess": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "documentDeleteSuccess": "Deleted {name}",
+  "@documentDeleteSuccess": {
+    "placeholders": {
+      "name": {}
+    }
+  },
   "fast_and_smart":"Fast, smart and secure\ndocument scanning.",
   "documentsTitle": "Documents",
   "documentsSortBy": "Sort by",
@@ -112,8 +130,6 @@
   "settingsSectionSecurity": "SECURITY",
   "settingsSectionStorageSync": "STORAGE & SYNC",
   "settingsSectionAbout": "ABOUT",
-  "settingsAutoDetectEdges": "Auto-detect edges",
-  "settingsAutoCapture": "Auto-capture",
   "settingsAppLock": "App lock (PIN / biometric)",
   "settingsHideInRecents": "Hide in recents",
   "settingsAutoBackup": "Auto backup",
@@ -125,6 +141,7 @@
   "settingsQualityLow": "Low",
   "settingsQualityMedium": "Medium",
   "settingsQualityHigh": "High",
+  "scannerGrid": "Show grid",
   "settingsFormatPdf": "PDF",
   "settingsFormatJpg": "JPG",
   "settingsClearCacheTitle": "Clear cache?",
@@ -147,5 +164,6 @@
   "cropAdjustAutoCrop": "Auto crop",
   "cropAdjustAddPage": "Add page",
   "cropAdjustErrorOpenImage": "Could not open this image.",
-  "cropAdjustErrorCropImage": "Could not crop the image. Adjust the corners and try again."
+  "cropAdjustErrorCropImage": "Could not crop the image. Adjust the corners and try again.",
+  "cropAdjustErrorDetectEdges": "Could not detect document edges. Adjust the corners manually."
 }
