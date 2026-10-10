@@ -437,4 +437,76 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get cropAdjustErrorDetectEdges =>
       'Could not detect document edges. Adjust the corners manually.';
+
+  @override
+  String get workshopTitle => 'Workshop';
+
+  @override
+  String get workshopConvert => 'Convert';
+
+  @override
+  String get workshopEditPdf => 'Edit PDF';
+
+  @override
+  String get workshopMoreTools => 'More Tools';
+
+  @override
+  String get toolImageToPdf => 'Image to PDF';
+
+  @override
+  String get toolPdfToImage => 'PDF to Image';
+
+  @override
+  String get toolPdfToWord => 'PDF to Word';
+
+  @override
+  String get toolPdfToExcel => 'PDF to Excel';
+
+  @override
+  String get toolMergePdf => 'Merge PDF';
+
+  @override
+  String get toolSplitPdf => 'Split PDF';
+
+  @override
+  String get toolCompressPdf => 'Compress PDF';
+
+  @override
+  String get toolRotatePdf => 'Rotate PDF';
+
+  @override
+  String get toolDeletePages => 'Delete Pages';
+
+  @override
+  String get toolReorderPages => 'Reorder Pages';
+
+  @override
+  String get toolExtractPages => 'Extract Pages';
+
+  @override
+  String get toolAddPassword => 'Add Password';
+
+  @override
+  String get toolSign => 'Sign Document';
+
+  @override
+  String get toolSignDesc => 'Add signature to your documents';
+
+  @override
+  String get toolWatermark => 'Watermark';
+
+  @override
+  String get toolWatermarkDesc => 'Add watermark to your documents';
+
+  @override
+  String get toolOcr => 'OCR';
+
+  @override
+  String get toolOcrDesc => 'Extract text from images';
+
+  @override
+  String get toolQrGenerator => 'QR Code Generator';
+
+  @override
+  String get toolQrGeneratorDesc => 'Create your own QR codes';
 }

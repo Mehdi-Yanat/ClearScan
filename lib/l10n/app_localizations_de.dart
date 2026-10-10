@@ -439,4 +439,77 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get cropAdjustErrorDetectEdges =>
       'Dokumentkanten konnten nicht erkannt werden. Passe die Ecken manuell an.';
+
+  @override
+  String get workshopTitle => 'Werkstatt';
+
+  @override
+  String get workshopConvert => 'Konvertieren';
+
+  @override
+  String get workshopEditPdf => 'PDF bearbeiten';
+
+  @override
+  String get workshopMoreTools => 'Weitere Tools';
+
+  @override
+  String get toolImageToPdf => 'Bild zu PDF';
+
+  @override
+  String get toolPdfToImage => 'PDF zu Bild';
+
+  @override
+  String get toolPdfToWord => 'PDF zu Word';
+
+  @override
+  String get toolPdfToExcel => 'PDF zu Excel';
+
+  @override
+  String get toolMergePdf => 'PDFs verbinden';
+
+  @override
+  String get toolSplitPdf => 'PDF teilen';
+
+  @override
+  String get toolCompressPdf => 'PDF verkleinern';
+
+  @override
+  String get toolRotatePdf => 'PDF drehen';
+
+  @override
+  String get toolDeletePages => 'Seiten löschen';
+
+  @override
+  String get toolReorderPages => 'Seiten ordnen';
+
+  @override
+  String get toolExtractPages => 'Seiten extrahieren';
+
+  @override
+  String get toolAddPassword => 'Passwort setzen';
+
+  @override
+  String get toolSign => 'Dokument signieren';
+
+  @override
+  String get toolSignDesc => 'Signatur zu deinen Dokumenten hinzufügen';
+
+  @override
+  String get toolWatermark => 'Wasserzeichen';
+
+  @override
+  String get toolWatermarkDesc =>
+      'Wasserzeichen zu deinen Dokumenten hinzufügen';
+
+  @override
+  String get toolOcr => 'OCR';
+
+  @override
+  String get toolOcrDesc => 'Text aus Bildern extrahieren';
+
+  @override
+  String get toolQrGenerator => 'QR-Code-Generator';
+
+  @override
+  String get toolQrGeneratorDesc => 'Erstelle deine eigenen QR-Codes';
 }

@@ -436,4 +436,76 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get cropAdjustErrorDetectEdges =>
       'تعذر اكتشاف حواف المستند. اضبط الزوايا يدويًا.';
+
+  @override
+  String get workshopTitle => 'الورشة';
+
+  @override
+  String get workshopConvert => 'تحويل';
+
+  @override
+  String get workshopEditPdf => 'تعديل PDF';
+
+  @override
+  String get workshopMoreTools => 'المزيد من الأدوات';
+
+  @override
+  String get toolImageToPdf => 'صورة إلى PDF';
+
+  @override
+  String get toolPdfToImage => 'PDF إلى صورة';
+
+  @override
+  String get toolPdfToWord => 'PDF إلى Word';
+
+  @override
+  String get toolPdfToExcel => 'PDF إلى Excel';
+
+  @override
+  String get toolMergePdf => 'دمج PDF';
+
+  @override
+  String get toolSplitPdf => 'تقسيم PDF';
+
+  @override
+  String get toolCompressPdf => 'ضغط PDF';
+
+  @override
+  String get toolRotatePdf => 'تدوير PDF';
+
+  @override
+  String get toolDeletePages => 'حذف الصفحات';
+
+  @override
+  String get toolReorderPages => 'ترتيب الصفحات';
+
+  @override
+  String get toolExtractPages => 'استخراج الصفحات';
+
+  @override
+  String get toolAddPassword => 'إضافة كلمة مرور';
+
+  @override
+  String get toolSign => 'توقيع مستند';
+
+  @override
+  String get toolSignDesc => 'أضف توقيعًا إلى مستنداتك';
+
+  @override
+  String get toolWatermark => 'علامة مائية';
+
+  @override
+  String get toolWatermarkDesc => 'أضف علامة مائية إلى مستنداتك';
+
+  @override
+  String get toolOcr => 'OCR';
+
+  @override
+  String get toolOcrDesc => 'استخراج النص من الصور';
+
+  @override
+  String get toolQrGenerator => 'مولّد رمز QR';
+
+  @override
+  String get toolQrGeneratorDesc => 'أنشئ رموز QR الخاصة بك';
 }

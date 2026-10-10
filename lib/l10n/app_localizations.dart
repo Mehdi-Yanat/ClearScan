@@ -915,6 +915,150 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Could not detect document edges. Adjust the corners manually.'**
   String get cropAdjustErrorDetectEdges;
+
+  /// No description provided for @workshopTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Workshop'**
+  String get workshopTitle;
+
+  /// No description provided for @workshopConvert.
+  ///
+  /// In en, this message translates to:
+  /// **'Convert'**
+  String get workshopConvert;
+
+  /// No description provided for @workshopEditPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit PDF'**
+  String get workshopEditPdf;
+
+  /// No description provided for @workshopMoreTools.
+  ///
+  /// In en, this message translates to:
+  /// **'More Tools'**
+  String get workshopMoreTools;
+
+  /// No description provided for @toolImageToPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Image to PDF'**
+  String get toolImageToPdf;
+
+  /// No description provided for @toolPdfToImage.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF to Image'**
+  String get toolPdfToImage;
+
+  /// No description provided for @toolPdfToWord.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF to Word'**
+  String get toolPdfToWord;
+
+  /// No description provided for @toolPdfToExcel.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF to Excel'**
+  String get toolPdfToExcel;
+
+  /// No description provided for @toolMergePdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Merge PDF'**
+  String get toolMergePdf;
+
+  /// No description provided for @toolSplitPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Split PDF'**
+  String get toolSplitPdf;
+
+  /// No description provided for @toolCompressPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Compress PDF'**
+  String get toolCompressPdf;
+
+  /// No description provided for @toolRotatePdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Rotate PDF'**
+  String get toolRotatePdf;
+
+  /// No description provided for @toolDeletePages.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Pages'**
+  String get toolDeletePages;
+
+  /// No description provided for @toolReorderPages.
+  ///
+  /// In en, this message translates to:
+  /// **'Reorder Pages'**
+  String get toolReorderPages;
+
+  /// No description provided for @toolExtractPages.
+  ///
+  /// In en, this message translates to:
+  /// **'Extract Pages'**
+  String get toolExtractPages;
+
+  /// No description provided for @toolAddPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Password'**
+  String get toolAddPassword;
+
+  /// No description provided for @toolSign.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign Document'**
+  String get toolSign;
+
+  /// No description provided for @toolSignDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Add signature to your documents'**
+  String get toolSignDesc;
+
+  /// No description provided for @toolWatermark.
+  ///
+  /// In en, this message translates to:
+  /// **'Watermark'**
+  String get toolWatermark;
+
+  /// No description provided for @toolWatermarkDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Add watermark to your documents'**
+  String get toolWatermarkDesc;
+
+  /// No description provided for @toolOcr.
+  ///
+  /// In en, this message translates to:
+  /// **'OCR'**
+  String get toolOcr;
+
+  /// No description provided for @toolOcrDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Extract text from images'**
+  String get toolOcrDesc;
+
+  /// No description provided for @toolQrGenerator.
+  ///
+  /// In en, this message translates to:
+  /// **'QR Code Generator'**
+  String get toolQrGenerator;
+
+  /// No description provided for @toolQrGeneratorDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Create your own QR codes'**
+  String get toolQrGeneratorDesc;
 }
 
 class _AppLocalizationsDelegate
