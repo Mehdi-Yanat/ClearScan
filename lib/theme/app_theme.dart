@@ -147,32 +147,18 @@ class AppPreferences {
 class _LightColors {
   static const ink = Color(0xFF12303A);
   static const primary = Color(0xFF14909A);
-  static const primaryLight = Color(0xFFE3F3F4);
-  static const heroDark = Color(0xFF0F2A33);
-  static const background = Color(0xFFF5F8FA);
   static const surface = Colors.white;
   static const border = Color(0xFFE6ECEF);
   static const textMuted = Color(0xFF6B7C85);
-  static const textHint = Color(0xFF9AA8B0);
-  static const danger = Color(0xFFE5484D);
-  static const warning = Color(0xFFF5A524);
-  static const success = Color(0xFF2FB67C);
 }
 
 // Dark theme colors
 class _DarkColors {
   static const ink = Color(0xFFE0E6ED);
   static const primary = Color(0xFF2CC4CF);
-  static const primaryLight = Color(0xFF0F2A33);
-  static const heroDark = Color(0xFF14909A);
-  static const background = Color(0xFF0B1E26);
   static const surface = Color(0xFF12303A);
   static const border = Color(0xFF2A3D45);
   static const textMuted = Color(0xFF8A99A5);
-  static const textHint = Color(0xFF6B7C85);
-  static const danger = Color(0xFFFF6B6B);
-  static const warning = Color(0xFFFFCC80);
-  static const success = Color(0xFF4ECDC4);
 }
 
 class AppTheme {
