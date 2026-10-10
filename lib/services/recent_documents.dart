@@ -30,6 +30,75 @@ class RecentDocument {
 const _androidFilesChannel = MethodChannel('com.example.scanner/files');
 const _supportedExtensions = {'pdf', 'jpg', 'jpeg', 'png'};
 
+Future<Uint8List> readRecentDocumentBytes(RecentDocument document) async {
+  final bytes = document.path.startsWith('content://')
+      ? await _androidFilesChannel.invokeMethod<Uint8List>(
+          'readDocumentBytes',
+          {'uri': document.path},
+        )
+      : await File(document.path).readAsBytes();
+  if (bytes == null || bytes.isEmpty) {
+    throw FormatException('Could not read ${document.name}.');
+  }
+  return bytes;
+}
+
+Future<void> saveRecentDocumentToDevice(RecentDocument document) async {
+  if (Platform.isAndroid && document.path.startsWith('content://')) {
+    // These entries already come from the public Downloads collection.
+    return;
+  }
+
+  final bytes = await readRecentDocumentBytes(document);
+  final safeName = document.name
+      .replaceAll(RegExp(r'[\\/:*?"<>|]'), '_')
+      .trim();
+  if (safeName.isEmpty || safeName == '.' || safeName == '..') {
+    throw const FormatException('Enter a valid document name.');
+  }
+  if (Platform.isAndroid) {
+    final extension = safeName.split('.').last.toLowerCase();
+    final mimeType = switch (extension) {
+      'pdf' => 'application/pdf',
+      'png' => 'image/png',
+      'jpg' || 'jpeg' => 'image/jpeg',
+      _ => 'application/octet-stream',
+    };
+    final uri = await _androidFilesChannel.invokeMethod<String>(
+      'saveToDownloads',
+      {'filename': safeName, 'mimeType': mimeType, 'bytes': bytes},
+    );
+    if (uri == null || uri.isEmpty) {
+      throw StateError('Android did not return the saved document location.');
+    }
+    return;
+  }
+
+  final documentsDirectory = await getApplicationDocumentsDirectory();
+  final targetDirectory = Directory(
+    '${documentsDirectory.path}${Platform.pathSeparator}documents',
+  );
+  await targetDirectory.create(recursive: true);
+  var destination = File(
+    '${targetDirectory.path}${Platform.pathSeparator}$safeName',
+  );
+  final extensionIndex = safeName.lastIndexOf('.');
+  final stem = extensionIndex > 0
+      ? safeName.substring(0, extensionIndex)
+      : safeName;
+  final extension = extensionIndex > 0
+      ? safeName.substring(extensionIndex)
+      : '';
+  var suffix = 2;
+  while (await destination.exists()) {
+    destination = File(
+      '${targetDirectory.path}${Platform.pathSeparator}${stem}_$suffix$extension',
+    );
+    suffix++;
+  }
+  await destination.writeAsBytes(bytes, flush: true);
+}
+
 Future<List<RecentDocument>> loadRecentDocuments({int? limit = 4}) async {
   final documents = Platform.isAndroid
       ? await _loadAndroidDocuments()
