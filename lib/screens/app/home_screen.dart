@@ -9,10 +9,10 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:share_plus/share_plus.dart';
 
-import 'crop_adjust_screen.dart';
-import 'enhance_save_screen.dart';
-import 'document_viewer_screen.dart';
-import 'notifications_screen.dart';
+import 'package:clear_scan/screens/scanning/crop_adjust_screen.dart';
+import 'package:clear_scan/screens/scanning/enhance_save_screen.dart';
+import 'package:clear_scan/screens/documents/document_viewer_screen.dart';
+import 'package:clear_scan/screens/account/notifications_screen.dart';
 import '../../l10n/app_localizations.dart' as loc;
 import '../../services/documents/document_storage.dart';
 import '../../services/documents/folder_repository.dart';

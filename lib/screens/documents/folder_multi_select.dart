@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import '../../widgets/feedback/app_snackbar.dart';
 import '../../widgets/navigation/app_bottom_bar.dart';
 import '../../widgets/actions/bottom_action_bar.dart';
-import 'scanner_screen.dart';
+import 'package:clear_scan/screens/scanning/scanner_screen.dart';
 
 class FolderMultiSelectScreen extends StatefulWidget {
   const FolderMultiSelectScreen({

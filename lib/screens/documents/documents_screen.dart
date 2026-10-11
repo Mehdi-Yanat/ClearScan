@@ -22,7 +22,7 @@ import '../../widgets/documents/folder_name_dialog.dart';
 import '../../widgets/sharing/share_sheet.dart';
 import 'document_viewer_screen.dart';
 import 'folder_contents_screen.dart';
-import 'scanner_screen.dart';
+import 'package:clear_scan/screens/scanning/scanner_screen.dart';
 
 /// Text/icon color that stays readable on the primary color in each theme
 /// (bright teal in dark mode needs dark text, deep teal in light mode needs white).

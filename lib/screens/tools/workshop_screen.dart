@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import '../../l10n/app_localizations.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/navigation/app_bottom_bar.dart';
-import 'documents_screen.dart';
+import 'package:clear_scan/screens/documents/documents_screen.dart';
 import 'pdf_edit_screen.dart';
 import 'pdf_to_excel_screen.dart';
 import 'pdf_to_image_screen.dart';
@@ -12,7 +12,7 @@ import 'pdf_to_word_screen.dart';
 import 'ocr_screen.dart';
 import 'qr_generator_screen.dart';
 import '../../services/pdf/pdf_editor.dart';
-import 'scanner_screen.dart';
+import 'package:clear_scan/screens/scanning/scanner_screen.dart';
 import 'sign_document_screen.dart';
 import 'watermark_screen.dart';
 
