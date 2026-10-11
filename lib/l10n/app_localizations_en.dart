@@ -483,10 +483,107 @@ class AppLocalizationsEn extends AppLocalizations {
   String get toolPdfToImage => 'PDF to Image';
 
   @override
+  String get pdfToWordTitle => 'PDF to Word';
+
+  @override
+  String get pdfToWordSelectPdf => 'Choose a PDF';
+
+  @override
+  String get pdfToWordHint =>
+      'Extract PDF text into an editable Word document. Scanned pages are OCR’d in Arabic, English, and German. Layout may be simplified.';
+
+  @override
+  String get pdfToWordConverting => 'Extracting PDF text and running OCR…';
+
+  @override
+  String pdfToWordProgress(Object completed, Object total) {
+    return 'Processed $completed of $total pages';
+  }
+
+  @override
+  String get pdfToWordShare => 'Share Word document';
+
+  @override
+  String pdfToWordConversionFailed(Object error) {
+    return 'Could not convert the PDF: $error';
+  }
+
+  @override
+  String pdfToWordShareFailed(Object error) {
+    return 'Could not share the Word document: $error';
+  }
+
+  @override
+  String get pdfToImageTitle => 'PDF to Image';
+
+  @override
+  String get pdfToImageSelectPdf => 'Choose a PDF';
+
+  @override
+  String get pdfToImageHint => 'Convert every page of a PDF into a PNG image.';
+
+  @override
+  String get pdfToImageConverting => 'Converting PDF pages…';
+
+  @override
+  String pdfToImageProgress(Object completed, Object total) {
+    return 'Converted $completed of $total pages';
+  }
+
+  @override
+  String pdfToImageConvertedPages(Object count) {
+    return 'Converted $count pages';
+  }
+
+  @override
+  String get pdfToImageShare => 'Share images';
+
+  @override
+  String pdfToImageConversionFailed(Object error) {
+    return 'Could not convert the PDF: $error';
+  }
+
+  @override
+  String pdfToImageShareFailed(Object error) {
+    return 'Could not share the images: $error';
+  }
+
+  @override
   String get toolPdfToWord => 'PDF to Word';
 
   @override
   String get toolPdfToExcel => 'PDF to Excel';
+
+  @override
+  String get pdfToExcelTitle => 'PDF to Excel';
+
+  @override
+  String get pdfToExcelSelectPdf => 'Choose a PDF';
+
+  @override
+  String get pdfToExcelHint =>
+      'Extract PDF text into an editable Excel sheet, organized by page and line. Scanned pages are OCR’d in Arabic, English, and German.';
+
+  @override
+  String get pdfToExcelConverting => 'Extracting PDF text and running OCR…';
+
+  @override
+  String pdfToExcelProgress(Object completed, Object total) {
+    return 'Processed $completed of $total pages';
+  }
+
+  @override
+  String get pdfToExcelShare => 'Share Excel workbook';
+
+  @override
+  String pdfToExcelConversionFailed(Object error) {
+    return 'Could not convert the PDF: $error';
+  }
+
+  @override
+  String pdfToExcelShareFailed(Object error) {
+    return 'Could not share the Excel workbook: $error';
+  }
 
   @override
   String get toolMergePdf => 'Merge PDF';

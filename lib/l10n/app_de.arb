@@ -181,8 +181,86 @@
   "workshopMoreTools": "Weitere Tools",
   "toolImageToPdf": "Bild zu PDF",
   "toolPdfToImage": "PDF zu Bild",
+  "pdfToWordTitle": "PDF zu Word",
+  "pdfToWordSelectPdf": "PDF auswählen",
+  "pdfToWordHint": "Extrahiere PDF-Text in ein bearbeitbares Word-Dokument. Gescannte Seiten werden per OCR auf Arabisch, Englisch und Deutsch erkannt. Das Layout kann vereinfacht sein.",
+  "pdfToWordConverting": "PDF-Text wird extrahiert und per OCR erkannt…",
+  "pdfToWordProgress": "{completed} von {total} Seiten verarbeitet",
+  "@pdfToWordProgress": {
+    "placeholders": {
+      "completed": {},
+      "total": {}
+    }
+  },
+  "pdfToWordShare": "Word-Dokument teilen",
+  "pdfToWordConversionFailed": "PDF konnte nicht umgewandelt werden: {error}",
+  "@pdfToWordConversionFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "pdfToWordShareFailed": "Word-Dokument konnte nicht geteilt werden: {error}",
+  "@pdfToWordShareFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "pdfToImageTitle": "PDF zu Bild",
+  "pdfToImageSelectPdf": "PDF auswählen",
+  "pdfToImageHint": "Wandle jede PDF-Seite in ein PNG-Bild um.",
+  "pdfToImageConverting": "PDF-Seiten werden umgewandelt…",
+  "pdfToImageProgress": "{completed} von {total} Seiten umgewandelt",
+  "@pdfToImageProgress": {
+    "placeholders": {
+      "completed": {},
+      "total": {}
+    }
+  },
+  "pdfToImageConvertedPages": "{count} Seiten umgewandelt",
+  "@pdfToImageConvertedPages": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "pdfToImageShare": "Bilder teilen",
+  "pdfToImageConversionFailed": "PDF konnte nicht umgewandelt werden: {error}",
+  "@pdfToImageConversionFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "pdfToImageShareFailed": "Bilder konnten nicht geteilt werden: {error}",
+  "@pdfToImageShareFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
   "toolPdfToWord": "PDF zu Word",
   "toolPdfToExcel": "PDF zu Excel",
+  "pdfToExcelTitle": "PDF zu Excel",
+  "pdfToExcelSelectPdf": "PDF auswählen",
+  "pdfToExcelHint": "Extrahiere PDF-Text in eine bearbeitbare Excel-Tabelle, sortiert nach Seite und Zeile. Gescannte Seiten werden per OCR auf Arabisch, Englisch und Deutsch erkannt.",
+  "pdfToExcelConverting": "PDF-Text wird extrahiert und per OCR erkannt…",
+  "pdfToExcelProgress": "{completed} von {total} Seiten verarbeitet",
+  "@pdfToExcelProgress": {
+    "placeholders": {
+      "completed": {},
+      "total": {}
+    }
+  },
+  "pdfToExcelShare": "Excel-Datei teilen",
+  "pdfToExcelConversionFailed": "PDF konnte nicht umgewandelt werden: {error}",
+  "@pdfToExcelConversionFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "pdfToExcelShareFailed": "Excel-Datei konnte nicht geteilt werden: {error}",
+  "@pdfToExcelShareFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
   "toolMergePdf": "PDFs verbinden",
   "toolSplitPdf": "PDF teilen",
   "toolCompressPdf": "PDF verkleinern",

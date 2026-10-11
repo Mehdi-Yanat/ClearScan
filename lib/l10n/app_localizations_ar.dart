@@ -483,10 +483,107 @@ class AppLocalizationsAr extends AppLocalizations {
   String get toolPdfToImage => 'PDF إلى صورة';
 
   @override
+  String get pdfToWordTitle => 'تحويل PDF إلى Word';
+
+  @override
+  String get pdfToWordSelectPdf => 'اختيار ملف PDF';
+
+  @override
+  String get pdfToWordHint =>
+      'استخرج نص PDF إلى مستند Word قابل للتحرير. تتم معالجة الصفحات الممسوحة ضوئيًا بـ OCR بالعربية والإنجليزية والألمانية. قد يختلف التنسيق.';
+
+  @override
+  String get pdfToWordConverting => 'جارٍ استخراج النص وتشغيل OCR…';
+
+  @override
+  String pdfToWordProgress(Object completed, Object total) {
+    return 'تمت معالجة $completed من أصل $total صفحات';
+  }
+
+  @override
+  String get pdfToWordShare => 'مشاركة مستند Word';
+
+  @override
+  String pdfToWordConversionFailed(Object error) {
+    return 'تعذر تحويل ملف PDF: $error';
+  }
+
+  @override
+  String pdfToWordShareFailed(Object error) {
+    return 'تعذرت مشاركة مستند Word: $error';
+  }
+
+  @override
+  String get pdfToImageTitle => 'تحويل PDF إلى صورة';
+
+  @override
+  String get pdfToImageSelectPdf => 'اختيار ملف PDF';
+
+  @override
+  String get pdfToImageHint => 'حوّل كل صفحة من ملف PDF إلى صورة PNG.';
+
+  @override
+  String get pdfToImageConverting => 'جارٍ تحويل صفحات PDF…';
+
+  @override
+  String pdfToImageProgress(Object completed, Object total) {
+    return 'تم تحويل $completed من أصل $total صفحات';
+  }
+
+  @override
+  String pdfToImageConvertedPages(Object count) {
+    return 'تم تحويل $count صفحات';
+  }
+
+  @override
+  String get pdfToImageShare => 'مشاركة الصور';
+
+  @override
+  String pdfToImageConversionFailed(Object error) {
+    return 'تعذر تحويل ملف PDF: $error';
+  }
+
+  @override
+  String pdfToImageShareFailed(Object error) {
+    return 'تعذرت مشاركة الصور: $error';
+  }
+
+  @override
   String get toolPdfToWord => 'PDF إلى Word';
 
   @override
   String get toolPdfToExcel => 'PDF إلى Excel';
+
+  @override
+  String get pdfToExcelTitle => 'تحويل PDF إلى Excel';
+
+  @override
+  String get pdfToExcelSelectPdf => 'اختيار ملف PDF';
+
+  @override
+  String get pdfToExcelHint =>
+      'استخرج نص PDF إلى جدول Excel قابل للتحرير، مرتب حسب الصفحة والسطر. تتم معالجة الصفحات الممسوحة ضوئيًا بـ OCR بالعربية والإنجليزية والألمانية.';
+
+  @override
+  String get pdfToExcelConverting => 'جارٍ استخراج النص وتشغيل OCR…';
+
+  @override
+  String pdfToExcelProgress(Object completed, Object total) {
+    return 'تمت معالجة $completed من أصل $total صفحات';
+  }
+
+  @override
+  String get pdfToExcelShare => 'مشاركة ملف Excel';
+
+  @override
+  String pdfToExcelConversionFailed(Object error) {
+    return 'تعذر تحويل ملف PDF: $error';
+  }
+
+  @override
+  String pdfToExcelShareFailed(Object error) {
+    return 'تعذرت مشاركة ملف Excel: $error';
+  }
 
   @override
   String get toolMergePdf => 'دمج PDF';

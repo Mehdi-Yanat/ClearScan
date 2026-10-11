@@ -181,8 +181,86 @@
   "workshopMoreTools": "More Tools",
   "toolImageToPdf": "Image to PDF",
   "toolPdfToImage": "PDF to Image",
+  "pdfToWordTitle": "PDF to Word",
+  "pdfToWordSelectPdf": "Choose a PDF",
+  "pdfToWordHint": "Extract PDF text into an editable Word document. Scanned pages are OCR’d in Arabic, English, and German. Layout may be simplified.",
+  "pdfToWordConverting": "Extracting PDF text and running OCR…",
+  "pdfToWordProgress": "Processed {completed} of {total} pages",
+  "@pdfToWordProgress": {
+    "placeholders": {
+      "completed": {},
+      "total": {}
+    }
+  },
+  "pdfToWordShare": "Share Word document",
+  "pdfToWordConversionFailed": "Could not convert the PDF: {error}",
+  "@pdfToWordConversionFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "pdfToWordShareFailed": "Could not share the Word document: {error}",
+  "@pdfToWordShareFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "pdfToImageTitle": "PDF to Image",
+  "pdfToImageSelectPdf": "Choose a PDF",
+  "pdfToImageHint": "Convert every page of a PDF into a PNG image.",
+  "pdfToImageConverting": "Converting PDF pages…",
+  "pdfToImageProgress": "Converted {completed} of {total} pages",
+  "@pdfToImageProgress": {
+    "placeholders": {
+      "completed": {},
+      "total": {}
+    }
+  },
+  "pdfToImageConvertedPages": "Converted {count} pages",
+  "@pdfToImageConvertedPages": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "pdfToImageShare": "Share images",
+  "pdfToImageConversionFailed": "Could not convert the PDF: {error}",
+  "@pdfToImageConversionFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "pdfToImageShareFailed": "Could not share the images: {error}",
+  "@pdfToImageShareFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
   "toolPdfToWord": "PDF to Word",
   "toolPdfToExcel": "PDF to Excel",
+  "pdfToExcelTitle": "PDF to Excel",
+  "pdfToExcelSelectPdf": "Choose a PDF",
+  "pdfToExcelHint": "Extract PDF text into an editable Excel sheet, organized by page and line. Scanned pages are OCR’d in Arabic, English, and German.",
+  "pdfToExcelConverting": "Extracting PDF text and running OCR…",
+  "pdfToExcelProgress": "Processed {completed} of {total} pages",
+  "@pdfToExcelProgress": {
+    "placeholders": {
+      "completed": {},
+      "total": {}
+    }
+  },
+  "pdfToExcelShare": "Share Excel workbook",
+  "pdfToExcelConversionFailed": "Could not convert the PDF: {error}",
+  "@pdfToExcelConversionFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "pdfToExcelShareFailed": "Could not share the Excel workbook: {error}",
+  "@pdfToExcelShareFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
   "toolMergePdf": "Merge PDF",
   "toolSplitPdf": "Split PDF",
   "toolCompressPdf": "Compress PDF",

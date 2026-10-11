@@ -181,8 +181,86 @@
   "workshopMoreTools": "المزيد من الأدوات",
   "toolImageToPdf": "صورة إلى PDF",
   "toolPdfToImage": "PDF إلى صورة",
+  "pdfToWordTitle": "تحويل PDF إلى Word",
+  "pdfToWordSelectPdf": "اختيار ملف PDF",
+  "pdfToWordHint": "استخرج نص PDF إلى مستند Word قابل للتحرير. تتم معالجة الصفحات الممسوحة ضوئيًا بـ OCR بالعربية والإنجليزية والألمانية. قد يختلف التنسيق.",
+  "pdfToWordConverting": "جارٍ استخراج النص وتشغيل OCR…",
+  "pdfToWordProgress": "تمت معالجة {completed} من أصل {total} صفحات",
+  "@pdfToWordProgress": {
+    "placeholders": {
+      "completed": {},
+      "total": {}
+    }
+  },
+  "pdfToWordShare": "مشاركة مستند Word",
+  "pdfToWordConversionFailed": "تعذر تحويل ملف PDF: {error}",
+  "@pdfToWordConversionFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "pdfToWordShareFailed": "تعذرت مشاركة مستند Word: {error}",
+  "@pdfToWordShareFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "pdfToImageTitle": "تحويل PDF إلى صورة",
+  "pdfToImageSelectPdf": "اختيار ملف PDF",
+  "pdfToImageHint": "حوّل كل صفحة من ملف PDF إلى صورة PNG.",
+  "pdfToImageConverting": "جارٍ تحويل صفحات PDF…",
+  "pdfToImageProgress": "تم تحويل {completed} من أصل {total} صفحات",
+  "@pdfToImageProgress": {
+    "placeholders": {
+      "completed": {},
+      "total": {}
+    }
+  },
+  "pdfToImageConvertedPages": "تم تحويل {count} صفحات",
+  "@pdfToImageConvertedPages": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "pdfToImageShare": "مشاركة الصور",
+  "pdfToImageConversionFailed": "تعذر تحويل ملف PDF: {error}",
+  "@pdfToImageConversionFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "pdfToImageShareFailed": "تعذرت مشاركة الصور: {error}",
+  "@pdfToImageShareFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
   "toolPdfToWord": "PDF إلى Word",
   "toolPdfToExcel": "PDF إلى Excel",
+  "pdfToExcelTitle": "تحويل PDF إلى Excel",
+  "pdfToExcelSelectPdf": "اختيار ملف PDF",
+  "pdfToExcelHint": "استخرج نص PDF إلى جدول Excel قابل للتحرير، مرتب حسب الصفحة والسطر. تتم معالجة الصفحات الممسوحة ضوئيًا بـ OCR بالعربية والإنجليزية والألمانية.",
+  "pdfToExcelConverting": "جارٍ استخراج النص وتشغيل OCR…",
+  "pdfToExcelProgress": "تمت معالجة {completed} من أصل {total} صفحات",
+  "@pdfToExcelProgress": {
+    "placeholders": {
+      "completed": {},
+      "total": {}
+    }
+  },
+  "pdfToExcelShare": "مشاركة ملف Excel",
+  "pdfToExcelConversionFailed": "تعذر تحويل ملف PDF: {error}",
+  "@pdfToExcelConversionFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "pdfToExcelShareFailed": "تعذرت مشاركة ملف Excel: {error}",
+  "@pdfToExcelShareFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
   "toolMergePdf": "دمج PDF",
   "toolSplitPdf": "تقسيم PDF",
   "toolCompressPdf": "ضغط PDF",

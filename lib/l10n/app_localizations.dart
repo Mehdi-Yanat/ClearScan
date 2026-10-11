@@ -1006,6 +1006,108 @@ abstract class AppLocalizations {
   /// **'PDF to Image'**
   String get toolPdfToImage;
 
+  /// No description provided for @pdfToWordTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF to Word'**
+  String get pdfToWordTitle;
+
+  /// No description provided for @pdfToWordSelectPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a PDF'**
+  String get pdfToWordSelectPdf;
+
+  /// No description provided for @pdfToWordHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Extract PDF text into an editable Word document. Scanned pages are OCR’d in Arabic, English, and German. Layout may be simplified.'**
+  String get pdfToWordHint;
+
+  /// No description provided for @pdfToWordConverting.
+  ///
+  /// In en, this message translates to:
+  /// **'Extracting PDF text and running OCR…'**
+  String get pdfToWordConverting;
+
+  /// No description provided for @pdfToWordProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Processed {completed} of {total} pages'**
+  String pdfToWordProgress(Object completed, Object total);
+
+  /// No description provided for @pdfToWordShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Share Word document'**
+  String get pdfToWordShare;
+
+  /// No description provided for @pdfToWordConversionFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not convert the PDF: {error}'**
+  String pdfToWordConversionFailed(Object error);
+
+  /// No description provided for @pdfToWordShareFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not share the Word document: {error}'**
+  String pdfToWordShareFailed(Object error);
+
+  /// No description provided for @pdfToImageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF to Image'**
+  String get pdfToImageTitle;
+
+  /// No description provided for @pdfToImageSelectPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a PDF'**
+  String get pdfToImageSelectPdf;
+
+  /// No description provided for @pdfToImageHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Convert every page of a PDF into a PNG image.'**
+  String get pdfToImageHint;
+
+  /// No description provided for @pdfToImageConverting.
+  ///
+  /// In en, this message translates to:
+  /// **'Converting PDF pages…'**
+  String get pdfToImageConverting;
+
+  /// No description provided for @pdfToImageProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Converted {completed} of {total} pages'**
+  String pdfToImageProgress(Object completed, Object total);
+
+  /// No description provided for @pdfToImageConvertedPages.
+  ///
+  /// In en, this message translates to:
+  /// **'Converted {count} pages'**
+  String pdfToImageConvertedPages(Object count);
+
+  /// No description provided for @pdfToImageShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Share images'**
+  String get pdfToImageShare;
+
+  /// No description provided for @pdfToImageConversionFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not convert the PDF: {error}'**
+  String pdfToImageConversionFailed(Object error);
+
+  /// No description provided for @pdfToImageShareFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not share the images: {error}'**
+  String pdfToImageShareFailed(Object error);
+
   /// No description provided for @toolPdfToWord.
   ///
   /// In en, this message translates to:
@@ -1017,6 +1119,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'PDF to Excel'**
   String get toolPdfToExcel;
+
+  /// No description provided for @pdfToExcelTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF to Excel'**
+  String get pdfToExcelTitle;
+
+  /// No description provided for @pdfToExcelSelectPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a PDF'**
+  String get pdfToExcelSelectPdf;
+
+  /// No description provided for @pdfToExcelHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Extract selectable text into an editable Excel sheet, organized by page and line. Scanned PDFs require OCR.'**
+  String get pdfToExcelHint;
+
+  /// No description provided for @pdfToExcelConverting.
+  ///
+  /// In en, this message translates to:
+  /// **'Extracting PDF text…'**
+  String get pdfToExcelConverting;
+
+  /// No description provided for @pdfToExcelProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Processed {completed} of {total} pages'**
+  String pdfToExcelProgress(Object completed, Object total);
+
+  /// No description provided for @pdfToExcelShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Share Excel workbook'**
+  String get pdfToExcelShare;
+
+  /// No description provided for @pdfToExcelConversionFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not convert the PDF: {error}'**
+  String pdfToExcelConversionFailed(Object error);
+
+  /// No description provided for @pdfToExcelShareFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not share the Excel workbook: {error}'**
+  String pdfToExcelShareFailed(Object error);
 
   /// No description provided for @toolMergePdf.
   ///

@@ -486,10 +486,109 @@ class AppLocalizationsDe extends AppLocalizations {
   String get toolPdfToImage => 'PDF zu Bild';
 
   @override
+  String get pdfToWordTitle => 'PDF zu Word';
+
+  @override
+  String get pdfToWordSelectPdf => 'PDF auswählen';
+
+  @override
+  String get pdfToWordHint =>
+      'Extrahiere PDF-Text in ein bearbeitbares Word-Dokument. Gescannte Seiten werden per OCR auf Arabisch, Englisch und Deutsch erkannt. Das Layout kann vereinfacht sein.';
+
+  @override
+  String get pdfToWordConverting =>
+      'PDF-Text wird extrahiert und per OCR erkannt…';
+
+  @override
+  String pdfToWordProgress(Object completed, Object total) {
+    return '$completed von $total Seiten verarbeitet';
+  }
+
+  @override
+  String get pdfToWordShare => 'Word-Dokument teilen';
+
+  @override
+  String pdfToWordConversionFailed(Object error) {
+    return 'PDF konnte nicht umgewandelt werden: $error';
+  }
+
+  @override
+  String pdfToWordShareFailed(Object error) {
+    return 'Word-Dokument konnte nicht geteilt werden: $error';
+  }
+
+  @override
+  String get pdfToImageTitle => 'PDF zu Bild';
+
+  @override
+  String get pdfToImageSelectPdf => 'PDF auswählen';
+
+  @override
+  String get pdfToImageHint => 'Wandle jede PDF-Seite in ein PNG-Bild um.';
+
+  @override
+  String get pdfToImageConverting => 'PDF-Seiten werden umgewandelt…';
+
+  @override
+  String pdfToImageProgress(Object completed, Object total) {
+    return '$completed von $total Seiten umgewandelt';
+  }
+
+  @override
+  String pdfToImageConvertedPages(Object count) {
+    return '$count Seiten umgewandelt';
+  }
+
+  @override
+  String get pdfToImageShare => 'Bilder teilen';
+
+  @override
+  String pdfToImageConversionFailed(Object error) {
+    return 'PDF konnte nicht umgewandelt werden: $error';
+  }
+
+  @override
+  String pdfToImageShareFailed(Object error) {
+    return 'Bilder konnten nicht geteilt werden: $error';
+  }
+
+  @override
   String get toolPdfToWord => 'PDF zu Word';
 
   @override
   String get toolPdfToExcel => 'PDF zu Excel';
+
+  @override
+  String get pdfToExcelTitle => 'PDF zu Excel';
+
+  @override
+  String get pdfToExcelSelectPdf => 'PDF auswählen';
+
+  @override
+  String get pdfToExcelHint =>
+      'Extrahiere PDF-Text in eine bearbeitbare Excel-Tabelle, sortiert nach Seite und Zeile. Gescannte Seiten werden per OCR auf Arabisch, Englisch und Deutsch erkannt.';
+
+  @override
+  String get pdfToExcelConverting =>
+      'PDF-Text wird extrahiert und per OCR erkannt…';
+
+  @override
+  String pdfToExcelProgress(Object completed, Object total) {
+    return '$completed von $total Seiten verarbeitet';
+  }
+
+  @override
+  String get pdfToExcelShare => 'Excel-Datei teilen';
+
+  @override
+  String pdfToExcelConversionFailed(Object error) {
+    return 'PDF konnte nicht umgewandelt werden: $error';
+  }
+
+  @override
+  String pdfToExcelShareFailed(Object error) {
+    return 'Excel-Datei konnte nicht geteilt werden: $error';
+  }
 
   @override
   String get toolMergePdf => 'PDFs verbinden';
