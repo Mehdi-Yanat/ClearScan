@@ -59,7 +59,9 @@ extension _FilterExtension on _Filter {
 enum _Sort { date, name, size }
 
 class DocumentsScreen extends StatefulWidget {
-  const DocumentsScreen({super.key});
+  const DocumentsScreen({super.key, this.startMergeSelection = false});
+
+  final bool startMergeSelection;
 
   @override
   State<DocumentsScreen> createState() => _DocumentsScreenState();
@@ -87,6 +89,7 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
   bool _isMovingFile = false;
   bool _filesLoading = true;
   String? _filesError;
+  bool _startedMergeSelection = false;
 
   @override
   void initState() {
@@ -181,6 +184,11 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
         final filePaths = files.map((file) => file.path).toSet();
         _selectedFilePaths.removeWhere((path) => !filePaths.contains(path));
         if (_selectedFilePaths.isEmpty) _isSelectingFiles = false;
+        if (widget.startMergeSelection && !_startedMergeSelection) {
+          _filter = _Filter.pdf;
+          _isSelectingFiles = true;
+          _startedMergeSelection = true;
+        }
         _filesLoading = false;
       });
     } on Exception catch (error) {
@@ -602,7 +610,7 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
         ),
         BottomActionBarItem(
           icon: Icons.merge_type_rounded,
-          label: 'Merge',
+          label: l.toolMergePdf,
           onTap: _mergeSelectedFiles,
         ),
         BottomActionBarItem(

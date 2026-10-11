@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../l10n/app_localizations.dart';
 import '../theme/app_theme.dart';
 import '../widgets/app_bottom_bar.dart';
+import 'documents_screen.dart';
+import 'pdf_edit_screen.dart';
 import 'pdf_to_excel_screen.dart';
 import 'pdf_to_image_screen.dart';
 import 'pdf_to_word_screen.dart';
+import 'ocr_screen.dart';
+import 'qr_generator_screen.dart';
+import '../services/pdf_editor.dart';
 import 'scanner_screen.dart';
+import 'sign_document_screen.dart';
+import 'watermark_screen.dart';
 
 class WorkshopScreen extends StatefulWidget {
   const WorkshopScreen({super.key});
@@ -38,10 +46,49 @@ class _WorkshopScreenState extends State<WorkshopScreen> {
     ).push(MaterialPageRoute<void>(builder: (_) => const PdfToExcelScreen()));
   }
 
+  void _openMergePdf() {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => const DocumentsScreen(startMergeSelection: true),
+      ),
+    );
+  }
+
+  void _openPdfEdit(PdfEditOperation operation) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => PdfEditScreen(operation: operation),
+      ),
+    );
+  }
+
+  void _openSignDocument() {
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute<void>(builder: (_) => const SignDocumentScreen()));
+  }
+
+  void _openWatermark() {
+    Navigator.of(context)
+        .push(MaterialPageRoute<void>(builder: (_) => const WatermarkScreen()));
+  }
+
+  void _openOcr() {
+    Navigator.of(context)
+        .push(MaterialPageRoute<void>(builder: (_) => const OcrScreen()));
+  }
+
+  void _openQrGenerator() {
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute<void>(builder: (_) => const QrGeneratorScreen()));
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final iconBrightness = isDark ? Brightness.light : Brightness.dark;
+    final strings = AppLocalizations.of(context)!;
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(
@@ -63,7 +110,7 @@ class _WorkshopScreenState extends State<WorkshopScreen> {
             padding: const EdgeInsets.fromLTRB(24, 8, 24, 32),
             children: [
               Text(
-                'Workshop',
+                strings.workshopTitle,
                 style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.w700,
@@ -75,7 +122,7 @@ class _WorkshopScreenState extends State<WorkshopScreen> {
               const SizedBox(height: 16),
               _buildConvertGrid(),
               const SizedBox(height: 32),
-              const _SectionTitle('Edit PDF'),
+              _SectionTitle(strings.workshopEditPdf),
               const SizedBox(height: 16),
               _buildEditPdfGrid(),
               const SizedBox(height: 32),
@@ -138,26 +185,63 @@ class _WorkshopScreenState extends State<WorkshopScreen> {
   // ───────────────────────────── Edit PDF Section ─────────────────────────────
 
   Widget _buildEditPdfGrid() {
-    const tools = [
-      _EditTool(icon: Icons.merge_type_rounded, label: 'Merge PDF'),
-      _EditTool(icon: Icons.call_split_rounded, label: 'Split PDF'),
-      _EditTool(icon: Icons.compress_rounded, label: 'Compress PDF'),
-      _EditTool(icon: Icons.rotate_right_rounded, label: 'Rotate PDF'),
-      _EditTool(icon: Icons.delete_outline_rounded, label: 'Delete Pages'),
-      _EditTool(icon: Icons.swap_vert_rounded, label: 'Reorder Pages'),
-      _EditTool(icon: Icons.file_upload_outlined, label: 'Extract Pages'),
-      _EditTool(icon: Icons.lock_outline_rounded, label: 'Add Password'),
+    final strings = AppLocalizations.of(context)!;
+    final tools = [
+      _EditTool(
+        icon: Icons.merge_type_rounded,
+        label: strings.toolMergePdf,
+        onTap: _openMergePdf,
+      ),
+      _EditTool(
+        icon: Icons.call_split_rounded,
+        label: strings.toolSplitPdf,
+        onTap: () => _openPdfEdit(PdfEditOperation.split),
+      ),
+      _EditTool(
+        icon: Icons.compress_rounded,
+        label: strings.toolCompressPdf,
+        onTap: () => _openPdfEdit(PdfEditOperation.compress),
+      ),
+      _EditTool(
+        icon: Icons.rotate_right_rounded,
+        label: strings.toolRotatePdf,
+        onTap: () => _openPdfEdit(PdfEditOperation.rotate),
+      ),
+      _EditTool(
+        icon: Icons.delete_outline_rounded,
+        label: strings.toolDeletePages,
+        onTap: () => _openPdfEdit(PdfEditOperation.deletePages),
+      ),
+      _EditTool(
+        icon: Icons.swap_vert_rounded,
+        label: strings.toolReorderPages,
+        onTap: () => _openPdfEdit(PdfEditOperation.reorderPages),
+      ),
+      _EditTool(
+        icon: Icons.file_upload_outlined,
+        label: strings.toolExtractPages,
+        onTap: () => _openPdfEdit(PdfEditOperation.extractPages),
+      ),
+      _EditTool(
+        icon: Icons.lock_outline_rounded,
+        label: strings.toolAddPassword,
+        onTap: () => _openPdfEdit(PdfEditOperation.addPassword),
+      ),
     ];
 
     return Column(
       children: [
-        for (var row = 0; row < 2; row++) ...[
+        for (var row = 0; row < (tools.length / 4).ceil(); row++) ...[
           if (row > 0) const SizedBox(height: 12),
           Row(
             children: [
               for (var col = 0; col < 4; col++) ...[
                 if (col > 0) const SizedBox(width: 12),
-                Expanded(child: _EditToolCard(tool: tools[row * 4 + col])),
+                Expanded(
+                  child: row * 4 + col < tools.length
+                      ? _EditToolCard(tool: tools[row * 4 + col])
+                      : const SizedBox(height: 108),
+                ),
               ],
             ],
           ),
@@ -169,26 +253,31 @@ class _WorkshopScreenState extends State<WorkshopScreen> {
   // ───────────────────────────── More Tools Section ─────────────────────────────
 
   Widget _buildMoreToolsList() {
-    const tools = [
+    final strings = AppLocalizations.of(context)!;
+    final tools = [
       _MoreTool(
         icon: Icons.edit_rounded,
-        title: 'Sign Document',
-        subtitle: 'Add signature to your documents',
+        title: strings.toolSign,
+        subtitle: strings.toolSignDesc,
+        onTap: _openSignDocument,
       ),
       _MoreTool(
         icon: Icons.water_drop_outlined,
-        title: 'Watermark',
-        subtitle: 'Add watermark to your documents',
+        title: strings.toolWatermark,
+        subtitle: strings.toolWatermarkDesc,
+        onTap: _openWatermark,
       ),
       _MoreTool(
         icon: Icons.document_scanner_outlined,
-        title: 'OCR',
-        subtitle: 'Extract text from images',
+        title: strings.toolOcr,
+        subtitle: strings.toolOcrDesc,
+        onTap: _openOcr,
       ),
       _MoreTool(
         icon: Icons.qr_code_rounded,
-        title: 'QR Code Generator',
-        subtitle: 'Create your own QR codes',
+        title: strings.toolQrGenerator,
+        subtitle: strings.toolQrGeneratorDesc,
+        onTap: _openQrGenerator,
       ),
     ];
 
@@ -233,10 +322,15 @@ class _ConvertTool {
 }
 
 class _EditTool {
-  const _EditTool({required this.icon, required this.label});
+  const _EditTool({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
 
   final IconData icon;
   final String label;
+  final VoidCallback onTap;
 }
 
 class _MoreTool {
@@ -244,11 +338,13 @@ class _MoreTool {
     required this.icon,
     required this.title,
     required this.subtitle,
+    this.onTap,
   });
 
   final IconData icon;
   final String title;
   final String subtitle;
+  final VoidCallback? onTap;
 }
 
 // ───────────────────────────── Widgets ─────────────────────────────
@@ -348,7 +444,7 @@ class _EditToolCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return _ToolCardShell(
-      onTap: null,
+      onTap: tool.onTap,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -381,9 +477,7 @@ class _MoreToolRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {
-        // TODO: Navigate to specific tool
-      },
+      onTap: tool.onTap,
       child: SizedBox(
         height: 72,
         child: Padding(
