@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:ui' as ui;
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -7,46 +8,47 @@ import 'package:path_provider/path_provider.dart';
 import 'package:pdfx/pdfx.dart' as pdfx;
 import 'package:share_plus/share_plus.dart';
 
-import '../l10n/app_localizations.dart';
-import '../services/pdf_editor.dart';
-import '../theme/app_theme.dart';
+import '../../l10n/app_localizations.dart';
+import '../../services/pdf_editor.dart';
+import '../../theme/app_theme.dart';
 
-class WatermarkScreen extends StatefulWidget {
-  const WatermarkScreen({super.key});
+class SignDocumentScreen extends StatefulWidget {
+  const SignDocumentScreen({super.key});
 
   @override
-  State<WatermarkScreen> createState() => _WatermarkScreenState();
+  State<SignDocumentScreen> createState() => _SignDocumentScreenState();
 }
 
-class _WatermarkScreenState extends State<WatermarkScreen> {
+class _SignDocumentScreenState extends State<SignDocumentScreen> {
   static const _filesChannel = MethodChannel('com.example.scanner/files');
+  static const _signatureSize = Size(1200, 360);
   static const _previewHeight = 360.0;
 
-  final _textController = TextEditingController();
+  final List<List<Offset>> _strokes = [];
   final Set<int> _pagePointerIds = {};
   Uint8List? _inputBytes;
   Uint8List? _pagePreview;
   Size? _pageSize;
   String? _sourceName;
-  int? _pageCount;
   File? _outputFile;
-  Offset _watermarkPosition = const Offset(0.1, 0.5);
-  double _opacity = 0.2;
+  int? _pageCount;
+  int _pageNumber = 1;
+  Offset _signaturePosition = const Offset(0.1, 0.75);
+  bool _whiteSignature = false;
   bool _busy = false;
   bool _loadingPreview = false;
   String? _error;
   int _previewRequest = 0;
 
-  @override
-  void dispose() {
-    _textController.dispose();
-    super.dispose();
-  }
+  bool get _hasSignature => _strokes.any((stroke) => stroke.isNotEmpty);
 
-  Future<(Uint8List, Size)> _renderPage(Uint8List bytes) async {
+  Color get _signatureColor =>
+      _whiteSignature ? const Color(0xFFFFFFFF) : const Color(0xFF000000);
+
+  Future<(Uint8List, Size)> _renderPage(Uint8List bytes, int pageNumber) async {
     final document = await pdfx.PdfDocument.openData(bytes);
     try {
-      final page = await document.getPage(1);
+      final page = await document.getPage(pageNumber);
       try {
         final longestSide = page.width > page.height ? page.width : page.height;
         final scale = 1200 / longestSide;
@@ -57,7 +59,7 @@ class _WatermarkScreenState extends State<WatermarkScreen> {
           backgroundColor: '#FFFFFF',
         );
         if (image == null || image.bytes.isEmpty) {
-          throw StateError('Could not render the first PDF page.');
+          throw StateError('Could not render PDF page $pageNumber.');
         }
         return (
           image.bytes,
@@ -71,7 +73,7 @@ class _WatermarkScreenState extends State<WatermarkScreen> {
     }
   }
 
-  Future<void> _loadPagePreview(Uint8List bytes) async {
+  Future<void> _loadPagePreview(Uint8List bytes, int pageNumber) async {
     final request = ++_previewRequest;
     setState(() {
       _loadingPreview = true;
@@ -81,7 +83,7 @@ class _WatermarkScreenState extends State<WatermarkScreen> {
       _outputFile = null;
     });
     try {
-      final (preview, size) = await _renderPage(bytes);
+      final (preview, size) = await _renderPage(bytes, pageNumber);
       if (!mounted || request != _previewRequest) return;
       setState(() {
         _pagePreview = preview;
@@ -106,9 +108,7 @@ class _WatermarkScreenState extends State<WatermarkScreen> {
     if (!mounted || result == null) return;
     final path = result.path;
     if (path == null || path.isEmpty) {
-      setState(
-        () => _error = AppLocalizations.of(context)!.watermarkPdfAccessFailed,
-      );
+      setState(() => _error = 'The selected PDF file could not be accessed.');
       return;
     }
 
@@ -121,6 +121,7 @@ class _WatermarkScreenState extends State<WatermarkScreen> {
       _pageSize = null;
       _sourceName = result.name;
       _pageCount = null;
+      _pageNumber = 1;
       _outputFile = null;
     });
     try {
@@ -130,24 +131,44 @@ class _WatermarkScreenState extends State<WatermarkScreen> {
       setState(() {
         _inputBytes = bytes;
         _pageCount = pageCount;
-        _watermarkPosition = const Offset(0.1, 0.5);
       });
-      await _loadPagePreview(bytes);
+      await _loadPagePreview(bytes, 1);
     } catch (error) {
       if (mounted) {
-        setState(
-          () => _error = AppLocalizations.of(context)!.pdfEditOpenFailed,
-        );
+        setState(() {
+          _error = AppLocalizations.of(context)!.pdfEditOpenFailed;
+        });
       }
     } finally {
       if (mounted) setState(() => _busy = false);
     }
   }
 
-  Future<void> _applyWatermark() async {
+  Future<Uint8List> _createSignaturePng() async {
+    final recorder = ui.PictureRecorder();
+    final canvas = Canvas(
+      recorder,
+      Rect.fromLTWH(0, 0, _signatureSize.width, _signatureSize.height),
+    );
+    _SignaturePainter(_strokes, _signatureColor).paint(canvas, _signatureSize);
+    final image = await recorder.endRecording().toImage(
+      _signatureSize.width.toInt(),
+      _signatureSize.height.toInt(),
+    );
+    try {
+      final data = await image.toByteData(format: ui.ImageByteFormat.png);
+      if (data == null) {
+        throw StateError('Could not encode the signature image.');
+      }
+      return data.buffer.asUint8List();
+    } finally {
+      image.dispose();
+    }
+  }
+
+  Future<void> _signPdf() async {
     final bytes = _inputBytes;
-    final text = _textController.text.trim();
-    if (bytes == null || text.isEmpty) return;
+    if (bytes == null || !_hasSignature) return;
 
     setState(() {
       _busy = true;
@@ -155,16 +176,17 @@ class _WatermarkScreenState extends State<WatermarkScreen> {
       _outputFile = null;
     });
     try {
-      final watermarkedBytes = addPdfWatermark(
+      final signatureBytes = await _createSignaturePng();
+      final signedBytes = signPdfBytes(
         inputBytes: bytes,
-        text: text,
-        opacity: _opacity,
-        position: _watermarkPosition,
+        signaturePngBytes: signatureBytes,
+        pageNumber: _pageNumber,
+        signaturePosition: _signaturePosition,
       );
       final documentsDirectory = await getApplicationDocumentsDirectory();
       final outputDirectory = Directory(
         '${documentsDirectory.path}${Platform.pathSeparator}documents'
-        '${Platform.pathSeparator}watermarked_pdfs',
+        '${Platform.pathSeparator}signed_pdfs',
       );
       await outputDirectory.create(recursive: true);
 
@@ -175,11 +197,11 @@ class _WatermarkScreenState extends State<WatermarkScreen> {
           .replaceAll(RegExp(r'\s+'), '_');
       final safeStem = stem.isEmpty ? 'document' : stem;
       final filename =
-          '${safeStem}_watermarked_${DateTime.now().microsecondsSinceEpoch}.pdf';
+          '${safeStem}_signed_${DateTime.now().microsecondsSinceEpoch}.pdf';
       final file = File(
         '${outputDirectory.path}${Platform.pathSeparator}$filename',
       );
-      await file.writeAsBytes(watermarkedBytes, flush: true);
+      await file.writeAsBytes(signedBytes, flush: true);
 
       if (Platform.isAndroid) {
         final uri = await _filesChannel.invokeMethod<String>(
@@ -187,7 +209,7 @@ class _WatermarkScreenState extends State<WatermarkScreen> {
           {
             'filename': filename,
             'mimeType': 'application/pdf',
-            'bytes': watermarkedBytes,
+            'bytes': signedBytes,
           },
         );
         if (uri == null || uri.isEmpty) {
@@ -215,19 +237,32 @@ class _WatermarkScreenState extends State<WatermarkScreen> {
     }
   }
 
-  void _moveWatermark(Offset delta, Size displaySize, Size pageSize) {
-    final boundsWidth = pageSize.width * 0.8;
-    final boundsHeight = pageSize.height < 64 ? pageSize.height : 64.0;
+  void _addPoint(Offset localPosition, Size size) {
+    if (_strokes.isEmpty) return;
+    _strokes.last.add(
+      Offset(
+        (localPosition.dx / size.width).clamp(0.0, 1.0).toDouble(),
+        (localPosition.dy / size.height).clamp(0.0, 1.0).toDouble(),
+      ),
+    );
+    setState(() => _outputFile = null);
+  }
+
+  void _moveSignature(Offset delta, Size pageDisplaySize, Size pageSize) {
+    var width = pageSize.width < 180 ? pageSize.width : 180.0;
+    final maxWidthForHeight = pageSize.height * 3.6;
+    if (width > maxWidthForHeight) width = maxWidthForHeight;
+    final height = width / 3.6;
     final position = Offset(
-      (_watermarkPosition.dx + delta.dx / displaySize.width)
-          .clamp(0.0, (pageSize.width - boundsWidth) / pageSize.width)
+      (_signaturePosition.dx + delta.dx / pageDisplaySize.width)
+          .clamp(0.0, (pageSize.width - width) / pageSize.width)
           .toDouble(),
-      (_watermarkPosition.dy + delta.dy / displaySize.height)
-          .clamp(0.0, (pageSize.height - boundsHeight) / pageSize.height)
+      (_signaturePosition.dy + delta.dy / pageDisplaySize.height)
+          .clamp(0.0, (pageSize.height - height) / pageSize.height)
           .toDouble(),
     );
     setState(() {
-      _watermarkPosition = position;
+      _signaturePosition = position;
       _outputFile = null;
     });
   }
@@ -235,12 +270,13 @@ class _WatermarkScreenState extends State<WatermarkScreen> {
   @override
   Widget build(BuildContext context) {
     final strings = AppLocalizations.of(context)!;
+    final pageCount = _pageCount;
     final primary = AppColors.primary(context);
 
     return Scaffold(
       backgroundColor: AppColors.background(context),
       appBar: AppBar(
-        title: Text(strings.toolWatermark),
+        title: Text(strings.toolSign),
         backgroundColor: AppColors.background(context),
       ),
       body: SafeArea(
@@ -270,94 +306,123 @@ class _WatermarkScreenState extends State<WatermarkScreen> {
                 ),
               ),
             ],
-            if (_pageCount != null) ...[
+            if (pageCount != null) ...[
               const SizedBox(height: 12),
               Text(
-                strings.pdfEditPageCount(_pageCount!),
+                strings.pdfEditPageCount(pageCount),
                 style: TextStyle(color: AppColors.textMuted(context)),
               ),
-            ],
-            const SizedBox(height: 16),
-            Text(
-              strings.watermarkPositionHint,
-              style: TextStyle(color: AppColors.textMuted(context)),
-            ),
-            const SizedBox(height: 8),
-            SizedBox(height: _previewHeight, child: _buildPagePreview(strings)),
-            const SizedBox(height: 24),
-            TextField(
-              controller: _textController,
-              maxLength: 120,
-              textCapitalization: TextCapitalization.sentences,
-              decoration: InputDecoration(
-                labelText: strings.watermarkText,
-                hintText: strings.watermarkTextHint,
-                border: const OutlineInputBorder(),
+              const SizedBox(height: 8),
+              DropdownButtonFormField<int>(
+                initialValue: _pageNumber,
+                decoration: InputDecoration(
+                  labelText: strings.pdfEditPage(_pageNumber),
+                  border: const OutlineInputBorder(),
+                ),
+                items: [
+                  for (var page = 1; page <= pageCount; page++)
+                    DropdownMenuItem(
+                      value: page,
+                      child: Text(strings.pdfEditPage(page)),
+                    ),
+                ],
+                onChanged: _busy
+                    ? null
+                    : (page) {
+                        if (page != null) {
+                          setState(() {
+                            _pageNumber = page;
+                            _pagePreview = null;
+                            _pageSize = null;
+                            _outputFile = null;
+                          });
+                          final bytes = _inputBytes;
+                          if (bytes != null) _loadPagePreview(bytes, page);
+                        }
+                      },
               ),
-              onChanged: (_) => setState(() => _outputFile = null),
-            ),
-            const SizedBox(height: 8),
+            ],
+            const SizedBox(height: 24),
             Text(
-              strings.watermarkOpacity,
+              strings.toolSignDesc,
               style: TextStyle(
                 color: AppColors.ink(context),
                 fontWeight: FontWeight.w600,
               ),
             ),
-            Row(
-              children: [
-                const Icon(Icons.opacity_rounded),
-                Expanded(
-                  child: Slider(
-                    value: _opacity,
-                    min: 0.1,
-                    max: 0.6,
-                    divisions: 10,
-                    label: '${(_opacity * 100).round()}%',
-                    onChanged: _busy
-                        ? null
-                        : (value) => setState(() {
-                            _opacity = value;
-                            _outputFile = null;
-                          }),
-                  ),
-                ),
-                SizedBox(
-                  width: 44,
-                  child: Text('${(_opacity * 100).round()}%'),
-                ),
-              ],
+            const SizedBox(height: 4),
+            Text(
+              strings.signaturePlacementHint,
+              style: TextStyle(color: AppColors.textMuted(context)),
             ),
-            Padding(
-              padding: const EdgeInsets.only(top: 4),
-              child: Text(
-                strings.watermarkAllPagesHint,
-                style: TextStyle(color: AppColors.textMuted(context)),
+            const SizedBox(height: 12),
+            SizedBox(height: _previewHeight, child: _buildPagePreview(strings)),
+            const SizedBox(height: 20),
+            Text(
+              strings.signatureColor,
+              style: TextStyle(
+                color: AppColors.ink(context),
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 8),
+            SegmentedButton<bool>(
+              segments: [
+                ButtonSegment(
+                  value: false,
+                  label: Text(strings.signatureBlack),
+                ),
+                ButtonSegment(value: true, label: Text(strings.signatureWhite)),
+              ],
+              selected: {_whiteSignature},
+              showSelectedIcon: false,
+              onSelectionChanged: _busy
+                  ? null
+                  : (selection) {
+                      setState(() {
+                        _whiteSignature = selection.first;
+                        _outputFile = null;
+                      });
+                    },
+            ),
+            const SizedBox(height: 12),
+            _buildSignaturePad(),
+            Align(
+              alignment: Alignment.centerRight,
+              child: TextButton.icon(
+                onPressed: _busy || !_hasSignature
+                    ? null
+                    : () => setState(() {
+                        _strokes.clear();
+                        _outputFile = null;
+                      }),
+                icon: const Icon(Icons.delete_outline_rounded),
+                label: Text(strings.signatureClear),
               ),
             ),
             if (_error != null) ...[
-              const SizedBox(height: 16),
+              const SizedBox(height: 8),
               Text(
                 _error!,
                 style: TextStyle(color: Theme.of(context).colorScheme.error),
               ),
             ],
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
             FilledButton(
               onPressed:
                   _busy ||
                       _loadingPreview ||
                       _pagePreview == null ||
                       _inputBytes == null ||
-                      _textController.text.trim().isEmpty
+                      !_hasSignature
                   ? null
-                  : _applyWatermark,
+                  : _signPdf,
               child: _busy
                   ? const SizedBox.square(
                       dimension: 20,
                       child: CircularProgressIndicator(strokeWidth: 2),
                     )
-                  : Text(strings.watermarkApply),
+                  : Text(strings.toolSign),
             ),
             if (_outputFile case final file?) ...[
               const SizedBox(height: 24),
@@ -394,7 +459,7 @@ class _WatermarkScreenState extends State<WatermarkScreen> {
     if (preview == null || pageSize == null) {
       return Center(
         child: Text(
-          strings.watermarkPreviewUnavailable,
+          strings.signaturePreviewUnavailable,
           textAlign: TextAlign.center,
           style: TextStyle(color: AppColors.textMuted(context)),
         ),
@@ -413,15 +478,18 @@ class _WatermarkScreenState extends State<WatermarkScreen> {
           displaySize.width - 2,
           displaySize.height - 2,
         );
-        final watermarkWidth = pageCanvasSize.width * 0.8;
-        final watermarkHeight = pageSize.height < 64
-            ? pageCanvasSize.height
-            : pageCanvasSize.height * (64 / pageSize.height);
+        var signatureWidth = pageSize.width < 180
+            ? pageCanvasSize.width
+            : pageCanvasSize.width * (180 / pageSize.width);
+        final maxWidthForHeight = pageCanvasSize.height * 3.6;
+        if (signatureWidth > maxWidthForHeight) {
+          signatureWidth = maxWidthForHeight;
+        }
+        final signatureHeight = signatureWidth / 3.6;
         final left =
-            _watermarkPosition.dx * (pageCanvasSize.width - watermarkWidth);
+            _signaturePosition.dx * (pageCanvasSize.width - signatureWidth);
         final top =
-            _watermarkPosition.dy * (pageCanvasSize.height - watermarkHeight);
-        final fontSize = 40 * (pageCanvasSize.width / pageSize.width);
+            _signaturePosition.dy * (pageCanvasSize.height - signatureHeight);
 
         return Center(
           child: Listener(
@@ -439,7 +507,7 @@ class _WatermarkScreenState extends State<WatermarkScreen> {
               onPanUpdate: _busy
                   ? null
                   : (details) =>
-                        _moveWatermark(details.delta, pageCanvasSize, pageSize),
+                        _moveSignature(details.delta, pageCanvasSize, pageSize),
               child: Container(
                 width: displaySize.width,
                 height: displaySize.height,
@@ -456,25 +524,25 @@ class _WatermarkScreenState extends State<WatermarkScreen> {
                     Positioned(
                       left: left,
                       top: top,
-                      width: watermarkWidth,
-                      height: watermarkHeight,
+                      width: signatureWidth,
+                      height: signatureHeight,
                       child: IgnorePointer(
-                        child: Center(
-                          child: Opacity(
-                            opacity: _opacity,
-                            child: Text(
-                              _textController.text.trim().isEmpty
-                                  ? strings.watermarkTextHint
-                                  : _textController.text.trim(),
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: const Color(0xFF808080),
-                                fontSize: fontSize.clamp(8.0, 40.0),
-                                fontWeight: FontWeight.bold,
-                              ),
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            color: _whiteSignature
+                                ? const Color(0x55303030)
+                                : const Color(0x22FFFFFF),
+                            border: Border.all(
+                              color: AppColors.primary(context),
+                              width: 1,
                             ),
+                          ),
+                          child: CustomPaint(
+                            painter: _SignaturePainter(
+                              _strokes,
+                              _signatureColor,
+                            ),
+                            child: const SizedBox.expand(),
                           ),
                         ),
                       ),
@@ -488,4 +556,78 @@ class _WatermarkScreenState extends State<WatermarkScreen> {
       },
     );
   }
+
+  Widget _buildSignaturePad() {
+    return Container(
+      height: 180,
+      decoration: BoxDecoration(
+        color: _whiteSignature
+            ? const Color(0xFF303030)
+            : const Color(0xFFFFFFFF),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.border(context)),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final size = Size(constraints.maxWidth, constraints.maxHeight);
+          return GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onPanStart: (details) {
+              setState(() {
+                _strokes.add([]);
+                _outputFile = null;
+              });
+              _addPoint(details.localPosition, size);
+            },
+            onPanUpdate: (details) => _addPoint(details.localPosition, size),
+            child: CustomPaint(
+              painter: _SignaturePainter(_strokes, _signatureColor),
+              child: const SizedBox.expand(),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _SignaturePainter extends CustomPainter {
+  const _SignaturePainter(this.strokes, this.color);
+
+  final List<List<Offset>> strokes;
+  final Color color;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final strokeWidth = size.height / 60;
+    final paint = Paint()
+      ..color = color
+      ..strokeWidth = strokeWidth
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round
+      ..style = PaintingStyle.stroke;
+
+    for (final stroke in strokes) {
+      if (stroke.isEmpty) continue;
+      if (stroke.length == 1) {
+        canvas.drawCircle(
+          Offset(stroke.first.dx * size.width, stroke.first.dy * size.height),
+          strokeWidth / 2,
+          paint..style = PaintingStyle.fill,
+        );
+        paint.style = PaintingStyle.stroke;
+        continue;
+      }
+      final path = Path()
+        ..moveTo(stroke.first.dx * size.width, stroke.first.dy * size.height);
+      for (final point in stroke.skip(1)) {
+        path.lineTo(point.dx * size.width, point.dy * size.height);
+      }
+      canvas.drawPath(path, paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _SignaturePainter oldDelegate) => true;
 }

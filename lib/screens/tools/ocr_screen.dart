@@ -6,9 +6,9 @@ import 'package:flutter_tesseract_ocr/flutter_tesseract_ocr.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:share_plus/share_plus.dart';
 
-import '../l10n/app_localizations.dart';
-import '../theme/app_theme.dart';
-import '../widgets/app_snackbar.dart';
+import '../../l10n/app_localizations.dart';
+import '../../theme/app_theme.dart';
+import '../../widgets/app_snackbar.dart';
 
 class OcrScreen extends StatefulWidget {
   const OcrScreen({super.key});

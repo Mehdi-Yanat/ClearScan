@@ -8,10 +8,10 @@ import 'package:flutter/services.dart';
 import 'package:image/image.dart' as img;
 import 'package:path_provider/path_provider.dart';
 
-import '../l10n/app_localizations.dart';
-import '../services/document_quad_detector.dart';
-import '../theme/app_theme.dart';
-import '../widgets/app_snackbar.dart';
+import '../../l10n/app_localizations.dart';
+import '../../services/document_quad_detector.dart';
+import '../../theme/app_theme.dart';
+import '../../widgets/app_snackbar.dart';
 
 /// What the user chose when leaving the crop screen.
 enum CropAction { next, addPage, retake }

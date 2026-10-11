@@ -4,19 +4,19 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 
-import '../l10n/app_localizations.dart';
-import '../services/pdf_to_excel_converter.dart';
-import '../theme/app_theme.dart';
-import '../widgets/app_snackbar.dart';
+import '../../l10n/app_localizations.dart';
+import '../../services/pdf_to_word_converter.dart';
+import '../../theme/app_theme.dart';
+import '../../widgets/app_snackbar.dart';
 
-class PdfToExcelScreen extends StatefulWidget {
-  const PdfToExcelScreen({super.key});
+class PdfToWordScreen extends StatefulWidget {
+  const PdfToWordScreen({super.key});
 
   @override
-  State<PdfToExcelScreen> createState() => _PdfToExcelScreenState();
+  State<PdfToWordScreen> createState() => _PdfToWordScreenState();
 }
 
-class _PdfToExcelScreenState extends State<PdfToExcelScreen> {
+class _PdfToWordScreenState extends State<PdfToWordScreen> {
   bool _busy = false;
   int _completedPages = 0;
   int _totalPages = 0;
@@ -37,7 +37,7 @@ class _PdfToExcelScreenState extends State<PdfToExcelScreen> {
     try {
       final strings = AppLocalizations.of(context)!;
       final selectedFile = await FilePicker.pickFile(
-        dialogTitle: strings.pdfToExcelSelectPdf,
+        dialogTitle: strings.pdfToWordSelectPdf,
         type: FileType.custom,
         allowedExtensions: const ['pdf'],
       );
@@ -50,7 +50,7 @@ class _PdfToExcelScreenState extends State<PdfToExcelScreen> {
         );
       }
 
-      final outputFile = await convertPdfToExcel(
+      final outputFile = await convertPdfToWord(
         pdfFile: File(path),
         sourceName: selectedFile.name,
         onProgress: (completed, total) {
@@ -70,7 +70,7 @@ class _PdfToExcelScreenState extends State<PdfToExcelScreen> {
     }
   }
 
-  Future<void> _shareWorkbook() async {
+  Future<void> _shareDocument() async {
     final file = _convertedFile;
     if (_busy || file == null) return;
     setState(() => _busy = true);
@@ -86,7 +86,7 @@ class _PdfToExcelScreenState extends State<PdfToExcelScreen> {
         final strings = AppLocalizations.of(context)!;
         showAppSnackBar(
           context,
-          strings.pdfToExcelShareFailed(error.toString()),
+          strings.pdfToWordShareFailed(error.toString()),
         );
       }
     } finally {
@@ -101,7 +101,7 @@ class _PdfToExcelScreenState extends State<PdfToExcelScreen> {
     return Scaffold(
       backgroundColor: AppColors.background(context),
       appBar: AppBar(
-        title: Text(strings.pdfToExcelTitle),
+        title: Text(strings.pdfToWordTitle),
         backgroundColor: AppColors.background(context),
       ),
       body: SafeArea(
@@ -109,13 +109,13 @@ class _PdfToExcelScreenState extends State<PdfToExcelScreen> {
           padding: const EdgeInsets.all(24),
           children: [
             Icon(
-              Icons.table_chart_rounded,
+              Icons.description_rounded,
               size: 56,
               color: AppColors.primary(context),
             ),
             const SizedBox(height: 16),
             Text(
-              strings.pdfToExcelHint,
+              strings.pdfToWordHint,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 15,
@@ -126,7 +126,7 @@ class _PdfToExcelScreenState extends State<PdfToExcelScreen> {
             FilledButton.icon(
               onPressed: _busy ? null : _pickAndConvert,
               icon: const Icon(Icons.picture_as_pdf_rounded),
-              label: Text(strings.pdfToExcelSelectPdf),
+              label: Text(strings.pdfToWordSelectPdf),
             ),
             if (_busy) ...[
               const SizedBox(height: 24),
@@ -134,14 +134,14 @@ class _PdfToExcelScreenState extends State<PdfToExcelScreen> {
               if (_totalPages > 0) ...[
                 const SizedBox(height: 12),
                 Text(
-                  strings.pdfToExcelProgress(_completedPages, _totalPages),
+                  strings.pdfToWordProgress(_completedPages, _totalPages),
                   textAlign: TextAlign.center,
                   style: TextStyle(color: AppColors.textMuted(context)),
                 ),
               ] else ...[
                 const SizedBox(height: 12),
                 Text(
-                  strings.pdfToExcelConverting,
+                  strings.pdfToWordConverting,
                   textAlign: TextAlign.center,
                   style: TextStyle(color: AppColors.textMuted(context)),
                 ),
@@ -150,7 +150,7 @@ class _PdfToExcelScreenState extends State<PdfToExcelScreen> {
             if (_error != null) ...[
               const SizedBox(height: 24),
               Text(
-                strings.pdfToExcelConversionFailed(_error!),
+                strings.pdfToWordConversionFailed(_error!),
                 style: TextStyle(color: Theme.of(context).colorScheme.error),
               ),
             ],
@@ -159,16 +159,16 @@ class _PdfToExcelScreenState extends State<PdfToExcelScreen> {
               ListTile(
                 contentPadding: EdgeInsets.zero,
                 leading: Icon(
-                  Icons.table_chart_outlined,
+                  Icons.description_outlined,
                   color: AppColors.primary(context),
                 ),
                 title: Text(file.uri.pathSegments.last),
               ),
               const SizedBox(height: 8),
               FilledButton.icon(
-                onPressed: _busy ? null : _shareWorkbook,
+                onPressed: _busy ? null : _shareDocument,
                 icon: const Icon(Icons.share_rounded),
-                label: Text(strings.pdfToExcelShare),
+                label: Text(strings.pdfToWordShare),
               ),
             ],
           ],

@@ -11,14 +11,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'crop_adjust_screen.dart';
 import 'enhance_save_screen.dart';
-import '../l10n/app_localizations.dart';
-import '../services/app_settings.dart';
-import '../services/card_quad_detector.dart';
-import '../services/id_card_composer.dart';
-import '../services/document_storage.dart';
-import '../services/document_quad_detector.dart';
-import '../services/notification_service.dart';
-import '../widgets/app_snackbar.dart';
+import '../../l10n/app_localizations.dart';
+import '../../services/app_settings.dart';
+import '../../services/card_quad_detector.dart';
+import '../../services/id_card_composer.dart';
+import '../../services/document_storage.dart';
+import '../../services/document_quad_detector.dart';
+import '../../services/notification_service.dart';
+import '../../widgets/app_snackbar.dart';
 
 enum ScanMode {
   idCard(1.586),

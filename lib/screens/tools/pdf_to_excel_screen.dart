@@ -4,25 +4,24 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 
-import '../l10n/app_localizations.dart';
-import '../services/pdf_to_image_converter.dart';
-import '../theme/app_theme.dart';
-import '../widgets/app_snackbar.dart';
+import '../../l10n/app_localizations.dart';
+import '../../services/pdf_to_excel_converter.dart';
+import '../../theme/app_theme.dart';
+import '../../widgets/app_snackbar.dart';
 
-class PdfToImageScreen extends StatefulWidget {
-  const PdfToImageScreen({super.key});
+class PdfToExcelScreen extends StatefulWidget {
+  const PdfToExcelScreen({super.key});
 
   @override
-  State<PdfToImageScreen> createState() => _PdfToImageScreenState();
+  State<PdfToExcelScreen> createState() => _PdfToExcelScreenState();
 }
 
-class _PdfToImageScreenState extends State<PdfToImageScreen> {
+class _PdfToExcelScreenState extends State<PdfToExcelScreen> {
   bool _busy = false;
   int _completedPages = 0;
   int _totalPages = 0;
   String? _error;
-  String? _sourceName;
-  List<File> _convertedFiles = const [];
+  File? _convertedFile;
 
   Future<void> _pickAndConvert() async {
     if (_busy) return;
@@ -32,13 +31,13 @@ class _PdfToImageScreenState extends State<PdfToImageScreen> {
       _completedPages = 0;
       _totalPages = 0;
       _error = null;
-      _sourceName = null;
-      _convertedFiles = const [];
+      _convertedFile = null;
     });
 
     try {
+      final strings = AppLocalizations.of(context)!;
       final selectedFile = await FilePicker.pickFile(
-        dialogTitle: AppLocalizations.of(context)!.pdfToImageSelectPdf,
+        dialogTitle: strings.pdfToExcelSelectPdf,
         type: FileType.custom,
         allowedExtensions: const ['pdf'],
       );
@@ -51,7 +50,7 @@ class _PdfToImageScreenState extends State<PdfToImageScreen> {
         );
       }
 
-      final files = await convertPdfToImages(
+      final outputFile = await convertPdfToExcel(
         pdfFile: File(path),
         sourceName: selectedFile.name,
         onProgress: (completed, total) {
@@ -63,10 +62,7 @@ class _PdfToImageScreenState extends State<PdfToImageScreen> {
         },
       );
       if (!mounted) return;
-      setState(() {
-        _sourceName = selectedFile.name;
-        _convertedFiles = files;
-      });
+      setState(() => _convertedFile = outputFile);
     } on Exception catch (error) {
       if (mounted) setState(() => _error = error.toString());
     } finally {
@@ -74,14 +70,15 @@ class _PdfToImageScreenState extends State<PdfToImageScreen> {
     }
   }
 
-  Future<void> _shareImages() async {
-    if (_busy || _convertedFiles.isEmpty) return;
+  Future<void> _shareWorkbook() async {
+    final file = _convertedFile;
+    if (_busy || file == null) return;
     setState(() => _busy = true);
     try {
       await SharePlus.instance.share(
         ShareParams(
-          files: _convertedFiles.map((file) => XFile(file.path)).toList(),
-          subject: _sourceName,
+          files: [XFile(file.path)],
+          subject: file.uri.pathSegments.last,
         ),
       );
     } on Exception catch (error) {
@@ -89,7 +86,7 @@ class _PdfToImageScreenState extends State<PdfToImageScreen> {
         final strings = AppLocalizations.of(context)!;
         showAppSnackBar(
           context,
-          strings.pdfToImageShareFailed(error.toString()),
+          strings.pdfToExcelShareFailed(error.toString()),
         );
       }
     } finally {
@@ -104,7 +101,7 @@ class _PdfToImageScreenState extends State<PdfToImageScreen> {
     return Scaffold(
       backgroundColor: AppColors.background(context),
       appBar: AppBar(
-        title: Text(strings.pdfToImageTitle),
+        title: Text(strings.pdfToExcelTitle),
         backgroundColor: AppColors.background(context),
       ),
       body: SafeArea(
@@ -112,13 +109,13 @@ class _PdfToImageScreenState extends State<PdfToImageScreen> {
           padding: const EdgeInsets.all(24),
           children: [
             Icon(
-              Icons.image_rounded,
+              Icons.table_chart_rounded,
               size: 56,
               color: AppColors.primary(context),
             ),
             const SizedBox(height: 16),
             Text(
-              strings.pdfToImageHint,
+              strings.pdfToExcelHint,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 15,
@@ -129,7 +126,7 @@ class _PdfToImageScreenState extends State<PdfToImageScreen> {
             FilledButton.icon(
               onPressed: _busy ? null : _pickAndConvert,
               icon: const Icon(Icons.picture_as_pdf_rounded),
-              label: Text(strings.pdfToImageSelectPdf),
+              label: Text(strings.pdfToExcelSelectPdf),
             ),
             if (_busy) ...[
               const SizedBox(height: 24),
@@ -137,14 +134,14 @@ class _PdfToImageScreenState extends State<PdfToImageScreen> {
               if (_totalPages > 0) ...[
                 const SizedBox(height: 12),
                 Text(
-                  strings.pdfToImageProgress(_completedPages, _totalPages),
+                  strings.pdfToExcelProgress(_completedPages, _totalPages),
                   textAlign: TextAlign.center,
                   style: TextStyle(color: AppColors.textMuted(context)),
                 ),
               ] else ...[
                 const SizedBox(height: 12),
                 Text(
-                  strings.pdfToImageConverting,
+                  strings.pdfToExcelConverting,
                   textAlign: TextAlign.center,
                   style: TextStyle(color: AppColors.textMuted(context)),
                 ),
@@ -153,36 +150,25 @@ class _PdfToImageScreenState extends State<PdfToImageScreen> {
             if (_error != null) ...[
               const SizedBox(height: 24),
               Text(
-                strings.pdfToImageConversionFailed(_error!),
+                strings.pdfToExcelConversionFailed(_error!),
                 style: TextStyle(color: Theme.of(context).colorScheme.error),
               ),
             ],
-            if (_convertedFiles.isNotEmpty) ...[
+            if (_convertedFile case final file?) ...[
               const SizedBox(height: 28),
-              Text(
-                strings.pdfToImageConvertedPages(_convertedFiles.length),
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.ink(context),
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: Icon(
+                  Icons.table_chart_outlined,
+                  color: AppColors.primary(context),
                 ),
+                title: Text(file.uri.pathSegments.last),
               ),
               const SizedBox(height: 8),
-              for (final file in _convertedFiles)
-                ListTile(
-                  contentPadding: EdgeInsets.zero,
-                  leading: Icon(
-                    Icons.image_outlined,
-                    color: AppColors.primary(context),
-                  ),
-                  title: Text(file.uri.pathSegments.last),
-                  dense: true,
-                ),
-              const SizedBox(height: 8),
               FilledButton.icon(
-                onPressed: _busy ? null : _shareImages,
+                onPressed: _busy ? null : _shareWorkbook,
                 icon: const Icon(Icons.share_rounded),
-                label: Text(strings.pdfToImageShare),
+                label: Text(strings.pdfToExcelShare),
               ),
             ],
           ],

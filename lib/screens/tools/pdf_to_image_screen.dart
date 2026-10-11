@@ -4,24 +4,25 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 
-import '../l10n/app_localizations.dart';
-import '../services/pdf_to_word_converter.dart';
-import '../theme/app_theme.dart';
-import '../widgets/app_snackbar.dart';
+import '../../l10n/app_localizations.dart';
+import '../../services/pdf_to_image_converter.dart';
+import '../../theme/app_theme.dart';
+import '../../widgets/app_snackbar.dart';
 
-class PdfToWordScreen extends StatefulWidget {
-  const PdfToWordScreen({super.key});
+class PdfToImageScreen extends StatefulWidget {
+  const PdfToImageScreen({super.key});
 
   @override
-  State<PdfToWordScreen> createState() => _PdfToWordScreenState();
+  State<PdfToImageScreen> createState() => _PdfToImageScreenState();
 }
 
-class _PdfToWordScreenState extends State<PdfToWordScreen> {
+class _PdfToImageScreenState extends State<PdfToImageScreen> {
   bool _busy = false;
   int _completedPages = 0;
   int _totalPages = 0;
   String? _error;
-  File? _convertedFile;
+  String? _sourceName;
+  List<File> _convertedFiles = const [];
 
   Future<void> _pickAndConvert() async {
     if (_busy) return;
@@ -31,13 +32,13 @@ class _PdfToWordScreenState extends State<PdfToWordScreen> {
       _completedPages = 0;
       _totalPages = 0;
       _error = null;
-      _convertedFile = null;
+      _sourceName = null;
+      _convertedFiles = const [];
     });
 
     try {
-      final strings = AppLocalizations.of(context)!;
       final selectedFile = await FilePicker.pickFile(
-        dialogTitle: strings.pdfToWordSelectPdf,
+        dialogTitle: AppLocalizations.of(context)!.pdfToImageSelectPdf,
         type: FileType.custom,
         allowedExtensions: const ['pdf'],
       );
@@ -50,7 +51,7 @@ class _PdfToWordScreenState extends State<PdfToWordScreen> {
         );
       }
 
-      final outputFile = await convertPdfToWord(
+      final files = await convertPdfToImages(
         pdfFile: File(path),
         sourceName: selectedFile.name,
         onProgress: (completed, total) {
@@ -62,7 +63,10 @@ class _PdfToWordScreenState extends State<PdfToWordScreen> {
         },
       );
       if (!mounted) return;
-      setState(() => _convertedFile = outputFile);
+      setState(() {
+        _sourceName = selectedFile.name;
+        _convertedFiles = files;
+      });
     } on Exception catch (error) {
       if (mounted) setState(() => _error = error.toString());
     } finally {
@@ -70,15 +74,14 @@ class _PdfToWordScreenState extends State<PdfToWordScreen> {
     }
   }
 
-  Future<void> _shareDocument() async {
-    final file = _convertedFile;
-    if (_busy || file == null) return;
+  Future<void> _shareImages() async {
+    if (_busy || _convertedFiles.isEmpty) return;
     setState(() => _busy = true);
     try {
       await SharePlus.instance.share(
         ShareParams(
-          files: [XFile(file.path)],
-          subject: file.uri.pathSegments.last,
+          files: _convertedFiles.map((file) => XFile(file.path)).toList(),
+          subject: _sourceName,
         ),
       );
     } on Exception catch (error) {
@@ -86,7 +89,7 @@ class _PdfToWordScreenState extends State<PdfToWordScreen> {
         final strings = AppLocalizations.of(context)!;
         showAppSnackBar(
           context,
-          strings.pdfToWordShareFailed(error.toString()),
+          strings.pdfToImageShareFailed(error.toString()),
         );
       }
     } finally {
@@ -101,7 +104,7 @@ class _PdfToWordScreenState extends State<PdfToWordScreen> {
     return Scaffold(
       backgroundColor: AppColors.background(context),
       appBar: AppBar(
-        title: Text(strings.pdfToWordTitle),
+        title: Text(strings.pdfToImageTitle),
         backgroundColor: AppColors.background(context),
       ),
       body: SafeArea(
@@ -109,13 +112,13 @@ class _PdfToWordScreenState extends State<PdfToWordScreen> {
           padding: const EdgeInsets.all(24),
           children: [
             Icon(
-              Icons.description_rounded,
+              Icons.image_rounded,
               size: 56,
               color: AppColors.primary(context),
             ),
             const SizedBox(height: 16),
             Text(
-              strings.pdfToWordHint,
+              strings.pdfToImageHint,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 15,
@@ -126,7 +129,7 @@ class _PdfToWordScreenState extends State<PdfToWordScreen> {
             FilledButton.icon(
               onPressed: _busy ? null : _pickAndConvert,
               icon: const Icon(Icons.picture_as_pdf_rounded),
-              label: Text(strings.pdfToWordSelectPdf),
+              label: Text(strings.pdfToImageSelectPdf),
             ),
             if (_busy) ...[
               const SizedBox(height: 24),
@@ -134,14 +137,14 @@ class _PdfToWordScreenState extends State<PdfToWordScreen> {
               if (_totalPages > 0) ...[
                 const SizedBox(height: 12),
                 Text(
-                  strings.pdfToWordProgress(_completedPages, _totalPages),
+                  strings.pdfToImageProgress(_completedPages, _totalPages),
                   textAlign: TextAlign.center,
                   style: TextStyle(color: AppColors.textMuted(context)),
                 ),
               ] else ...[
                 const SizedBox(height: 12),
                 Text(
-                  strings.pdfToWordConverting,
+                  strings.pdfToImageConverting,
                   textAlign: TextAlign.center,
                   style: TextStyle(color: AppColors.textMuted(context)),
                 ),
@@ -150,25 +153,36 @@ class _PdfToWordScreenState extends State<PdfToWordScreen> {
             if (_error != null) ...[
               const SizedBox(height: 24),
               Text(
-                strings.pdfToWordConversionFailed(_error!),
+                strings.pdfToImageConversionFailed(_error!),
                 style: TextStyle(color: Theme.of(context).colorScheme.error),
               ),
             ],
-            if (_convertedFile case final file?) ...[
+            if (_convertedFiles.isNotEmpty) ...[
               const SizedBox(height: 28),
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: Icon(
-                  Icons.description_outlined,
-                  color: AppColors.primary(context),
+              Text(
+                strings.pdfToImageConvertedPages(_convertedFiles.length),
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.ink(context),
                 ),
-                title: Text(file.uri.pathSegments.last),
               ),
               const SizedBox(height: 8),
+              for (final file in _convertedFiles)
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: Icon(
+                    Icons.image_outlined,
+                    color: AppColors.primary(context),
+                  ),
+                  title: Text(file.uri.pathSegments.last),
+                  dense: true,
+                ),
+              const SizedBox(height: 8),
               FilledButton.icon(
-                onPressed: _busy ? null : _shareDocument,
+                onPressed: _busy ? null : _shareImages,
                 icon: const Icon(Icons.share_rounded),
-                label: Text(strings.pdfToWordShare),
+                label: Text(strings.pdfToImageShare),
               ),
             ],
           ],

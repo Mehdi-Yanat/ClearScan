@@ -1,13 +1,13 @@
-import 'package:clear_scan/screens/documents_screen.dart';
-import 'package:clear_scan/screens/notifications_screen.dart';
+import 'package:clear_scan/screens/documents/documents_screen.dart';
+import 'package:clear_scan/screens/account/notifications_screen.dart';
 import 'package:flutter/material.dart';
 
-import 'screens/workshop_screen.dart';
+import 'screens/tools/workshop_screen.dart';
 
-import 'screens/home_screen.dart';
-import 'screens/onboarding_screen.dart';
-import 'screens/profile_screens.dart';
-import 'screens/splash_screen.dart';
+import 'screens/app/home_screen.dart';
+import 'screens/app/onboarding_screen.dart';
+import 'screens/account/profile_screens.dart';
+import 'screens/app/splash_screen.dart';
 import 'services/app_lock_service.dart';
 import 'theme/app_theme.dart'; // AppTheme, AppPreferences, themeModeNotifier, localeNotifier
 import 'l10n/app_localizations.dart' as loc;

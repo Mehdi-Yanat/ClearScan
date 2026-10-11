@@ -7,8 +7,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:qr/qr.dart';
 import 'package:share_plus/share_plus.dart';
 
-import '../l10n/app_localizations.dart';
-import '../theme/app_theme.dart';
+import '../../l10n/app_localizations.dart';
+import '../../theme/app_theme.dart';
 
 class QrGeneratorScreen extends StatefulWidget {
   const QrGeneratorScreen({super.key});

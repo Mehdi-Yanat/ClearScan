@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:clear_scan/screens/scanner_screen.dart';
+import 'package:clear_scan/screens/scanning/scanner_screen.dart';
 import 'package:clear_scan/main.dart';
 
 void main() {

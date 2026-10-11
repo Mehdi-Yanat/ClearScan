@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:clear_scan/screens/home_screen.dart';
+import 'package:clear_scan/screens/app/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 

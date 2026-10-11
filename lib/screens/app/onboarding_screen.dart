@@ -1,12 +1,12 @@
-import 'package:clear_scan/screens/home_screen.dart';
-import 'package:clear_scan/screens/scanner_screen.dart';
+import 'package:clear_scan/screens/app/home_screen.dart';
+import 'package:clear_scan/screens/scanning/scanner_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:clear_scan/l10n/app_localizations.dart' as loc;
 
-import '../theme/app_theme.dart';
+import '../../theme/app_theme.dart';
 
 // The illustrations draw a white "paper" in both themes, so everything that
 // sits on the paper uses fixed colors instead of theme-aware ones.

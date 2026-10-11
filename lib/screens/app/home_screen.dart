@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:clear_scan/screens/scanner_screen.dart';
+import 'package:clear_scan/screens/scanning/scanner_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
@@ -13,17 +13,17 @@ import 'crop_adjust_screen.dart';
 import 'enhance_save_screen.dart';
 import 'document_viewer_screen.dart';
 import 'notifications_screen.dart';
-import '../l10n/app_localizations.dart' as loc;
-import '../services/document_storage.dart';
-import '../services/folder_repository.dart';
-import '../services/notification_service.dart';
-import '../services/recent_documents.dart';
-import '../theme/app_theme.dart';
-import '../widgets/app_bottom_bar.dart';
-import '../widgets/app_snackbar.dart';
-import '../widgets/bottom_action_bar.dart';
-import '../widgets/folder_name_dialog.dart';
-import '../widgets/share_sheet.dart';
+import '../../l10n/app_localizations.dart' as loc;
+import '../../services/document_storage.dart';
+import '../../services/folder_repository.dart';
+import '../../services/notification_service.dart';
+import '../../services/recent_documents.dart';
+import '../../theme/app_theme.dart';
+import '../../widgets/app_bottom_bar.dart';
+import '../../widgets/app_snackbar.dart';
+import '../../widgets/bottom_action_bar.dart';
+import '../../widgets/folder_name_dialog.dart';
+import '../../widgets/share_sheet.dart';
 
 // Hero card stays dark navy in both themes, so its text/paper use fixed colors.
 const _heroBackground = Color(0xFF0F2A33);
