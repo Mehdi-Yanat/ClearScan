@@ -12,9 +12,9 @@ import 'package:pdf_combiner/models/merge_input.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../l10n/app_localizations.dart' as loc;
-import '../../services/folder_repository.dart';
-import '../../services/notification_service.dart';
-import '../../services/recent_documents.dart';
+import '../../services/documents/folder_repository.dart';
+import '../../services/app/notification_service.dart';
+import '../../services/documents/recent_documents.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/app_snackbar.dart';
 import '../../widgets/bottom_action_bar.dart';

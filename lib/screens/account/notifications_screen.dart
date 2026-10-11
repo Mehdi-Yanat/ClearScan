@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../l10n/app_localizations.dart' as loc;
-import '../../services/notification_service.dart';
+import '../../services/app/notification_service.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/app_snackbar.dart';
 

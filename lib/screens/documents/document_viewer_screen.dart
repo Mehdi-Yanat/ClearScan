@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:share_plus/share_plus.dart';
 
-import '../../services/recent_documents.dart';
+import '../../services/documents/recent_documents.dart';
 import '../../widgets/app_snackbar.dart';
 import '../../widgets/share_sheet.dart';
 

@@ -11,7 +11,7 @@ import 'pdf_to_image_screen.dart';
 import 'pdf_to_word_screen.dart';
 import 'ocr_screen.dart';
 import 'qr_generator_screen.dart';
-import '../../services/pdf_editor.dart';
+import '../../services/pdf/pdf_editor.dart';
 import 'scanner_screen.dart';
 import 'sign_document_screen.dart';
 import 'watermark_screen.dart';

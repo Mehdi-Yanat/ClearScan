@@ -8,7 +8,7 @@ import 'screens/app/home_screen.dart';
 import 'screens/app/onboarding_screen.dart';
 import 'screens/account/profile_screens.dart';
 import 'screens/app/splash_screen.dart';
-import 'services/app_lock_service.dart';
+import 'services/app/app_lock_service.dart';
 import 'theme/app_theme.dart'; // AppTheme, AppPreferences, themeModeNotifier, localeNotifier
 import 'l10n/app_localizations.dart' as loc;
 

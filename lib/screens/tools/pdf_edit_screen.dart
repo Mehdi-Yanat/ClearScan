@@ -7,7 +7,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../l10n/app_localizations.dart';
-import '../../services/pdf_editor.dart';
+import '../../services/pdf/pdf_editor.dart';
 import '../../theme/app_theme.dart';
 
 class PdfEditScreen extends StatefulWidget {

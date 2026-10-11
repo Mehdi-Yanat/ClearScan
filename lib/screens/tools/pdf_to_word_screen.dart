@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../l10n/app_localizations.dart';
-import '../../services/pdf_to_word_converter.dart';
+import '../../services/pdf/pdf_to_word_converter.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/app_snackbar.dart';
 

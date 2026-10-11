@@ -7,8 +7,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../l10n/app_localizations.dart' as loc;
-import '../../services/app_lock_service.dart';
-import '../../services/app_settings.dart';
+import '../../services/app/app_lock_service.dart';
+import '../../services/app/app_settings.dart';
 import '../../theme/app_theme.dart'; // AppColors, AppPreferences, themeModeNotifier, localeNotifier
 import '../../widgets/app_bottom_bar.dart';
 import '../../widgets/app_snackbar.dart';

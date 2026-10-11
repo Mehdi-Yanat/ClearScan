@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../l10n/app_localizations.dart' as loc;
-import '../../services/folder_repository.dart';
-import '../../services/recent_documents.dart';
+import '../../services/documents/folder_repository.dart';
+import '../../services/documents/recent_documents.dart';
 import '../../theme/app_theme.dart';
 import 'document_viewer_screen.dart';
 

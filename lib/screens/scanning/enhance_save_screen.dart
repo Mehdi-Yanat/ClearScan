@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:clear_scan/services/document_filters.dart';
+import 'package:clear_scan/services/documents/document_filters.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,8 +9,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 import 'crop_adjust_screen.dart';
-import '../../services/document_quad_detector.dart';
-import '../../services/document_storage.dart';
+import '../../services/imaging/document_quad_detector.dart';
+import '../../services/documents/document_storage.dart';
 import '../../widgets/app_snackbar.dart';
 import '../../widgets/share_sheet.dart';
 
