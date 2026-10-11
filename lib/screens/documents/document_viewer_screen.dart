@@ -6,6 +6,7 @@ import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../services/documents/recent_documents.dart';
+import '../../services/sharing/share_sheet_actions.dart';
 import '../../widgets/feedback/app_snackbar.dart';
 import '../../widgets/sharing/share_sheet.dart';
 
@@ -32,8 +33,8 @@ class _DocumentViewerScreenState extends State<DocumentViewerScreen> {
     final action = await showShareSheet(
       context,
       title: widget.document.name,
-      shareLabel: 'Share document',
-      exportLabel: 'Save to device',
+      shareLabel: 'Share doc',
+      exportLabel: 'Save',
       fileType: widget.document.type,
       fileSizeBytes: widget.document.sizeBytes,
       previewImagePath: widget.document.type == 'PDF'
@@ -50,6 +51,13 @@ class _DocumentViewerScreenState extends State<DocumentViewerScreen> {
       if (action == ShareSheetAction.export) {
         await saveRecentDocumentToDevice(widget.document);
         if (mounted) showAppSnackBar(context, 'Saved to device');
+      } else if (action != ShareSheetAction.share) {
+        await performShareSheetAction(
+          action: action,
+          fileName: widget.document.name,
+          fileType: widget.document.type,
+          loadBytes: () => readRecentDocumentBytes(widget.document),
+        );
       } else if (widget.document.path.startsWith('content://')) {
         await shareRecentDocument(widget.document);
       } else {
@@ -62,12 +70,16 @@ class _DocumentViewerScreenState extends State<DocumentViewerScreen> {
       }
     } on Exception catch (error) {
       if (mounted) {
-        showAppSnackBar(
-          context,
-          action == ShareSheetAction.export
-              ? 'Could not save to device: $error'
-              : 'Could not share document: $error',
-        );
+        showAppSnackBar(context, switch (action) {
+          ShareSheetAction.export => 'Could not save to device: $error',
+          ShareSheetAction.email => 'Could not email document: $error',
+          ShareSheetAction.print => 'Could not print document: $error',
+          ShareSheetAction.asImages =>
+            'Could not share document as images: $error',
+          ShareSheetAction.asText =>
+            'Could not extract or share document text: $error',
+          _ => 'Could not share document: $error',
+        });
       }
     } finally {
       if (mounted) setState(() => _sharing = false);

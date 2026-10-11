@@ -15,6 +15,7 @@ import '../../l10n/app_localizations.dart' as loc;
 import '../../services/documents/folder_repository.dart';
 import '../../services/app/notification_service.dart';
 import '../../services/documents/recent_documents.dart';
+import '../../services/sharing/share_sheet_actions.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/feedback/app_snackbar.dart';
 import '../../widgets/actions/bottom_action_bar.dart';
@@ -22,6 +23,7 @@ import '../../widgets/documents/folder_name_dialog.dart';
 import '../../widgets/sharing/share_sheet.dart';
 import 'document_viewer_screen.dart';
 import 'folder_contents_screen.dart';
+
 import 'package:clear_scan/screens/scanning/scanner_screen.dart';
 
 /// Text/icon color that stays readable on the primary color in each theme
@@ -632,8 +634,8 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
     final action = await showShareSheet(
       context,
       title: document.name,
-      shareLabel: 'Share document',
-      exportLabel: 'Save to device',
+      shareLabel: 'Share doc',
+      exportLabel: 'Save',
       fileType: document.type,
       fileSizeBytes: document.sizeBytes,
       previewImagePath: document.type == 'PDF' ? null : document.path,
@@ -650,6 +652,13 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
           await _loadFiles();
           _snack('Saved to device');
         }
+      } else if (action != ShareSheetAction.share) {
+        await performShareSheetAction(
+          action: action,
+          fileName: document.name,
+          fileType: document.type,
+          loadBytes: () => readRecentDocumentBytes(document),
+        );
       } else if (document.path.startsWith('content://')) {
         await shareRecentDocument(document);
       } else {
@@ -659,11 +668,16 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
       }
     } on Exception catch (error) {
       if (mounted) {
-        _snack(
-          action == ShareSheetAction.export
-              ? 'Could not save to device: $error'
-              : 'Could not share document: $error',
-        );
+        _snack(switch (action) {
+          ShareSheetAction.export => 'Could not save to device: $error',
+          ShareSheetAction.email => 'Could not email document: $error',
+          ShareSheetAction.print => 'Could not print document: $error',
+          ShareSheetAction.asImages =>
+            'Could not share document as images: $error',
+          ShareSheetAction.asText =>
+            'Could not extract or share document text: $error',
+          _ => 'Could not share document: $error',
+        });
       }
     }
   }

@@ -66,6 +66,7 @@ dependencies:
       ref: 3264b46723d05e5c4a6b91ae7f3c575f534f53d2
   syncfusion_flutter_pdf: ^35.1.39
   qr: ^3.0.2
+  printing: ^5.15.1
 dev_dependencies:
   flutter_test:
     sdk: flutter

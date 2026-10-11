@@ -4,7 +4,9 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 
-enum ShareSheetAction { share, export }
+import '../../services/sharing/share_sheet_actions.dart';
+
+export '../../services/sharing/share_sheet_actions.dart' show ShareSheetAction;
 
 Future<ShareSheetAction?> showShareSheet(
   BuildContext context, {
@@ -115,22 +117,32 @@ class _ShareSheetState extends State<_ShareSheet> {
         icon: Icons.share_outlined,
         action: ShareSheetAction.share,
       ),
-      const _ShareSheetOptionData(label: 'Email', icon: Icons.email_outlined),
+      const _ShareSheetOptionData(
+        label: 'Email',
+        icon: Icons.email_outlined,
+        action: ShareSheetAction.email,
+      ),
       const _ShareSheetOptionData(label: 'Copy link', icon: Icons.link_rounded),
       _ShareSheetOptionData(
-        label: widget.exportLabel ?? 'Save to device',
+        label: widget.exportLabel ?? 'Save',
         icon: Icons.file_download_outlined,
         action: widget.exportLabel == null ? null : ShareSheetAction.export,
       ),
-      const _ShareSheetOptionData(label: 'Print', icon: Icons.print_outlined),
+      const _ShareSheetOptionData(
+        label: 'Print',
+        icon: Icons.print_outlined,
+        action: ShareSheetAction.print,
+      ),
       const _ShareSheetOptionData(label: 'Cloud', icon: Icons.cloud_outlined),
       const _ShareSheetOptionData(
         label: 'As images',
         icon: Icons.image_outlined,
+        action: ShareSheetAction.asImages,
       ),
       const _ShareSheetOptionData(
         label: 'As text',
         icon: Icons.text_fields_rounded,
+        action: ShareSheetAction.asText,
       ),
     ];
 

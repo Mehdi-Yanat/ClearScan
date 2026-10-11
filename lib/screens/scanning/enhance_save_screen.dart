@@ -11,6 +11,7 @@ import 'package:share_plus/share_plus.dart';
 import 'crop_adjust_screen.dart';
 import '../../services/imaging/document_quad_detector.dart';
 import '../../services/documents/document_storage.dart';
+import '../../services/sharing/share_sheet_actions.dart';
 import '../../widgets/feedback/app_snackbar.dart';
 import '../../widgets/sharing/share_sheet.dart';
 
@@ -250,22 +251,39 @@ class _EnhanceSaveScreenState extends State<EnhanceSaveScreen> {
         final pdfName = safeName.toLowerCase().endsWith('.pdf')
             ? safeName
             : '$safeName.pdf';
-        final pdfFile = File('${tempDir.path}/$pdfName');
-        await pdfFile.writeAsBytes(pdfBytes, flush: true);
-        try {
-          await SharePlus.instance.share(
-            ShareParams(files: [XFile(pdfFile.path)], subject: pdfName),
-          );
-        } finally {
+        if (action == ShareSheetAction.share) {
+          final pdfFile = File('${tempDir.path}/$pdfName');
+          await pdfFile.writeAsBytes(pdfBytes, flush: true);
           try {
-            await pdfFile.delete();
-          } on FileSystemException catch (error) {
-            debugPrint('Could not remove temporary PDF: $error');
+            await SharePlus.instance.share(
+              ShareParams(files: [XFile(pdfFile.path)], subject: pdfName),
+            );
+          } finally {
+            try {
+              await pdfFile.delete();
+            } on FileSystemException catch (error) {
+              debugPrint('Could not remove temporary PDF: $error');
+            }
           }
+        } else {
+          await performShareSheetAction(
+            action: action,
+            fileName: pdfName,
+            fileType: 'PDF',
+            loadBytes: () async => pdfBytes,
+          );
         }
       }
     } catch (error) {
-      _showSnackBar('Could not export the PDF: $error');
+      _showSnackBar(switch (action) {
+        ShareSheetAction.email => 'Could not email the PDF: $error',
+        ShareSheetAction.print => 'Could not print the PDF: $error',
+        ShareSheetAction.asImages =>
+          'Could not share the PDF as images: $error',
+        ShareSheetAction.asText =>
+          'Could not extract or share PDF text: $error',
+        _ => 'Could not export the PDF: $error',
+      });
     } finally {
       if (mounted) setState(() => _saving = false);
     }

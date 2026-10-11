@@ -9,15 +9,17 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:share_plus/share_plus.dart';
 
-import 'package:clear_scan/screens/scanning/crop_adjust_screen.dart';
-import 'package:clear_scan/screens/scanning/enhance_save_screen.dart';
 import 'package:clear_scan/screens/documents/document_viewer_screen.dart';
 import 'package:clear_scan/screens/account/notifications_screen.dart';
+import 'package:clear_scan/screens/scanning/crop_adjust_screen.dart';
+import 'package:clear_scan/screens/scanning/enhance_save_screen.dart';
+
 import '../../l10n/app_localizations.dart' as loc;
 import '../../services/documents/document_storage.dart';
 import '../../services/documents/folder_repository.dart';
 import '../../services/app/notification_service.dart';
 import '../../services/documents/recent_documents.dart';
+import '../../services/sharing/share_sheet_actions.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/navigation/app_bottom_bar.dart';
 import '../../widgets/feedback/app_snackbar.dart';
@@ -70,8 +72,8 @@ class _HomeScreenState extends State<HomeScreen> {
     final action = await showShareSheet(
       context,
       title: document.name,
-      shareLabel: 'Share document',
-      exportLabel: 'Save to device',
+      shareLabel: 'Share doc',
+      exportLabel: 'Save',
       fileType: document.type,
       fileSizeBytes: document.sizeBytes,
       previewImagePath: document.type == 'PDF' ? null : document.path,
@@ -87,6 +89,13 @@ class _HomeScreenState extends State<HomeScreen> {
         if (!mounted) return;
         _refreshRecentDocuments();
         _showFolderError('Saved to device');
+      } else if (action != ShareSheetAction.share) {
+        await performShareSheetAction(
+          action: action,
+          fileName: document.name,
+          fileType: document.type,
+          loadBytes: () => readRecentDocumentBytes(document),
+        );
       } else if (document.path.startsWith('content://')) {
         await shareRecentDocument(document);
       } else {
@@ -96,11 +105,16 @@ class _HomeScreenState extends State<HomeScreen> {
       }
     } on Exception catch (error) {
       if (mounted) {
-        _showFolderError(
-          action == ShareSheetAction.export
-              ? 'Could not save to device: $error'
-              : 'Could not share document: $error',
-        );
+        _showFolderError(switch (action) {
+          ShareSheetAction.export => 'Could not save to device: $error',
+          ShareSheetAction.email => 'Could not email document: $error',
+          ShareSheetAction.print => 'Could not print document: $error',
+          ShareSheetAction.asImages =>
+            'Could not share document as images: $error',
+          ShareSheetAction.asText =>
+            'Could not extract or share document text: $error',
+          _ => 'Could not share document: $error',
+        });
       }
     }
   }
