@@ -5,7 +5,6 @@ import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,6 +14,7 @@ import 'enhance_save_screen.dart';
 import '../l10n/app_localizations.dart';
 import '../services/app_settings.dart';
 import '../services/card_quad_detector.dart';
+import '../services/id_card_composer.dart';
 import '../services/document_storage.dart';
 import '../services/document_quad_detector.dart';
 import '../services/notification_service.dart';
@@ -54,7 +54,7 @@ class ScannerScreen extends StatefulWidget {
 class _ScannerScreenState extends State<ScannerScreen>
     with WidgetsBindingObserver {
   static const _accent = Color(0xFF2CC4CF);
-  static const _flashModes = [FlashMode.auto, FlashMode.always, FlashMode.off];
+  static const _flashModes = [FlashMode.auto, FlashMode.torch, FlashMode.off];
 
   CameraController? _camera;
   Future<void>? _initFuture;
@@ -306,8 +306,27 @@ class _ScannerScreenState extends State<ScannerScreen>
     final controller = _camera;
     if (controller == null || !controller.value.isInitialized) return;
     final next = (_flashIndex + 1) % _flashModes.length;
-    setState(() => _flashIndex = next);
-    await controller.setFlashMode(_flashModes[next]);
+    try {
+      await controller.setFlashMode(_flashModes[next]);
+      if (mounted) setState(() => _flashIndex = next);
+    } on CameraException catch (error) {
+      _showSnack('Could not change the flash mode (${error.code}).');
+    }
+  }
+
+  Future<void> _turnOffTorch(CameraController controller) async {
+    if (_flashModes[_flashIndex] != FlashMode.torch ||
+        !controller.value.isInitialized) {
+      return;
+    }
+    try {
+      await controller.setFlashMode(FlashMode.off);
+      if (mounted && identical(_camera, controller)) {
+        setState(() => _flashIndex = _flashModes.indexOf(FlashMode.off));
+      }
+    } on CameraException catch (error) {
+      _showSnack('Could not turn off the flashlight (${error.code}).');
+    }
   }
 
   Future<void> _capture() async {
@@ -320,7 +339,12 @@ class _ScannerScreenState extends State<ScannerScreen>
       }
       _resetCardTracking();
       HapticFeedback.mediumImpact();
-      final file = await controller.takePicture();
+      late final XFile file;
+      try {
+        file = await controller.takePicture();
+      } finally {
+        await _turnOffTorch(controller);
+      }
       await _handleResult(file);
     } on CameraException catch (_) {
       _showSnack('Could not take the picture. Try again.');
@@ -647,7 +671,7 @@ class _ScannerScreenState extends State<ScannerScreen>
   Future<File> _combineIdSides(String frontPath, String backPath) async {
     final frontBytes = await File(frontPath).readAsBytes();
     final backBytes = await File(backPath).readAsBytes();
-    final combinedBytes = await compute(_combineImageBytes, <Uint8List>[
+    final combinedBytes = await compute(composeIdCardSides, <Uint8List>[
       frontBytes,
       backBytes,
     ]);
@@ -666,7 +690,7 @@ class _ScannerScreenState extends State<ScannerScreen>
 
   IconData get _flashIcon => switch (_flashModes[_flashIndex]) {
     FlashMode.auto => Icons.flash_auto_rounded,
-    FlashMode.always => Icons.flash_on_rounded,
+    FlashMode.torch => Icons.flash_on_rounded,
     _ => Icons.flash_off_rounded,
   };
 
@@ -1339,36 +1363,4 @@ class _ShutterState extends State<_Shutter> {
       ),
     );
   }
-}
-
-Uint8List _combineImageBytes(List<Uint8List> sides) {
-  final front = img.decodeImage(sides[0]);
-  final back = img.decodeImage(sides[1]);
-  if (front == null || back == null) {
-    throw const FormatException('Could not read both captured document sides.');
-  }
-
-  final width = front.width > back.width ? front.width : back.width;
-  final frontImage = front.width == width
-      ? front
-      : img.copyResize(
-          front,
-          width: width,
-          interpolation: img.Interpolation.average,
-        );
-  final backImage = back.width == width
-      ? back
-      : img.copyResize(
-          back,
-          width: width,
-          interpolation: img.Interpolation.average,
-        );
-  final combined = img.Image(
-    width: width,
-    height: frontImage.height + backImage.height,
-    numChannels: 3,
-  );
-  img.compositeImage(combined, frontImage, dstX: 0, dstY: 0);
-  img.compositeImage(combined, backImage, dstX: 0, dstY: frontImage.height);
-  return Uint8List.fromList(img.encodeJpg(combined, quality: 95));
 }

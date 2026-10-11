@@ -1,9 +1,14 @@
 import 'dart:io';
 
 import 'package:clear_scan/widgets/app_bottom_bar.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:pdf_combiner/pdf_combiner.dart';
+import 'package:pdf_combiner/models/merge_input.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../l10n/app_localizations.dart' as loc;
@@ -12,9 +17,11 @@ import '../services/notification_service.dart';
 import '../services/recent_documents.dart';
 import '../theme/app_theme.dart';
 import '../widgets/app_snackbar.dart';
+import '../widgets/bottom_action_bar.dart';
 import '../widgets/folder_name_dialog.dart';
 import '../widgets/share_sheet.dart';
 import 'document_viewer_screen.dart';
+import 'folder_contents_screen.dart';
 import 'scanner_screen.dart';
 
 /// Text/icon color that stays readable on the primary color in each theme
@@ -35,8 +42,6 @@ const _paperBorder = Color(0xFFE6ECEF);
 const _paperPrimary = Color(0xFF14909A);
 
 enum _Filter { all, pdf, images, docs, favorites }
-
-enum _Kind { pdf, image }
 
 extension _FilterExtension on _Filter {
   String localizedLabel(BuildContext context) {
@@ -73,6 +78,13 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
   String? _folderError;
   List<RecentDocument> _files = [];
   final Set<String> _favoritePaths = {};
+  final Set<String> _selectedFilePaths = {};
+  bool _isSelectingFiles = false;
+  bool _isDeletingSelectedFiles = false;
+  bool _isSharingSelectedFiles = false;
+  bool _isExportingSelectedFiles = false;
+  bool _isMergingSelectedFiles = false;
+  bool _isMovingFile = false;
   bool _filesLoading = true;
   String? _filesError;
 
@@ -166,6 +178,9 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
       if (!mounted) return;
       setState(() {
         _files = files;
+        final filePaths = files.map((file) => file.path).toSet();
+        _selectedFilePaths.removeWhere((path) => !filePaths.contains(path));
+        if (_selectedFilePaths.isEmpty) _isSelectingFiles = false;
         _filesLoading = false;
       });
     } on Exception catch (error) {
@@ -235,6 +250,374 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
       ),
     );
     if (mounted) await _loadFiles();
+  }
+
+  Future<void> _openFolder(DocumentFolder folder) async {
+    await Navigator.of(context).push<void>(
+      MaterialPageRoute<void>(
+        builder: (_) => FolderContentsScreen(folder: folder),
+      ),
+    );
+    if (mounted) await _loadFolders();
+  }
+
+  Future<void> _moveFileToFolder(
+    RecentDocument document,
+    DocumentFolder folder,
+  ) async {
+    if (_isMovingFile ||
+        _isDeletingSelectedFiles ||
+        _isSharingSelectedFiles ||
+        _isExportingSelectedFiles ||
+        _isMergingSelectedFiles) {
+      return;
+    }
+
+    setState(() => _isMovingFile = true);
+    try {
+      await moveDocumentToFolder(document, folder);
+      if (!mounted) return;
+      setState(() {
+        _favoritePaths.remove(document.path);
+        _selectedFilePaths.remove(document.path);
+        if (_selectedFilePaths.isEmpty) _isSelectingFiles = false;
+      });
+      await _loadFiles();
+      await _loadFolders();
+      if (mounted) _snack('"${document.name}" moved to "${folder.name}"');
+    } on Exception catch (error) {
+      if (mounted) _snack('Could not move document: $error');
+    } finally {
+      if (mounted) setState(() => _isMovingFile = false);
+    }
+  }
+
+  void _startFileSelection([RecentDocument? document]) {
+    setState(() {
+      _isSelectingFiles = true;
+      if (document != null) _selectedFilePaths.add(document.path);
+    });
+  }
+
+  void _toggleFileSelection(RecentDocument document) {
+    setState(() {
+      if (_selectedFilePaths.contains(document.path)) {
+        _selectedFilePaths.remove(document.path);
+        if (_selectedFilePaths.isEmpty) _isSelectingFiles = false;
+      } else {
+        _selectedFilePaths.add(document.path);
+      }
+    });
+  }
+
+  void _cancelFileSelection() {
+    setState(() {
+      _isSelectingFiles = false;
+      _selectedFilePaths.clear();
+    });
+  }
+
+  Future<void> _shareSelectedFiles() async {
+    if (_isSharingSelectedFiles ||
+        _isDeletingSelectedFiles ||
+        _isExportingSelectedFiles ||
+        _isMergingSelectedFiles ||
+        _isMovingFile) {
+      return;
+    }
+    final selectedFiles = _files
+        .where((file) => _selectedFilePaths.contains(file.path))
+        .toList();
+    if (selectedFiles.isEmpty) {
+      _snack('No selected documents are available to share');
+      return;
+    }
+
+    setState(() => _isSharingSelectedFiles = true);
+    try {
+      final shareFiles = <XFile>[];
+      for (final file in selectedFiles) {
+        if (file.path.startsWith('content://')) {
+          shareFiles.add(
+            XFile.fromData(
+              await readRecentDocumentBytes(file),
+              name: file.name,
+              mimeType: switch (file.type) {
+                'PDF' => 'application/pdf',
+                'PNG' => 'image/png',
+                'JPG' => 'image/jpeg',
+                _ => 'application/octet-stream',
+              },
+            ),
+          );
+        } else {
+          shareFiles.add(XFile(file.path));
+        }
+      }
+      await SharePlus.instance.share(
+        ShareParams(
+          files: shareFiles,
+          subject: selectedFiles.length == 1
+              ? selectedFiles.single.name
+              : '${selectedFiles.length} documents',
+        ),
+      );
+    } on Exception catch (error) {
+      if (mounted) _snack('Could not share selected documents: $error');
+    } finally {
+      if (mounted) setState(() => _isSharingSelectedFiles = false);
+    }
+  }
+
+  Future<void> _exportSelectedFiles() async {
+    if (_isExportingSelectedFiles ||
+        _isDeletingSelectedFiles ||
+        _isSharingSelectedFiles ||
+        _isMergingSelectedFiles ||
+        _isMovingFile) {
+      return;
+    }
+    final selectedFiles = _files
+        .where((file) => _selectedFilePaths.contains(file.path))
+        .toList();
+    if (selectedFiles.isEmpty) {
+      _snack('No selected documents are available to export');
+      return;
+    }
+
+    setState(() => _isExportingSelectedFiles = true);
+    var exportedCount = 0;
+    var alreadyInDownloadsCount = 0;
+    final failures = <String>[];
+    for (final file in selectedFiles) {
+      try {
+        await saveRecentDocumentToDevice(file);
+        if (Platform.isAndroid && file.path.startsWith('content://')) {
+          alreadyInDownloadsCount++;
+        } else {
+          exportedCount++;
+        }
+      } on Exception catch (error) {
+        failures.add('${file.name}: $error');
+      }
+    }
+
+    if (!mounted) return;
+    setState(() => _isExportingSelectedFiles = false);
+    if (exportedCount > 0) await _loadFiles();
+    if (!mounted) return;
+
+    final successfulCount = exportedCount + alreadyInDownloadsCount;
+    if (failures.isEmpty) {
+      if (exportedCount == 0) {
+        _snack(
+          '$successfulCount selected '
+          '${successfulCount == 1 ? 'document is' : 'documents are'} '
+          'already in Downloads',
+        );
+      } else if (alreadyInDownloadsCount == 0) {
+        _snack(
+          'Saved $exportedCount '
+          '${exportedCount == 1 ? 'document' : 'documents'} to device',
+        );
+      } else {
+        _snack(
+          'Saved $exportedCount; $alreadyInDownloadsCount '
+          '${alreadyInDownloadsCount == 1 ? 'was' : 'were'} '
+          'already in Downloads',
+        );
+      }
+    } else if (successfulCount == 0) {
+      _snack('Could not export selected documents: ${failures.join('; ')}');
+    } else {
+      _snack(
+        'Saved $exportedCount; $alreadyInDownloadsCount already in Downloads; '
+        'could not export ${failures.length}: ${failures.join('; ')}',
+      );
+    }
+  }
+
+  Future<void> _mergeSelectedFiles() async {
+    if (_isMergingSelectedFiles ||
+        _isDeletingSelectedFiles ||
+        _isSharingSelectedFiles ||
+        _isExportingSelectedFiles ||
+        _isMovingFile) {
+      return;
+    }
+
+    final filesByPath = {for (final file in _files) file.path: file};
+    final selectedFiles = _selectedFilePaths
+        .map((path) => filesByPath[path])
+        .whereType<RecentDocument>()
+        .toList();
+    if (selectedFiles.length < 2) {
+      _snack('Select at least two PDF documents to merge');
+      return;
+    }
+    if (selectedFiles.any((file) => file.type != 'PDF')) {
+      _snack('Only PDF documents can be merged');
+      return;
+    }
+
+    setState(() => _isMergingSelectedFiles = true);
+    File? mergedFile;
+    try {
+      final temporaryDirectory = await getTemporaryDirectory();
+      final timestamp = DateTime.now().millisecondsSinceEpoch;
+      final filename = Platform.isAndroid
+          ? 'scanned_document_merged_$timestamp.pdf'
+          : 'merged_document_$timestamp.pdf';
+      mergedFile = File(
+        '${temporaryDirectory.path}${Platform.pathSeparator}$filename',
+      );
+      final inputs = <MergeInput>[];
+      for (final file in selectedFiles) {
+        inputs.add(MergeInput.bytes(await readRecentDocumentBytes(file)));
+      }
+
+      await PdfCombiner.mergeMultiplePDFs(
+        inputs: inputs,
+        outputPath: mergedFile.path,
+      );
+      final stat = await mergedFile.stat();
+      await saveRecentDocumentToDevice(
+        RecentDocument(
+          name: filename,
+          path: mergedFile.path,
+          sizeBytes: stat.size,
+          modifiedAt: stat.modified,
+        ),
+      );
+      if (!mounted) return;
+      setState(() => _isMergingSelectedFiles = false);
+      await _loadFiles();
+      if (mounted) _snack('Merged ${selectedFiles.length} PDFs');
+    } on Exception catch (error) {
+      if (mounted) {
+        setState(() => _isMergingSelectedFiles = false);
+        _snack('Could not merge selected PDFs: $error');
+      }
+    } finally {
+      try {
+        if (mergedFile != null && await mergedFile.exists()) {
+          await mergedFile.delete();
+        }
+      } on Exception catch (error) {
+        if (mounted) _snack('Could not clean up temporary merged PDF: $error');
+      }
+      if (mounted && _isMergingSelectedFiles) {
+        setState(() => _isMergingSelectedFiles = false);
+      }
+    }
+  }
+
+  Future<void> _deleteSelectedFiles() async {
+    if (_isDeletingSelectedFiles ||
+        _isSharingSelectedFiles ||
+        _isExportingSelectedFiles ||
+        _isMergingSelectedFiles ||
+        _isMovingFile) {
+      return;
+    }
+    final selectedFiles = _files
+        .where((file) => _selectedFilePaths.contains(file.path))
+        .toList();
+    if (selectedFiles.isEmpty) {
+      _snack('No selected documents are available to delete');
+      return;
+    }
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(loc.AppLocalizations.of(dialogContext)!.delete),
+        content: Text(
+          'Delete ${selectedFiles.length} selected '
+          '${selectedFiles.length == 1 ? 'document' : 'documents'}? '
+          'This cannot be undone.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: Text(
+              MaterialLocalizations.of(dialogContext).cancelButtonLabel,
+            ),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            child: Text(loc.AppLocalizations.of(dialogContext)!.delete),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+
+    setState(() => _isDeletingSelectedFiles = true);
+    final deletedPaths = <String>{};
+    final failures = <String>[];
+    for (final file in selectedFiles) {
+      try {
+        await deleteRecentDocument(file);
+        deletedPaths.add(file.path);
+      } on Exception catch (error) {
+        failures.add('${file.name}: $error');
+      }
+    }
+
+    if (!mounted) return;
+    setState(() {
+      _selectedFilePaths.removeAll(deletedPaths);
+      _favoritePaths.removeAll(deletedPaths);
+      _isDeletingSelectedFiles = false;
+      if (_selectedFilePaths.isEmpty) _isSelectingFiles = false;
+    });
+    await _loadFiles();
+    if (!mounted) return;
+
+    if (failures.isEmpty) {
+      _snack(
+        'Deleted ${deletedPaths.length} '
+        '${deletedPaths.length == 1 ? 'document' : 'documents'}',
+      );
+    } else if (deletedPaths.isEmpty) {
+      _snack('Could not delete selected documents: ${failures.join('; ')}');
+    } else {
+      _snack(
+        'Deleted ${deletedPaths.length}; could not delete '
+        '${failures.length}: ${failures.join('; ')}',
+      );
+    }
+  }
+
+  Widget _buildSelectionActionBar() {
+    final l = loc.AppLocalizations.of(context)!;
+    return BottomActionBar(
+      style: BottomActionBarStyle.toolbar,
+      actions: [
+        BottomActionBarItem(
+          icon: Icons.share_outlined,
+          label: l.share,
+          onTap: _shareSelectedFiles,
+        ),
+        BottomActionBarItem(
+          icon: Icons.merge_type_rounded,
+          label: 'Merge',
+          onTap: _mergeSelectedFiles,
+        ),
+        BottomActionBarItem(
+          icon: Icons.download_outlined,
+          label: 'Export',
+          onTap: _exportSelectedFiles,
+        ),
+        BottomActionBarItem(
+          icon: Icons.delete_outline_rounded,
+          label: l.delete,
+          iconColor: Theme.of(context).colorScheme.error,
+          onTap: _deleteSelectedFiles,
+        ),
+      ],
+    );
   }
 
   Future<void> _shareDocument(RecentDocument document) async {
@@ -487,15 +870,17 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
       ),
       child: Scaffold(
         backgroundColor: AppColors.background(context),
-        floatingActionButton: FloatingActionButton(
-          heroTag: 'documents_add',
-          onPressed: _showAddSheet,
-          backgroundColor: AppColors.primary(context),
-          foregroundColor: _onPrimary(context),
-          elevation: 3,
-          shape: const CircleBorder(),
-          child: const Icon(Icons.add, size: 28),
-        ),
+        floatingActionButton: _isSelectingFiles
+            ? null
+            : FloatingActionButton(
+                heroTag: 'documents_add',
+                onPressed: _showAddSheet,
+                backgroundColor: AppColors.primary(context),
+                foregroundColor: _onPrimary(context),
+                elevation: 3,
+                shape: const CircleBorder(),
+                child: const Icon(Icons.add, size: 28),
+              ),
         bottomNavigationBar: AppBottomBar(
           selectedIndex: 1,
           onScan: _openScanner,
@@ -507,6 +892,10 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
               _Header(
                 onSearch: _searchFocus.requestFocus,
                 onNewFolder: _showAddSheet,
+                onStartSelection: _startFileSelection,
+                isSelectingFiles: _isSelectingFiles,
+                selectedCount: _selectedFilePaths.length,
+                onCancelSelection: _cancelFileSelection,
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(24, 12, 24, 0),
@@ -579,9 +968,9 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
                                 for (final folder in folders)
                                   _FolderRow(
                                     folder: folder,
-                                    onTap: () {
-                                      // TODO: open folder contents
-                                    },
+                                    onTap: () => _openFolder(folder),
+                                    onAcceptDocument: (document) =>
+                                        _moveFileToFolder(document, folder),
                                     onDelete: () => _deleteFolder(folder),
                                   ),
                               ],
@@ -597,7 +986,15 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
                                     favorite: _favoritePaths.contains(
                                       file.path,
                                     ),
-                                    onTap: () => _openDocument(file),
+                                    isSelecting: _isSelectingFiles,
+                                    isSelected: _selectedFilePaths.contains(
+                                      file.path,
+                                    ),
+                                    onTap: () => _isSelectingFiles
+                                        ? _toggleFileSelection(file)
+                                        : _openDocument(file),
+                                    onLongPress: () =>
+                                        _startFileSelection(file),
                                     onToggleFavorite: () => setState(
                                       () => _favoritePaths.contains(file.path)
                                           ? _favoritePaths.remove(file.path)
@@ -612,6 +1009,16 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
                         ],
                       ),
               ),
+              if (_isDeletingSelectedFiles ||
+                  _isSharingSelectedFiles ||
+                  _isExportingSelectedFiles ||
+                  _isMergingSelectedFiles ||
+                  _isMovingFile)
+                LinearProgressIndicator(
+                  minHeight: 2,
+                  color: AppColors.primary(context),
+                ),
+              if (_isSelectingFiles) _buildSelectionActionBar(),
             ],
           ),
         ),
@@ -623,10 +1030,21 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
 // ───────────────────────────── Header & controls ─────────────────────────────
 
 class _Header extends StatelessWidget {
-  const _Header({required this.onSearch, required this.onNewFolder});
+  const _Header({
+    required this.onSearch,
+    required this.onNewFolder,
+    required this.onStartSelection,
+    required this.isSelectingFiles,
+    required this.selectedCount,
+    required this.onCancelSelection,
+  });
 
   final VoidCallback onSearch;
   final VoidCallback onNewFolder;
+  final VoidCallback onStartSelection;
+  final bool isSelectingFiles;
+  final int selectedCount;
+  final VoidCallback onCancelSelection;
 
   @override
   Widget build(BuildContext context) {
@@ -634,41 +1052,59 @@ class _Header extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(24, 8, 12, 0),
       child: Row(
         children: [
-          Text(
-            loc.AppLocalizations.of(context)!.documentsTitle,
-            style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.w700,
-              color: AppColors.ink(context),
+          if (isSelectingFiles) ...[
+            IconButton(
+              onPressed: onCancelSelection,
+              icon: Icon(Icons.close_rounded, color: AppColors.ink(context)),
+              tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
             ),
-          ),
-          const Spacer(),
-          IconButton(
-            onPressed: onSearch,
-            icon: Icon(
-              Icons.search_rounded,
-              size: 26,
-              color: AppColors.ink(context),
+            Expanded(
+              child: Text(
+                '$selectedCount selected',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.ink(context),
+                ),
+              ),
             ),
-            tooltip: loc.AppLocalizations.of(context)!.searchTooltip,
-          ),
-          PopupMenuButton<String>(
-            icon: Icon(Icons.more_vert, color: AppColors.ink(context)),
-            onSelected: (value) {
-              if (value == 'new') onNewFolder();
-              // TODO: 'select' → multi-select mode
-            },
-            itemBuilder: (_) => [
-              PopupMenuItem(
-                value: 'select',
-                child: Text(loc.AppLocalizations.of(context)!.selectOption),
+          ] else ...[
+            Text(
+              loc.AppLocalizations.of(context)!.documentsTitle,
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.w700,
+                color: AppColors.ink(context),
               ),
-              PopupMenuItem(
-                value: 'new',
-                child: Text(loc.AppLocalizations.of(context)!.newOption),
+            ),
+            const Spacer(),
+            IconButton(
+              onPressed: onSearch,
+              icon: Icon(
+                Icons.search_rounded,
+                size: 26,
+                color: AppColors.ink(context),
               ),
-            ],
-          ),
+              tooltip: loc.AppLocalizations.of(context)!.searchTooltip,
+            ),
+            PopupMenuButton<String>(
+              icon: Icon(Icons.more_vert, color: AppColors.ink(context)),
+              onSelected: (value) {
+                if (value == 'new') onNewFolder();
+                if (value == 'select') onStartSelection();
+              },
+              itemBuilder: (_) => [
+                PopupMenuItem(
+                  value: 'select',
+                  child: Text(loc.AppLocalizations.of(context)!.selectOption),
+                ),
+                PopupMenuItem(
+                  value: 'new',
+                  child: Text(loc.AppLocalizations.of(context)!.newOption),
+                ),
+              ],
+            ),
+          ],
         ],
       ),
     );
@@ -851,57 +1287,75 @@ class _FolderRow extends StatelessWidget {
   const _FolderRow({
     required this.folder,
     required this.onTap,
+    required this.onAcceptDocument,
     required this.onDelete,
   });
 
   final DocumentFolder folder;
   final VoidCallback onTap;
+  final ValueChanged<RecentDocument> onAcceptDocument;
   final VoidCallback onDelete;
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 10, 4, 10),
-        child: Row(
-          children: [
-            SizedBox(
-              width: 32,
-              child: Icon(
-                Icons.folder_rounded,
-                size: 32,
-                color: AppColors.primary(context),
-              ),
-            ),
-            const SizedBox(width: 20),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+    return DragTarget<RecentDocument>(
+      onWillAcceptWithDetails: (details) => true,
+      onAcceptWithDetails: (details) => onAcceptDocument(details.data),
+      builder: (context, candidateData, rejectedData) {
+        final isAcceptingDrop = candidateData.isNotEmpty;
+        return Material(
+          color: isAcceptingDrop
+              ? AppColors.primary(context).withValues(alpha: 0.12)
+              : Colors.transparent,
+          child: InkWell(
+            onTap: onTap,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(20, 10, 4, 10),
+              child: Row(
                 children: [
-                  Text(
-                    folder.name,
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.ink(context),
+                  SizedBox(
+                    width: 32,
+                    child: Icon(
+                      isAcceptingDrop
+                          ? Icons.drive_file_move_rounded
+                          : Icons.folder_rounded,
+                      size: 32,
+                      color: AppColors.primary(context),
                     ),
                   ),
-                  const SizedBox(height: 2),
-                  Text(
-                    '${folder.itemCount} items',
-                    style: TextStyle(
-                      fontSize: 11.5,
-                      color: AppColors.textMuted(context),
+                  const SizedBox(width: 20),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          folder.name,
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.ink(context),
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          isAcceptingDrop
+                              ? 'Drop to move here'
+                              : '${folder.itemCount} items',
+                          style: TextStyle(
+                            fontSize: 11.5,
+                            color: AppColors.textMuted(context),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
+                  _MoreMenu(onDelete: onDelete),
                 ],
               ),
             ),
-            _MoreMenu(onDelete: onDelete),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }
@@ -910,7 +1364,10 @@ class _FileRow extends StatelessWidget {
   const _FileRow({
     required this.file,
     required this.favorite,
+    required this.isSelecting,
+    required this.isSelected,
     required this.onTap,
+    required this.onLongPress,
     required this.onToggleFavorite,
     required this.onDelete,
     required this.onShare,
@@ -919,7 +1376,10 @@ class _FileRow extends StatelessWidget {
 
   final RecentDocument file;
   final bool favorite;
+  final bool isSelecting;
+  final bool isSelected;
   final VoidCallback onTap;
+  final VoidCallback onLongPress;
   final VoidCallback onToggleFavorite;
   final VoidCallback onDelete;
   final VoidCallback onShare;
@@ -935,56 +1395,142 @@ class _FileRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final locale = Localizations.localeOf(context).toString();
     final modified = DateFormat.yMMMd(locale).add_jm().format(file.modifiedAt);
-    return InkWell(
+    final row = InkWell(
       onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 10, 4, 10),
-        child: Row(
-          children: [
-            _Thumb(kind: file.type == 'PDF' ? _Kind.pdf : _Kind.image),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    file.name,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.ink(context),
+      child: Container(
+        color: isSelected
+            ? AppColors.primary(context).withValues(alpha: 0.08)
+            : null,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 10, 4, 10),
+          child: Row(
+            children: [
+              Expanded(
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onLongPress: onLongPress,
+                  child: Row(
+                    children: [
+                      if (isSelecting) ...[
+                        Container(
+                          width: 24,
+                          height: 24,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: isSelected
+                                ? AppColors.primary(context)
+                                : Colors.transparent,
+                            border: Border.all(
+                              color: isSelected
+                                  ? AppColors.primary(context)
+                                  : AppColors.textHint(context),
+                              width: 2,
+                            ),
+                          ),
+                          child: isSelected
+                              ? Icon(
+                                  Icons.check_rounded,
+                                  size: 16,
+                                  color: _onPrimary(context),
+                                )
+                              : null,
+                        ),
+                        const SizedBox(width: 12),
+                      ] else ...[
+                        _Thumb(document: file),
+                        const SizedBox(width: 16),
+                      ],
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              file.name,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color: AppColors.ink(context),
+                              ),
+                            ),
+                            const SizedBox(height: 3),
+                            Text(
+                              '${file.type}  •  ${_formatSize(file.sizeBytes)}  •  $modified',
+                              style: TextStyle(
+                                fontSize: 11.5,
+                                color: AppColors.textMuted(context),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              if (!isSelecting) ...[
+                LongPressDraggable<RecentDocument>(
+                  data: file,
+                  delay: const Duration(milliseconds: 350),
+                  feedback: Material(
+                    elevation: 6,
+                    borderRadius: BorderRadius.circular(12),
+                    child: SizedBox(
+                      width: 280,
+                      child: ListTile(
+                        leading: Icon(
+                          file.type == 'PDF'
+                              ? Icons.picture_as_pdf_outlined
+                              : Icons.image_outlined,
+                          color: AppColors.primary(context),
+                        ),
+                        title: Text(
+                          file.name,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
                     ),
                   ),
-                  const SizedBox(height: 3),
-                  Text(
-                    '${file.type}  •  ${_formatSize(file.sizeBytes)}  •  $modified',
-                    style: TextStyle(
-                      fontSize: 11.5,
-                      color: AppColors.textMuted(context),
+                  childWhenDragging: const Padding(
+                    padding: EdgeInsets.all(8),
+                    child: Icon(Icons.drag_indicator_rounded),
+                  ),
+                  child: const Tooltip(
+                    message: 'Hold and drag to move into a folder',
+                    child: Padding(
+                      padding: EdgeInsets.all(8),
+                      child: Icon(Icons.drag_indicator_rounded),
                     ),
                   ),
-                ],
-              ),
-            ),
-            IconButton(
-              onPressed: onToggleFavorite,
-              visualDensity: VisualDensity.compact,
-              tooltip: favorite ? 'Remove from favorites' : 'Add to favorites',
-              icon: Icon(
-                favorite ? Icons.star_rounded : Icons.star_outline_rounded,
-                size: 22,
-                color: favorite
-                    ? AppColors.warning
-                    : AppColors.textHint(context),
-              ),
-            ),
-            _MoreMenu(onDelete: onDelete, onShare: onShare, onRename: onRename),
-          ],
+                ),
+                IconButton(
+                  onPressed: onToggleFavorite,
+                  visualDensity: VisualDensity.compact,
+                  tooltip: favorite
+                      ? 'Remove from favorites'
+                      : 'Add to favorites',
+                  icon: Icon(
+                    favorite ? Icons.star_rounded : Icons.star_outline_rounded,
+                    size: 22,
+                    color: favorite
+                        ? AppColors.warning
+                        : AppColors.textHint(context),
+                  ),
+                ),
+                _MoreMenu(
+                  onDelete: onDelete,
+                  onShare: onShare,
+                  onRename: onRename,
+                ),
+              ],
+            ],
+          ),
         ),
       ),
     );
+    return row;
   }
 }
 
@@ -1028,20 +1574,72 @@ class _MoreMenu extends StatelessWidget {
   }
 }
 
-class _Thumb extends StatelessWidget {
-  const _Thumb({required this.kind});
+class _Thumb extends StatefulWidget {
+  const _Thumb({required this.document});
 
-  final _Kind kind;
+  final RecentDocument document;
 
   @override
-  Widget build(BuildContext context) {
+  State<_Thumb> createState() => _ThumbState();
+}
+
+class _ThumbState extends State<_Thumb> {
+  Uint8List? _contentBytes;
+  bool _loadingContent = false;
+  bool _previewFailed = false;
+
+  bool get _isPdf => widget.document.type == 'PDF';
+  bool get _isContentUri => widget.document.path.startsWith('content://');
+  bool get _canRenderPdf =>
+      !kIsWeb &&
+      (defaultTargetPlatform == TargetPlatform.android ||
+          defaultTargetPlatform == TargetPlatform.iOS);
+
+  @override
+  void initState() {
+    super.initState();
+    _loadContentPreview();
+  }
+
+  @override
+  void didUpdateWidget(covariant _Thumb oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.document.path != widget.document.path) {
+      _contentBytes = null;
+      _previewFailed = false;
+      _loadContentPreview();
+    }
+  }
+
+  Future<void> _loadContentPreview() async {
+    if (!_isContentUri || (_isPdf && !_canRenderPdf)) return;
+    final path = widget.document.path;
+    setState(() => _loadingContent = true);
+    try {
+      final bytes = await readRecentDocumentBytes(widget.document);
+      if (mounted && widget.document.path == path) {
+        setState(() => _contentBytes = bytes);
+      }
+    } on Exception catch (error) {
+      debugPrint('Could not load document thumbnail: $error');
+      if (mounted && widget.document.path == path) {
+        setState(() => _previewFailed = true);
+      }
+    } finally {
+      if (mounted && widget.document.path == path) {
+        setState(() => _loadingContent = false);
+      }
+    }
+  }
+
+  Widget _buildPlaceholder() {
     final decoration = BoxDecoration(
       color: Colors.white,
       borderRadius: BorderRadius.circular(5),
       border: Border.all(color: _paperBorder),
     );
 
-    if (kind == _Kind.image) {
+    if (!_isPdf) {
       return Container(
         width: 40,
         height: 50,
@@ -1081,6 +1679,107 @@ class _Thumb extends StatelessWidget {
             const SizedBox(height: 4),
           ],
         ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final decoration = BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(5),
+      border: Border.all(color: _paperBorder),
+    );
+
+    if (_isPdf) {
+      if (!_canRenderPdf || _previewFailed) return _buildPlaceholder();
+      if (_isContentUri && _contentBytes == null) {
+        return Container(
+          width: 40,
+          height: 50,
+          decoration: decoration,
+          child: Center(
+            child: _loadingContent
+                ? const SizedBox.square(
+                    dimension: 14,
+                    child: CircularProgressIndicator(strokeWidth: 1.5),
+                  )
+                : Icon(
+                    Icons.picture_as_pdf_outlined,
+                    size: 22,
+                    color: _paperPrimary,
+                  ),
+          ),
+        );
+      }
+      return Container(
+        width: 40,
+        height: 50,
+        decoration: decoration,
+        clipBehavior: Clip.antiAlias,
+        child: IgnorePointer(
+          child: PDFView(
+            filePath: _isContentUri ? null : widget.document.path,
+            pdfData: _isContentUri ? _contentBytes : null,
+            defaultPage: 0,
+            enableSwipe: false,
+            autoSpacing: false,
+            pageFling: false,
+            fitPolicy: FitPolicy.BOTH,
+            onError: (_) {
+              if (mounted) setState(() => _previewFailed = true);
+            },
+            onPageError: (_, error) {
+              debugPrint('Could not render PDF thumbnail: $error');
+              if (mounted) setState(() => _previewFailed = true);
+            },
+          ),
+        ),
+      );
+    }
+
+    if (_isContentUri) {
+      if (_contentBytes == null) {
+        return Container(
+          width: 40,
+          height: 50,
+          decoration: decoration,
+          child: Center(
+            child: _loadingContent
+                ? const SizedBox.square(
+                    dimension: 14,
+                    child: CircularProgressIndicator(strokeWidth: 1.5),
+                  )
+                : const Icon(
+                    Icons.image_outlined,
+                    size: 22,
+                    color: _paperPrimary,
+                  ),
+          ),
+        );
+      }
+      return Container(
+        width: 40,
+        height: 50,
+        decoration: decoration,
+        clipBehavior: Clip.antiAlias,
+        child: Image.memory(
+          _contentBytes!,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) => _buildPlaceholder(),
+        ),
+      );
+    }
+
+    return Container(
+      width: 40,
+      height: 50,
+      decoration: decoration,
+      clipBehavior: Clip.antiAlias,
+      child: Image.file(
+        File(widget.document.path),
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) => _buildPlaceholder(),
       ),
     );
   }

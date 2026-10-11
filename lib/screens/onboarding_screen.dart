@@ -1,3 +1,4 @@
+import 'package:clear_scan/screens/home_screen.dart';
 import 'package:clear_scan/screens/scanner_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -71,7 +72,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
     await OnboardingPage.markSeen();
     if (!mounted) return;
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute<void>(builder: (_) => const ScannerScreen()),
+      MaterialPageRoute<void>(builder: (_) => const HomeScreen()),
     );
   }
 

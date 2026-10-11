@@ -56,38 +56,39 @@ class _EnhanceSaveScreenState extends State<EnhanceSaveScreen> {
   int _previewGeneration = 0;
   int _sourceGeneration = 0;
   bool _previewBusy = false;
+  bool _showScanEffect = false;
 
   final List<_FilterOption> _filters = [
     _FilterOption(
       type: DocFilter.original,
       label: 'Original',
-      color: Colors.white,
-      iconColor: const Color(0xFF9AA8B0),
+      color: const Color(0xFFF4F6F6),
+      iconColor: const Color(0xFF87949A),
     ),
     _FilterOption(
       type: DocFilter.magic,
       label: 'Magic',
-      color: const Color(0xFFFFF3D6),
-      iconColor: const Color(0xFF14909A),
+      color: const Color(0xFFFFF8E8),
+      iconColor: const Color(0xFF176D72),
       isSelected: true,
     ),
     _FilterOption(
       type: DocFilter.bw,
       label: 'B&W',
-      color: const Color(0xFFE8E8E8),
-      iconColor: const Color(0xFF6B7C85),
+      color: const Color(0xFFF0F1F1),
+      iconColor: const Color(0xFF263238),
     ),
     _FilterOption(
       type: DocFilter.gray,
       label: 'Gray',
-      color: const Color(0xFFD1D1D1),
-      iconColor: const Color(0xFF6B7C85),
+      color: const Color(0xFFE4E7E8),
+      iconColor: const Color(0xFF59666B),
     ),
     _FilterOption(
       type: DocFilter.vivid,
       label: 'Vivid',
-      color: const Color(0xFFD4F1F3),
-      iconColor: const Color(0xFF14909A),
+      color: const Color(0xFFE1F2F4),
+      iconColor: const Color(0xFF126C9A),
     ),
   ];
 
@@ -118,6 +119,7 @@ class _EnhanceSaveScreenState extends State<EnhanceSaveScreen> {
     filter: _selectedFilter,
     brightness: _brightness,
     contrast: _contrast,
+    isCard: widget.detectionMode == DocumentDetectionMode.card,
     maxSide: maxSide,
     quality: quality,
   );
@@ -152,6 +154,7 @@ class _EnhanceSaveScreenState extends State<EnhanceSaveScreen> {
       _previewSource = null;
       _previewBytes = null;
       _previewBusy = false;
+      _showScanEffect = false;
       _previewGeneration++;
     });
     await _loadPreviewSource(_imagePath);
@@ -180,19 +183,25 @@ class _EnhanceSaveScreenState extends State<EnhanceSaveScreen> {
       setState(() {
         _previewBytes = bytes;
         _previewBusy = false;
+        _showScanEffect = false;
       });
     } catch (_) {
       if (mounted && generation == _previewGeneration) {
-        setState(() => _previewBusy = false);
+        setState(() {
+          _previewBusy = false;
+          _showScanEffect = false;
+        });
       }
     }
   }
 
   void _onFilterSelected(DocFilter type) {
+    if (type == _selectedFilter) return;
     setState(() {
       for (var filter in _filters) {
         filter.isSelected = filter.type == type;
       }
+      _showScanEffect = _previewSource != null;
     });
     _schedulePreview(immediate: true);
   }
@@ -455,6 +464,10 @@ class _EnhanceSaveScreenState extends State<EnhanceSaveScreen> {
                           ),
                         ),
                       ),
+                    if (_showScanEffect)
+                      const Positioned.fill(
+                        child: IgnorePointer(child: _ScanningOverlay()),
+                      ),
                   ],
                 ),
               ),
@@ -669,6 +682,82 @@ class _EnhanceSaveScreenState extends State<EnhanceSaveScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _ScanningOverlay extends StatefulWidget {
+  const _ScanningOverlay();
+
+  @override
+  State<_ScanningOverlay> createState() => _ScanningOverlayState();
+}
+
+class _ScanningOverlayState extends State<_ScanningOverlay>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller = AnimationController(
+    duration: const Duration(milliseconds: 1100),
+    vsync: this,
+  )..repeat(reverse: true);
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) => LayoutBuilder(
+        builder: (context, constraints) {
+          final scanY = constraints.maxHeight * _controller.value;
+          return Stack(
+            children: [
+              Positioned(
+                top: scanY - 18,
+                left: 0,
+                right: 0,
+                height: 38,
+                child: const DecoratedBox(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.transparent,
+                        Color(0x3314909A),
+                        Color(0x6614909A),
+                        Color(0x3314909A),
+                        Colors.transparent,
+                      ],
+                      stops: [0, 0.25, 0.5, 0.75, 1],
+                    ),
+                  ),
+                ),
+              ),
+              Positioned(
+                top: scanY,
+                left: 0,
+                right: 0,
+                height: 2,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF14909A).withValues(alpha: 0.8),
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFF14909A).withValues(alpha: 0.6),
+                        blurRadius: 8,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }

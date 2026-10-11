@@ -3,6 +3,9 @@ import 'package:flutter/services.dart';
 
 import '../theme/app_theme.dart';
 import '../widgets/app_bottom_bar.dart';
+import 'pdf_to_excel_screen.dart';
+import 'pdf_to_image_screen.dart';
+import 'pdf_to_word_screen.dart';
 import 'scanner_screen.dart';
 
 class WorkshopScreen extends StatefulWidget {
@@ -16,6 +19,23 @@ class _WorkshopScreenState extends State<WorkshopScreen> {
   void _openScanner() {
     Navigator.of(context)
         .push(MaterialPageRoute<void>(builder: (_) => const ScannerScreen()));
+  }
+
+  void _openPdfToImage() {
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute<void>(builder: (_) => const PdfToImageScreen()));
+  }
+
+  void _openPdfToWord() {
+    Navigator.of(context)
+        .push(MaterialPageRoute<void>(builder: (_) => const PdfToWordScreen()));
+  }
+
+  void _openPdfToExcel() {
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute<void>(builder: (_) => const PdfToExcelScreen()));
   }
 
   @override
@@ -99,7 +119,17 @@ class _WorkshopScreenState extends State<WorkshopScreen> {
       children: [
         for (var i = 0; i < tools.length; i++) ...[
           if (i > 0) const SizedBox(width: 12),
-          Expanded(child: _ConvertToolCard(tool: tools[i])),
+          Expanded(
+            child: _ConvertToolCard(
+              tool: tools[i],
+              onTap: switch (i) {
+                1 => _openPdfToImage,
+                2 => _openPdfToWord,
+                3 => _openPdfToExcel,
+                _ => null,
+              },
+            ),
+          ),
         ],
       ],
     );
@@ -243,9 +273,10 @@ class _SectionTitle extends StatelessWidget {
 
 /// Rounded surface card with a visible ripple (Material + InkWell).
 class _ToolCardShell extends StatelessWidget {
-  const _ToolCardShell({required this.child});
+  const _ToolCardShell({required this.child, required this.onTap});
 
   final Widget child;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -257,9 +288,7 @@ class _ToolCardShell extends StatelessWidget {
       ),
       child: InkWell(
         borderRadius: BorderRadius.circular(16),
-        onTap: () {
-          // TODO: Navigate to specific tool
-        },
+        onTap: onTap,
         child: SizedBox(height: 108, child: child),
       ),
     );
@@ -267,13 +296,15 @@ class _ToolCardShell extends StatelessWidget {
 }
 
 class _ConvertToolCard extends StatelessWidget {
-  const _ConvertToolCard({required this.tool});
+  const _ConvertToolCard({required this.tool, required this.onTap});
 
   final _ConvertTool tool;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     return _ToolCardShell(
+      onTap: onTap,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -317,6 +348,7 @@ class _EditToolCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return _ToolCardShell(
+      onTap: null,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
