@@ -143,8 +143,12 @@ Future<List<RecentDocument>> _loadAndroidDocuments() async {
 }
 
 Future<List<RecentDocument>> _loadLocalDocuments() async {
+  final appDocumentsDirectory = await getApplicationDocumentsDirectory();
+  final foldersDirectory = Directory(
+    '${appDocumentsDirectory.path}${Platform.pathSeparator}folders',
+  );
   final directories = <Directory>[
-    await getApplicationDocumentsDirectory(),
+    appDocumentsDirectory,
     ...?await getExternalStorageDirectories(type: StorageDirectory.downloads),
   ];
   final documents = <RecentDocument>[];
@@ -157,6 +161,11 @@ Future<List<RecentDocument>> _loadLocalDocuments() async {
       followLinks: false,
     )) {
       if (entity is! File) continue;
+      if (entity.path.startsWith(
+        '${foldersDirectory.path}${Platform.pathSeparator}',
+      )) {
+        continue;
+      }
       final extension = entity.path.split('.').last.toLowerCase();
       if (!_supportedExtensions.contains(extension) ||
           !seenPaths.add(entity.path)) {

@@ -18,6 +18,7 @@ class EnhanceJob {
     required this.filter,
     required this.brightness,
     required this.contrast,
+    this.isCard = false,
     this.maxSide = kSaveMaxSide,
     this.quality = 92,
   });
@@ -30,6 +31,7 @@ class EnhanceJob {
 
   /// 0..1, 0.5 = unchanged.
   final double contrast;
+  final bool isCard;
   final int maxSide;
   final int quality;
 }
@@ -68,9 +70,14 @@ Uint8List processDocument(EnhanceJob job) {
     case DocFilter.original:
       _brightnessContrast(rgb, job.brightness, job.contrast);
     case DocFilter.magic:
-      _flattenIllumination(rgb, w, h);
-      _levels(rgb, 20, 240);
-      _brightnessContrast(rgb, job.brightness, job.contrast);
+      if (job.isCard) {
+        _saturate(rgb, 1.12);
+        _brightnessContrast(rgb, job.brightness, job.contrast + 0.06);
+      } else {
+        _flattenIllumination(rgb, w, h);
+        _levelsByLuminance(rgb, 18, 245);
+        _brightnessContrast(rgb, job.brightness, job.contrast);
+      }
     case DocFilter.bw:
       _flattenIllumination(rgb, w, h);
       _toGray(rgb);
@@ -80,7 +87,7 @@ Uint8List processDocument(EnhanceJob job) {
       _toGray(rgb);
       _brightnessContrast(rgb, job.brightness, job.contrast);
     case DocFilter.vivid:
-      _saturate(rgb, 1.35);
+      _saturate(rgb, job.isCard ? 1.24 : 1.18);
       _brightnessContrast(rgb, job.brightness, job.contrast);
   }
 
@@ -127,16 +134,17 @@ void _brightnessContrast(Uint8List rgb, double brightness, double contrast) {
   }
 }
 
-/// Maps [lo]..[hi] to 0..255. Pushes near-white paper to pure white and
-/// darkens ink a little.
-void _levels(Uint8List rgb, int lo, int hi) {
-  final lut = Uint8List(256);
+/// Adjusts document tones through luminance so printed colors retain their hue.
+void _levelsByLuminance(Uint8List rgb, int lo, int hi) {
   final scale = 255 / (hi - lo);
-  for (var v = 0; v < 256; v++) {
-    lut[v] = ((v - lo) * scale).round().clamp(0, 255);
-  }
-  for (var i = 0; i < rgb.length; i++) {
-    rgb[i] = lut[rgb[i]];
+  for (var i = 0; i < rgb.length; i += 3) {
+    final luminance =
+        (rgb[i] * 299 + rgb[i + 1] * 587 + rgb[i + 2] * 114) / 1000;
+    final adjusted = ((luminance - lo) * scale).clamp(0.0, 255.0);
+    final gain = luminance < 1 ? 0.0 : adjusted / luminance;
+    rgb[i] = (rgb[i] * gain).round().clamp(0, 255);
+    rgb[i + 1] = (rgb[i + 1] * gain).round().clamp(0, 255);
+    rgb[i + 2] = (rgb[i + 2] * gain).round().clamp(0, 255);
   }
 }
 
@@ -164,16 +172,17 @@ void _saturate(Uint8List rgb, double s) {
 /// Removes shadows and uneven lighting.
 ///
 /// 1. Split the image into a coarse grid of cells.
-/// 2. Take the 90th-percentile value per cell and channel. Ink covers a
-///    small share of a cell, so this is the paper colour, not the text.
+/// 2. Take the 90th-percentile luminance per cell. Ink covers a small share
+///    of a cell, so this estimates the paper rather than the text.
 /// 3. Blur the grid and sample it bilinearly to get a smooth "background".
-/// 4. Divide each pixel by that background, so paper becomes white.
+/// 4. Apply the same gain to every channel, correcting shadows while retaining
+///    the original hues of colored cards, stamps, and printed graphics.
 void _flattenIllumination(Uint8List rgb, int w, int h) {
   final cell = math.max(8, math.max(w, h) ~/ 48);
   final gw = (w + cell - 1) ~/ cell;
   final gh = (h + cell - 1) ~/ cell;
-  var grid = Float32List(gw * gh * 3);
-  final hist = Int32List(768);
+  var grid = Float32List(gw * gh);
+  final hist = Int32List(256);
 
   for (var gy = 0; gy < gh; gy++) {
     final y0 = gy * cell;
@@ -181,41 +190,36 @@ void _flattenIllumination(Uint8List rgb, int w, int h) {
     for (var gx = 0; gx < gw; gx++) {
       final x0 = gx * cell;
       final x1 = math.min(w, x0 + cell);
-      hist.fillRange(0, 768, 0);
+      hist.fillRange(0, 256, 0);
       for (var y = y0; y < y1; y++) {
         var idx = (y * w + x0) * 3;
         for (var x = x0; x < x1; x++) {
-          hist[rgb[idx]]++;
-          hist[256 + rgb[idx + 1]]++;
-          hist[512 + rgb[idx + 2]]++;
+          final luminance =
+              (rgb[idx] * 299 + rgb[idx + 1] * 587 + rgb[idx + 2] * 114) ~/
+              1000;
+          hist[luminance]++;
           idx += 3;
         }
       }
       final target = ((y1 - y0) * (x1 - x0) * 0.9).floor();
-      for (var c = 0; c < 3; c++) {
-        var acc = 0;
-        var v = 255;
-        for (var k = 0; k < 256; k++) {
-          acc += hist[c * 256 + k];
-          if (acc > target) {
-            v = k;
-            break;
-          }
+      var acc = 0;
+      var background = 255;
+      for (var k = 0; k < 256; k++) {
+        acc += hist[k];
+        if (acc > target) {
+          background = k;
+          break;
         }
-        grid[(gy * gw + gx) * 3 + c] = v.toDouble();
       }
+      grid[gy * gw + gx] = background.toDouble();
     }
   }
 
-  // Cells that are mostly dark graphics (a photo, a logo) would otherwise be
-  // "corrected" to white. Never let the background fall below half the median.
-  for (var c = 0; c < 3; c++) {
-    final vals = <double>[for (var i = 0; i < gw * gh; i++) grid[i * 3 + c]]
-      ..sort();
-    final floor = vals[vals.length ~/ 2] * 0.5;
-    for (var i = 0; i < gw * gh; i++) {
-      if (grid[i * 3 + c] < floor) grid[i * 3 + c] = floor;
-    }
+  // Dark photos or graphics should not be treated as white paper.
+  final vals = [...grid]..sort();
+  final floor = vals[vals.length ~/ 2] * 0.5;
+  for (var i = 0; i < grid.length; i++) {
+    if (grid[i] < floor) grid[i] = floor;
   }
 
   grid = _blurGrid(_blurGrid(grid, gw, gh), gw, gh);
@@ -238,19 +242,28 @@ void _flattenIllumination(Uint8List rgb, int w, int h) {
     final wy = fy - j0;
     var idx = y * w * 3;
     for (var x = 0; x < w; x++) {
-      final p00 = (j0 * gw + x0s[x]) * 3;
-      final p10 = (j0 * gw + x1s[x]) * 3;
-      final p01 = (j1 * gw + x0s[x]) * 3;
-      final p11 = (j1 * gw + x1s[x]) * 3;
+      final p00 = j0 * gw + x0s[x];
+      final p10 = j0 * gw + x1s[x];
+      final p01 = j1 * gw + x0s[x];
+      final p11 = j1 * gw + x1s[x];
       final wx = xws[x];
-      for (var ch = 0; ch < 3; ch++) {
-        final top = grid[p00 + ch] + (grid[p10 + ch] - grid[p00 + ch]) * wx;
-        final bot = grid[p01 + ch] + (grid[p11 + ch] - grid[p01 + ch]) * wx;
-        final bg = top + (bot - top) * wy;
-        final v = rgb[idx] * 255 / (bg < 1 ? 1 : bg);
-        rgb[idx] = v > 255 ? 255 : v.round();
-        idx++;
+      final top = grid[p00] + (grid[p10] - grid[p00]) * wx;
+      final bot = grid[p01] + (grid[p11] - grid[p01]) * wx;
+      final background = top + (bot - top) * wy;
+      final luminance =
+          (rgb[idx] * 299 + rgb[idx + 1] * 587 + rgb[idx + 2] * 114) / 1000;
+      final gain = (255 / (background < 1 ? 1 : background)).clamp(0.5, 2.2);
+      final correctedLuminance = luminance * gain;
+      final chromaGain = luminance < 1
+          ? 1.0
+          : (correctedLuminance / luminance).clamp(0.5, 2.2);
+      for (var channel = 0; channel < 3; channel++) {
+        rgb[idx + channel] = (rgb[idx + channel] * chromaGain).round().clamp(
+          0,
+          255,
+        );
       }
+      idx += 3;
     }
   }
 }
@@ -259,21 +272,19 @@ Float32List _blurGrid(Float32List src, int gw, int gh) {
   final dst = Float32List(src.length);
   for (var gy = 0; gy < gh; gy++) {
     for (var gx = 0; gx < gw; gx++) {
-      for (var c = 0; c < 3; c++) {
-        var sum = 0.0;
-        var n = 0;
-        for (var dy = -1; dy <= 1; dy++) {
-          final yy = gy + dy;
-          if (yy < 0 || yy >= gh) continue;
-          for (var dx = -1; dx <= 1; dx++) {
-            final xx = gx + dx;
-            if (xx < 0 || xx >= gw) continue;
-            sum += src[(yy * gw + xx) * 3 + c];
-            n++;
-          }
+      var sum = 0.0;
+      var n = 0;
+      for (var dy = -1; dy <= 1; dy++) {
+        final yy = gy + dy;
+        if (yy < 0 || yy >= gh) continue;
+        for (var dx = -1; dx <= 1; dx++) {
+          final xx = gx + dx;
+          if (xx < 0 || xx >= gw) continue;
+          sum += src[yy * gw + xx];
+          n++;
         }
-        dst[(gy * gw + gx) * 3 + c] = sum / n;
       }
+      dst[gy * gw + gx] = sum / n;
     }
   }
   return dst;

@@ -77,12 +77,26 @@ Future<SavedPdf> saveEnhancedPdfToDevice({
   if (safeName.isEmpty) {
     throw const FormatException('Enter a valid document name.');
   }
-  final filename = safeName.toLowerCase().endsWith('.pdf')
+  final requestedFilename = safeName.toLowerCase().endsWith('.pdf')
       ? safeName
       : '$safeName.pdf';
   final pdfBytes = await createPdfFromImage(imageBytes);
+  final documentsDirectory = await getApplicationDocumentsDirectory();
+  final scansDirectory = Directory('${documentsDirectory.path}/documents');
+  await scansDirectory.create(recursive: true);
+
+  var appCopy = File('${scansDirectory.path}/$requestedFilename');
+  final extensionIndex = requestedFilename.lastIndexOf('.');
+  final stem = requestedFilename.substring(0, extensionIndex);
+  var suffix = 2;
+  while (await appCopy.exists()) {
+    appCopy = File('${scansDirectory.path}/${stem}_$suffix.pdf');
+    suffix++;
+  }
+  await appCopy.writeAsBytes(pdfBytes, flush: true);
 
   if (Platform.isAndroid) {
+    final filename = appCopy.uri.pathSegments.last;
     final uri = await _filesChannel.invokeMethod<String>('saveToDownloads', {
       'filename': filename,
       'bytes': pdfBytes,
@@ -93,22 +107,7 @@ Future<SavedPdf> saveEnhancedPdfToDevice({
     return SavedPdf(filename: filename, path: uri);
   }
 
-  final documentsDirectory = await getApplicationDocumentsDirectory();
-  final scansDirectory = Directory('${documentsDirectory.path}/documents');
-  await scansDirectory.create(recursive: true);
-  var destination = File('${scansDirectory.path}/$filename');
-  final extensionIndex = filename.lastIndexOf('.');
-  final stem = filename.substring(0, extensionIndex);
-  var suffix = 2;
-  while (await destination.exists()) {
-    destination = File('${scansDirectory.path}/${stem}_$suffix.pdf');
-    suffix++;
-  }
-  await destination.writeAsBytes(pdfBytes, flush: true);
-  return SavedPdf(
-    filename: destination.uri.pathSegments.last,
-    path: destination.path,
-  );
+  return SavedPdf(filename: appCopy.uri.pathSegments.last, path: appCopy.path);
 }
 
 Future<Uint8List> createPdfFromImage(Uint8List imageBytes) async {
