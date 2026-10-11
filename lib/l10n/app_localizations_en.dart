@@ -349,10 +349,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get scanGuidanceMoveBack => 'Move back.';
 
   @override
-  String get scanGuidanceAlignCard => 'Align card in frame.';
+  String get scanGuidanceAlignCard => 'Align card inside the frame.';
 
   @override
-  String get scanGuidanceMoveAwayFromEdge => 'Move card from edge.';
+  String get scanGuidanceMoveAwayFromEdge =>
+      'Move the card away from the edge.';
 
   @override
   String get settingsSectionScanning => 'SCANNING';
@@ -655,12 +656,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'Drag the watermark on the page to choose its position. The same position is used on every page.';
 
   @override
-  String get watermarkPreviewUnavailable =>
-      'The page preview is unavailable. Select the PDF again to retry.';
+  String get watermarkPreviewUnavailable => 'The page preview is unavailable.';
 
   @override
-  String get watermarkAllPagesHint =>
-      'The watermark will be added to every page.';
+  String get watermarkAllPagesHint => 'Watermark will be added to all pages.';
 
   @override
   String get watermarkApply => 'Add watermark';
@@ -767,7 +766,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pdfEditRotateHint => 'Selected pages will rotate 90° clockwise.';
 
   @override
-  String get pdfEditReorderHint => 'Move pages into the order you want.';
+  String get pdfEditReorderHint => 'Arrange pages in the order you want.';
 
   @override
   String pdfEditPage(Object page) {
@@ -804,7 +803,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pdfEditCompressionNoReduction =>
-      'This PDF is already smaller than the compressed version. No larger copy was saved.';
+      'This file is already smaller than the compressed version. No larger copy was saved.';
 
   @override
   String pdfEditRun(Object tool) {
@@ -814,4 +813,77 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get pdfEditDone =>
       'Finished. Edited PDF files are saved to Documents.';
+
+  @override
+  String get scannerTooltipClose => 'Close';
+
+  @override
+  String get scannerTooltipFlash => 'Flash';
+
+  @override
+  String get scannerTooltipSettings => 'Settings';
+
+  @override
+  String get scannerTryAgain => 'Try again';
+
+  @override
+  String get scannerErrorNoCamera => 'No camera found on this device.';
+
+  @override
+  String get scannerErrorPermission =>
+      'Camera permission is required to scan documents.';
+
+  @override
+  String scannerErrorStart(Object error) {
+    return 'Could not start the camera ($error).';
+  }
+
+  @override
+  String get folderMultiSelectBack => 'Back';
+
+  @override
+  String get folderMultiSelectChangeView => 'Change view';
+
+  @override
+  String get folderMultiSelectMoreOptions => 'More options';
+
+  @override
+  String get folderMultiSelectDateLabel => 'Date';
+
+  @override
+  String get folderMultiSelectMerge => 'Merge';
+
+  @override
+  String get folderMultiSelectExport => 'Export';
+
+  @override
+  String get homeTooltipClose => 'Close';
+
+  @override
+  String get homeTooltipFlash => 'Flash';
+
+  @override
+  String get homeTooltipSettings => 'Settings';
+
+  @override
+  String get homeTryAgain => 'Try again';
+
+  @override
+  String get scanActionCamera => 'Scan with Camera';
+
+  @override
+  String get scanActionGallery => 'Choose from Gallery';
+
+  @override
+  String get scanExportingPdf => 'Exporting PDF…';
+
+  @override
+  String get scanExportPdf => 'Export as PDF';
+
+  @override
+  String get scanInfoHeader => 'Scan an image';
+
+  @override
+  String get scanInfoHint =>
+      'Capture from camera or choose an image from gallery.';
 }

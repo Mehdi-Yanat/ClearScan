@@ -276,7 +276,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get onboardingSlideSignSubtitle =>
-      'دمج، ضغط، التوقيع والمشاركة\nمستنداتك في بضع نقرات.';
+      'دمج، ضغط، توقيع ومشاركة\nمستنداتك في بضع نقرات.';
 
   @override
   String get onboardingSkip => 'تخطي';
@@ -510,7 +510,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String pdfToWordShareFailed(Object error) {
-    return 'تعذرت مشاركة مستند Word: $error';
+    return 'تعذر مشاركة مستند Word: $error';
   }
 
   @override
@@ -582,7 +582,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String pdfToExcelShareFailed(Object error) {
-    return 'تعذرت مشاركة ملف Excel: $error';
+    return 'تعذر مشاركة ملف Excel: $error';
   }
 
   @override
@@ -613,7 +613,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get toolSign => 'توقيع مستند';
 
   @override
-  String get toolSignDesc => 'أضف توقيعًا إلى مستنداتك';
+  String get toolSignDesc => 'إضافة توقيع إلى مستنداتك';
 
   @override
   String get signatureClear => 'مسح التوقيع';
@@ -639,7 +639,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get toolWatermark => 'علامة مائية';
 
   @override
-  String get toolWatermarkDesc => 'أضف علامة مائية إلى مستنداتك';
+  String get toolWatermarkDesc => 'إضافة علامة مائية إلى مستنداتك';
 
   @override
   String get watermarkText => 'نص العلامة المائية';
@@ -655,8 +655,7 @@ class AppLocalizationsAr extends AppLocalizations {
       'اسحب العلامة المائية على الصفحة لاختيار موضعها. سيُستخدم الموضع نفسه في كل الصفحات.';
 
   @override
-  String get watermarkPreviewUnavailable =>
-      'معاينة الصفحة غير متاحة. اختر ملف PDF مرة أخرى للمحاولة.';
+  String get watermarkPreviewUnavailable => 'معاينة الصفحة غير متاحة.';
 
   @override
   String get watermarkAllPagesHint => 'ستُضاف العلامة المائية إلى كل صفحة.';
@@ -707,7 +706,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get toolQrGenerator => 'مولّد رمز QR';
 
   @override
-  String get toolQrGeneratorDesc => 'أنشئ رموز QR الخاصة بك';
+  String get toolQrGeneratorDesc => 'إنشاء رموز QR الخاصة بك';
 
   @override
   String get qrGeneratorHint => 'أدخل نصًا أو رابطًا لإنشاء رمز QR.';
@@ -725,7 +724,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get qrGeneratorTooLong => 'هذا المحتوى أطول من أن يتسع له رمز QR.';
 
   @override
-  String get pdfEditChoosePdf => 'اختر ملف PDF';
+  String get pdfEditChoosePdf => 'اختر PDF';
 
   @override
   String get pdfEditSourcePassword => 'كلمة مرور PDF (إن كان محميًا)';
@@ -736,7 +735,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get pdfEditOpenFailed =>
-      'تعذر فتح ملف PDF. إذا كان محميًا بكلمة مرور، فتحقق منها وحاول مرة أخرى.';
+      'تعذر فتح هذا PDF. إذا كان محميًا، تحقق من كلمة المرور وحاول مرة أخرى.';
 
   @override
   String get pdfEditLoadAgain => 'تحميل PDF';
@@ -757,11 +756,11 @@ class AppLocalizationsAr extends AppLocalizations {
       'أدخل أرقام الصفحات أو نطاقات مفصولة بفواصل.';
 
   @override
-  String get pdfEditSplitHint => 'سيتم حفظ كل صفحة محددة في ملف PDF منفصل.';
+  String get pdfEditSplitHint => 'كل صفحة مختارة ستحفظ كملف PDF منفصل.';
 
   @override
   String get pdfEditRotateHint =>
-      'سيتم تدوير الصفحات المحددة 90° باتجاه عقارب الساعة.';
+      'الصفحات المختارة تدور 90° باتجاه عقارب الساعة.';
 
   @override
   String get pdfEditReorderHint => 'رتب الصفحات بالشكل المطلوب.';
@@ -778,7 +777,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get pdfEditMoveDown => 'تحريك لأسفل';
 
   @override
-  String get pdfEditNewPassword => 'كلمة مرور جديدة (6 أحرف على الأقل)';
+  String get pdfEditNewPassword => 'كلمة مرور جديدة (على الأقل 6 أحرف)';
 
   @override
   String get pdfEditConfirmPassword => 'تأكيد كلمة المرور';
@@ -788,7 +787,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get pdfEditCompressionNote =>
-      'يحوّل الضغط القوي كل صفحة إلى صورة. لن يعود النص قابلاً للتحديد أو البحث، وقد تنخفض جودة الصور.';
+      'ضغط قوي يحول كل صفحة إلى صورة. النص لن يكون قابلاً للتحديد أو البحث، وقد تنخفض جودة الصور.';
 
   @override
   String get pdfEditCompressionWarningTitle => 'تحذير من الضغط القوي';
@@ -805,9 +804,81 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String pdfEditRun(Object tool) {
-    return 'تنفيذ $tool';
+    return 'تشغيل $tool';
   }
 
   @override
-  String get pdfEditDone => 'اكتمل. تم حفظ ملفات PDF المعدلة في المستندات.';
+  String get pdfEditDone =>
+      'تم الإنتهاء. تم حفظ ملفات PDF المعدلة في المستندات.';
+
+  @override
+  String get scannerTooltipClose => 'إغلاق';
+
+  @override
+  String get scannerTooltipFlash => 'فلاش';
+
+  @override
+  String get scannerTooltipSettings => 'الإعدادات';
+
+  @override
+  String get scannerTryAgain => 'حاول مرة أخرى';
+
+  @override
+  String get scannerErrorNoCamera => 'لم يتم العثور على كاميرا في هذا الجهاز.';
+
+  @override
+  String get scannerErrorPermission => 'إذن الكاميرا مطلوب لمسح المستندات.';
+
+  @override
+  String scannerErrorStart(Object error) {
+    return 'فشل تشغيل الكاميرا ($error).';
+  }
+
+  @override
+  String get folderMultiSelectBack => 'عودة';
+
+  @override
+  String get folderMultiSelectChangeView => 'تغيير العرض';
+
+  @override
+  String get folderMultiSelectMoreOptions => 'المزيد من الخيارات';
+
+  @override
+  String get folderMultiSelectDateLabel => 'التاريخ';
+
+  @override
+  String get folderMultiSelectMerge => 'دمج';
+
+  @override
+  String get folderMultiSelectExport => 'تصدير';
+
+  @override
+  String get homeTooltipClose => 'إغلاق';
+
+  @override
+  String get homeTooltipFlash => 'فلاش';
+
+  @override
+  String get homeTooltipSettings => 'الإعدادات';
+
+  @override
+  String get homeTryAgain => 'حاول مرة أخرى';
+
+  @override
+  String get scanActionCamera => 'المسح بالكاميرا';
+
+  @override
+  String get scanActionGallery => 'اختيار من المعرض';
+
+  @override
+  String get scanExportingPdf => 'جارٍ تصدير PDF…';
+
+  @override
+  String get scanExportPdf => 'تصدير كملف PDF';
+
+  @override
+  String get scanInfoHeader => 'مسح صورة';
+
+  @override
+  String get scanInfoHint => 'التقط من الكاميرا أو اختر صورة من المعرض.';
 }

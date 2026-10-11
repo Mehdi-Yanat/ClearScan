@@ -662,7 +662,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get watermarkPreviewUnavailable =>
-      'Die Seitenvorschau ist nicht verfügbar. Wähle die PDF erneut aus, um es noch einmal zu versuchen.';
+      'Die Seitenvorschau ist nicht verfügbar.';
 
   @override
   String get watermarkAllPagesHint =>
@@ -826,4 +826,77 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get pdfEditDone =>
       'Fertig. Bearbeitete PDFs wurden unter Dokumente gespeichert.';
+
+  @override
+  String get scannerTooltipClose => 'Schließen';
+
+  @override
+  String get scannerTooltipFlash => 'Blitz';
+
+  @override
+  String get scannerTooltipSettings => 'Einstellungen';
+
+  @override
+  String get scannerTryAgain => 'Erneut versuchen';
+
+  @override
+  String get scannerErrorNoCamera => 'Keine Kamera auf diesem Gerät gefunden.';
+
+  @override
+  String get scannerErrorPermission =>
+      'Kameraberechtigung ist erforderlich, um Dokumente zu scannen.';
+
+  @override
+  String scannerErrorStart(Object error) {
+    return 'Kamera konnte nicht gestartet werden ($error).';
+  }
+
+  @override
+  String get folderMultiSelectBack => 'Zurück';
+
+  @override
+  String get folderMultiSelectChangeView => 'Ansicht ändern';
+
+  @override
+  String get folderMultiSelectMoreOptions => 'Mehr Optionen';
+
+  @override
+  String get folderMultiSelectDateLabel => 'Datum';
+
+  @override
+  String get folderMultiSelectMerge => 'Zusammenführen';
+
+  @override
+  String get folderMultiSelectExport => 'Exportieren';
+
+  @override
+  String get homeTooltipClose => 'Schließen';
+
+  @override
+  String get homeTooltipFlash => 'Blitz';
+
+  @override
+  String get homeTooltipSettings => 'Einstellungen';
+
+  @override
+  String get homeTryAgain => 'Erneut versuchen';
+
+  @override
+  String get scanActionCamera => 'Mit Kamera scannen';
+
+  @override
+  String get scanActionGallery => 'Aus Galerie wählen';
+
+  @override
+  String get scanExportingPdf => 'Exportiere PDF…';
+
+  @override
+  String get scanExportPdf => 'Als PDF exportieren';
+
+  @override
+  String get scanInfoHeader => 'Bild scannen';
+
+  @override
+  String get scanInfoHint =>
+      'Von Kamera aufnehmen oder Bild aus Galerie auswählen.';
 }

@@ -81,7 +81,7 @@
       "name": {}
     }
   },
-  "fast_and_smart":"Schnelles, intelligentes und sicheres\nDokumentenscannen.",
+  "fast_and_smart": "Schnelles, intelligentes und sicheres\nDokumentenscannen.",
   "documentsTitle": "Dokumente",
   "documentsSortBy": "Sortieren nach",
   "documentsFilterAll": "Alle",
@@ -283,7 +283,7 @@
   "watermarkTextHint": "z. B. VERTRAULICH",
   "watermarkOpacity": "Deckkraft",
   "watermarkPositionHint": "Ziehe das Wasserzeichen auf der Seite an die gewünschte Position. Auf allen Seiten wird dieselbe Position verwendet.",
-  "watermarkPreviewUnavailable": "Die Seitenvorschau ist nicht verfügbar. Wähle die PDF erneut aus, um es noch einmal zu versuchen.",
+  "watermarkPreviewUnavailable": "Die Seitenvorschau ist nicht verfügbar.",
   "watermarkAllPagesHint": "Das Wasserzeichen wird auf jeder Seite hinzugefügt.",
   "watermarkApply": "Wasserzeichen hinzufügen",
   "watermarkPdfAccessFailed": "Auf die ausgewählte PDF-Datei kann nicht zugegriffen werden.",
@@ -349,5 +349,33 @@
       "tool": {}
     }
   },
-  "pdfEditDone": "Fertig. Bearbeitete PDFs wurden unter Dokumente gespeichert."
+  "pdfEditDone": "Fertig. Bearbeitete PDFs wurden unter Dokumente gespeichert.",
+  "scannerTooltipClose": "Schließen",
+  "scannerTooltipFlash": "Blitz",
+  "scannerTooltipSettings": "Einstellungen",
+  "scannerTryAgain": "Erneut versuchen",
+  "scannerErrorNoCamera": "Keine Kamera auf diesem Gerät gefunden.",
+  "scannerErrorPermission": "Kameraberechtigung ist erforderlich, um Dokumente zu scannen.",
+  "scannerErrorStart": "Kamera konnte nicht gestartet werden ({error}).",
+  "@scannerErrorStart": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "folderMultiSelectBack": "Zurück",
+  "folderMultiSelectChangeView": "Ansicht ändern",
+  "folderMultiSelectMoreOptions": "Mehr Optionen",
+  "folderMultiSelectDateLabel": "Datum",
+  "folderMultiSelectMerge": "Zusammenführen",
+  "folderMultiSelectExport": "Exportieren",
+  "homeTooltipClose": "Schließen",
+  "homeTooltipFlash": "Blitz",
+  "homeTooltipSettings": "Einstellungen",
+  "homeTryAgain": "Erneut versuchen",
+  "scanActionCamera": "Mit Kamera scannen",
+  "scanActionGallery": "Aus Galerie wählen",
+  "scanExportingPdf": "Exportiere PDF…",
+  "scanExportPdf": "Als PDF exportieren",
+  "scanInfoHeader": "Bild scannen",
+  "scanInfoHint": "Von Kamera aufnehmen oder Bild aus Galerie auswählen."
 }

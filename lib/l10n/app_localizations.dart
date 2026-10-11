@@ -751,13 +751,13 @@ abstract class AppLocalizations {
   /// No description provided for @scanGuidanceAlignCard.
   ///
   /// In en, this message translates to:
-  /// **'Align card in frame.'**
+  /// **'Align card inside the frame.'**
   String get scanGuidanceAlignCard;
 
   /// No description provided for @scanGuidanceMoveAwayFromEdge.
   ///
   /// In en, this message translates to:
-  /// **'Move card from edge.'**
+  /// **'Move the card away from the edge.'**
   String get scanGuidanceMoveAwayFromEdge;
 
   /// No description provided for @settingsSectionScanning.
@@ -1303,13 +1303,13 @@ abstract class AppLocalizations {
   /// No description provided for @watermarkPreviewUnavailable.
   ///
   /// In en, this message translates to:
-  /// **'The page preview is unavailable. Select the PDF again to retry.'**
+  /// **'The page preview is unavailable.'**
   String get watermarkPreviewUnavailable;
 
   /// No description provided for @watermarkAllPagesHint.
   ///
   /// In en, this message translates to:
-  /// **'The watermark will be added to every page.'**
+  /// **'Watermark will be added to all pages.'**
   String get watermarkAllPagesHint;
 
   /// No description provided for @watermarkApply.
@@ -1501,7 +1501,7 @@ abstract class AppLocalizations {
   /// No description provided for @pdfEditReorderHint.
   ///
   /// In en, this message translates to:
-  /// **'Move pages into the order you want.'**
+  /// **'Arrange pages in the order you want.'**
   String get pdfEditReorderHint;
 
   /// No description provided for @pdfEditPage.
@@ -1567,7 +1567,7 @@ abstract class AppLocalizations {
   /// No description provided for @pdfEditCompressionNoReduction.
   ///
   /// In en, this message translates to:
-  /// **'This PDF is already smaller than the compressed version. No larger copy was saved.'**
+  /// **'This file is already smaller than the compressed version. No larger copy was saved.'**
   String get pdfEditCompressionNoReduction;
 
   /// No description provided for @pdfEditRun.
@@ -1581,6 +1581,144 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Finished. Edited PDF files are saved to Documents.'**
   String get pdfEditDone;
+
+  /// No description provided for @scannerTooltipClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get scannerTooltipClose;
+
+  /// No description provided for @scannerTooltipFlash.
+  ///
+  /// In en, this message translates to:
+  /// **'Flash'**
+  String get scannerTooltipFlash;
+
+  /// No description provided for @scannerTooltipSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get scannerTooltipSettings;
+
+  /// No description provided for @scannerTryAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get scannerTryAgain;
+
+  /// No description provided for @scannerErrorNoCamera.
+  ///
+  /// In en, this message translates to:
+  /// **'No camera found on this device.'**
+  String get scannerErrorNoCamera;
+
+  /// No description provided for @scannerErrorPermission.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera permission is required to scan documents.'**
+  String get scannerErrorPermission;
+
+  /// No description provided for @scannerErrorStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not start the camera ({error}).'**
+  String scannerErrorStart(Object error);
+
+  /// No description provided for @folderMultiSelectBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get folderMultiSelectBack;
+
+  /// No description provided for @folderMultiSelectChangeView.
+  ///
+  /// In en, this message translates to:
+  /// **'Change view'**
+  String get folderMultiSelectChangeView;
+
+  /// No description provided for @folderMultiSelectMoreOptions.
+  ///
+  /// In en, this message translates to:
+  /// **'More options'**
+  String get folderMultiSelectMoreOptions;
+
+  /// No description provided for @folderMultiSelectDateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get folderMultiSelectDateLabel;
+
+  /// No description provided for @folderMultiSelectMerge.
+  ///
+  /// In en, this message translates to:
+  /// **'Merge'**
+  String get folderMultiSelectMerge;
+
+  /// No description provided for @folderMultiSelectExport.
+  ///
+  /// In en, this message translates to:
+  /// **'Export'**
+  String get folderMultiSelectExport;
+
+  /// No description provided for @homeTooltipClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get homeTooltipClose;
+
+  /// No description provided for @homeTooltipFlash.
+  ///
+  /// In en, this message translates to:
+  /// **'Flash'**
+  String get homeTooltipFlash;
+
+  /// No description provided for @homeTooltipSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get homeTooltipSettings;
+
+  /// No description provided for @homeTryAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get homeTryAgain;
+
+  /// No description provided for @scanActionCamera.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan with Camera'**
+  String get scanActionCamera;
+
+  /// No description provided for @scanActionGallery.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose from Gallery'**
+  String get scanActionGallery;
+
+  /// No description provided for @scanExportingPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Exporting PDF…'**
+  String get scanExportingPdf;
+
+  /// No description provided for @scanExportPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Export as PDF'**
+  String get scanExportPdf;
+
+  /// No description provided for @scanInfoHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan an image'**
+  String get scanInfoHeader;
+
+  /// No description provided for @scanInfoHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Capture from camera or choose an image from gallery.'**
+  String get scanInfoHint;
 }
 
 class _AppLocalizationsDelegate

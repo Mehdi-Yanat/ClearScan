@@ -81,7 +81,7 @@
       "name": {}
     }
   },
-  "fast_and_smart":"مسح سريع وذكي وآمن\nللمستندات.",
+  "fast_and_smart": "مسح سريع وذكي وآمن\nللمستندات.",
   "documentsTitle": "المستندات",
   "documentsSortBy": "ترتيب حسب",
   "documentsFilterAll": "الكل",
@@ -109,7 +109,7 @@
   "onboardingSlideOrganizeTitle": "نظم كل شيء",
   "onboardingSlideOrganizeSubtitle": "احتفظ ببطاقات الهوية والعقود والإيصالات\nمرتبة بشكل منظم في المجلدات.",
   "onboardingSlideSignTitle": "عدل ووقع",
-  "onboardingSlideSignSubtitle": "دمج، ضغط، التوقيع والمشاركة\nمستنداتك في بضع نقرات.",
+  "onboardingSlideSignSubtitle": "دمج، ضغط، توقيع ومشاركة\nمستنداتك في بضع نقرات.",
   "onboardingSkip": "تخطي",
   "onboardingGetStarted": "ابدأ الآن",
   "onboardingAgreeTerms": "بالمتابعة، أنت توافق على الشروط وسياسة الخصوصية",
@@ -199,7 +199,7 @@
       "error": {}
     }
   },
-  "pdfToWordShareFailed": "تعذرت مشاركة مستند Word: {error}",
+  "pdfToWordShareFailed": "تعذر مشاركة مستند Word: {error}",
   "@pdfToWordShareFailed": {
     "placeholders": {
       "error": {}
@@ -255,7 +255,7 @@
       "error": {}
     }
   },
-  "pdfToExcelShareFailed": "تعذرت مشاركة ملف Excel: {error}",
+  "pdfToExcelShareFailed": "تعذر مشاركة ملف Excel: {error}",
   "@pdfToExcelShareFailed": {
     "placeholders": {
       "error": {}
@@ -270,7 +270,7 @@
   "toolExtractPages": "استخراج الصفحات",
   "toolAddPassword": "إضافة كلمة مرور",
   "toolSign": "توقيع مستند",
-  "toolSignDesc": "أضف توقيعًا إلى مستنداتك",
+  "toolSignDesc": "إضافة توقيع إلى مستنداتك",
   "signatureClear": "مسح التوقيع",
   "signatureColor": "لون التوقيع",
   "signatureBlack": "أسود",
@@ -278,12 +278,12 @@
   "signaturePlacementHint": "اسحب توقيعك على الصفحة إلى الموضع المطلوب.",
   "signaturePreviewUnavailable": "معاينة الصفحة غير متاحة. اختر ملف PDF مرة أخرى للمحاولة.",
   "toolWatermark": "علامة مائية",
-  "toolWatermarkDesc": "أضف علامة مائية إلى مستنداتك",
+  "toolWatermarkDesc": "إضافة علامة مائية إلى مستنداتك",
   "watermarkText": "نص العلامة المائية",
   "watermarkTextHint": "مثال: سري",
   "watermarkOpacity": "العتامة",
   "watermarkPositionHint": "اسحب العلامة المائية على الصفحة لاختيار موضعها. سيُستخدم الموضع نفسه في كل الصفحات.",
-  "watermarkPreviewUnavailable": "معاينة الصفحة غير متاحة. اختر ملف PDF مرة أخرى للمحاولة.",
+  "watermarkPreviewUnavailable": "معاينة الصفحة غير متاحة.",
   "watermarkAllPagesHint": "ستُضاف العلامة المائية إلى كل صفحة.",
   "watermarkApply": "إضافة علامة مائية",
   "watermarkPdfAccessFailed": "تعذر الوصول إلى ملف PDF المحدد.",
@@ -304,16 +304,16 @@
   "ocrCopied": "تم نسخ النص",
   "ocrImagePreviewFailed": "تعذر عرض الصورة المحددة.",
   "toolQrGenerator": "مولّد رمز QR",
-  "toolQrGeneratorDesc": "أنشئ رموز QR الخاصة بك",
+  "toolQrGeneratorDesc": "إنشاء رموز QR الخاصة بك",
   "qrGeneratorHint": "أدخل نصًا أو رابطًا لإنشاء رمز QR.",
   "qrGeneratorContent": "نص أو رابط",
   "qrGeneratorContentHint": "أدخل المحتوى المطلوب ترميزه",
   "qrGeneratorShare": "مشاركة رمز QR",
   "qrGeneratorTooLong": "هذا المحتوى أطول من أن يتسع له رمز QR.",
-  "pdfEditChoosePdf": "اختر ملف PDF",
+  "pdfEditChoosePdf": "اختر PDF",
   "pdfEditSourcePassword": "كلمة مرور PDF (إن كان محميًا)",
   "pdfEditSourcePasswordHelp": "إذا تعذر فتح PDF، تحقق من كلمة المرور ثم أعد تحميله.",
-  "pdfEditOpenFailed": "تعذر فتح ملف PDF. إذا كان محميًا بكلمة مرور، فتحقق منها وحاول مرة أخرى.",
+  "pdfEditOpenFailed": "تعذر فتح هذا PDF. إذا كان محميًا، تحقق من كلمة المرور وحاول مرة أخرى.",
   "pdfEditLoadAgain": "تحميل PDF",
   "pdfEditPageCount": "{count} صفحات",
   "@pdfEditPageCount": {
@@ -324,8 +324,8 @@
   "pdfEditPageRange": "الصفحات",
   "pdfEditPageRangeHint": "1,3-5",
   "pdfEditPageRangeHelp": "أدخل أرقام الصفحات أو نطاقات مفصولة بفواصل.",
-  "pdfEditSplitHint": "سيتم حفظ كل صفحة محددة في ملف PDF منفصل.",
-  "pdfEditRotateHint": "سيتم تدوير الصفحات المحددة 90° باتجاه عقارب الساعة.",
+  "pdfEditSplitHint": "كل صفحة مختارة ستحفظ كملف PDF منفصل.",
+  "pdfEditRotateHint": "الصفحات المختارة تدور 90° باتجاه عقارب الساعة.",
   "pdfEditReorderHint": "رتب الصفحات بالشكل المطلوب.",
   "pdfEditPage": "الصفحة {page}",
   "@pdfEditPage": {
@@ -335,19 +335,47 @@
   },
   "pdfEditMoveUp": "تحريك لأعلى",
   "pdfEditMoveDown": "تحريك لأسفل",
-  "pdfEditNewPassword": "كلمة مرور جديدة (6 أحرف على الأقل)",
+  "pdfEditNewPassword": "كلمة مرور جديدة (على الأقل 6 أحرف)",
   "pdfEditConfirmPassword": "تأكيد كلمة المرور",
   "pdfEditPasswordsDoNotMatch": "كلمتا المرور غير متطابقتين.",
-  "pdfEditCompressionNote": "يحوّل الضغط القوي كل صفحة إلى صورة. لن يعود النص قابلاً للتحديد أو البحث، وقد تنخفض جودة الصور.",
+  "pdfEditCompressionNote": "ضغط قوي يحول كل صفحة إلى صورة. النص لن يكون قابلاً للتحديد أو البحث، وقد تنخفض جودة الصور.",
   "pdfEditCompressionWarningTitle": "تحذير من الضغط القوي",
   "pdfEditCompressionCancel": "إلغاء",
   "pdfEditCompressionConfirm": "ضغط على أي حال",
   "pdfEditCompressionNoReduction": "هذا الملف أصغر بالفعل من النسخة المضغوطة. لم يتم حفظ نسخة أكبر.",
-  "pdfEditRun": "تنفيذ {tool}",
+  "pdfEditRun": "تشغيل {tool}",
   "@pdfEditRun": {
     "placeholders": {
       "tool": {}
     }
   },
-  "pdfEditDone": "اكتمل. تم حفظ ملفات PDF المعدلة في المستندات."
+  "pdfEditDone": "تم الإنتهاء. تم حفظ ملفات PDF المعدلة في المستندات.",
+  "scannerTooltipClose": "إغلاق",
+  "scannerTooltipFlash": "فلاش",
+  "scannerTooltipSettings": "الإعدادات",
+  "scannerTryAgain": "حاول مرة أخرى",
+  "scannerErrorNoCamera": "لم يتم العثور على كاميرا في هذا الجهاز.",
+  "scannerErrorPermission": "إذن الكاميرا مطلوب لمسح المستندات.",
+  "scannerErrorStart": "فشل تشغيل الكاميرا ({error}).",
+  "@scannerErrorStart": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "folderMultiSelectBack": "عودة",
+  "folderMultiSelectChangeView": "تغيير العرض",
+  "folderMultiSelectMoreOptions": "المزيد من الخيارات",
+  "folderMultiSelectDateLabel": "التاريخ",
+  "folderMultiSelectMerge": "دمج",
+  "folderMultiSelectExport": "تصدير",
+  "homeTooltipClose": "إغلاق",
+  "homeTooltipFlash": "فلاش",
+  "homeTooltipSettings": "الإعدادات",
+  "homeTryAgain": "حاول مرة أخرى",
+  "scanActionCamera": "المسح بالكاميرا",
+  "scanActionGallery": "اختيار من المعرض",
+  "scanExportingPdf": "جارٍ تصدير PDF…",
+  "scanExportPdf": "تصدير كملف PDF",
+  "scanInfoHeader": "مسح صورة",
+  "scanInfoHint": "التقط من الكاميرا أو اختر صورة من المعرض."
 }

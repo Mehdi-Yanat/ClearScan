@@ -81,7 +81,7 @@
       "name": {}
     }
   },
-  "fast_and_smart":"Fast, smart and secure\ndocument scanning.",
+  "fast_and_smart": "Fast, smart and secure\ndocument scanning.",
   "documentsTitle": "Documents",
   "documentsSortBy": "Sort by",
   "documentsFilterAll": "All",
@@ -133,8 +133,8 @@
   "scanGuidanceKeepInFrame": "Keep card in frame.",
   "scanGuidanceMoveCloser": "Move closer.",
   "scanGuidanceMoveBack": "Move back.",
-  "scanGuidanceAlignCard": "Align card in frame.",
-  "scanGuidanceMoveAwayFromEdge": "Move card from edge.",
+  "scanGuidanceAlignCard": "Align card inside the frame.",
+  "scanGuidanceMoveAwayFromEdge": "Move the card away from the edge.",
   "settingsSectionScanning": "SCANNING",
   "settingsSectionSecurity": "SECURITY",
   "settingsSectionStorageSync": "STORAGE & SYNC",
@@ -175,7 +175,7 @@
   "cropAdjustErrorOpenImage": "Could not open this image.",
   "cropAdjustErrorCropImage": "Could not crop the image. Adjust the corners and try again.",
   "cropAdjustErrorDetectEdges": "Could not detect document edges. Adjust the corners manually.",
-    "workshopTitle": "Workshop",
+  "workshopTitle": "Workshop",
   "workshopConvert": "Convert",
   "workshopEditPdf": "Edit PDF",
   "workshopMoreTools": "More Tools",
@@ -283,8 +283,8 @@
   "watermarkTextHint": "e.g. CONFIDENTIAL",
   "watermarkOpacity": "Opacity",
   "watermarkPositionHint": "Drag the watermark on the page to choose its position. The same position is used on every page.",
-  "watermarkPreviewUnavailable": "The page preview is unavailable. Select the PDF again to retry.",
-  "watermarkAllPagesHint": "The watermark will be added to every page.",
+  "watermarkPreviewUnavailable": "The page preview is unavailable.",
+  "watermarkAllPagesHint": "Watermark will be added to all pages.",
   "watermarkApply": "Add watermark",
   "watermarkPdfAccessFailed": "The selected PDF file could not be accessed.",
   "toolOcr": "OCR",
@@ -326,7 +326,7 @@
   "pdfEditPageRangeHelp": "Enter page numbers or ranges separated by commas.",
   "pdfEditSplitHint": "Each selected page will be saved as a separate PDF.",
   "pdfEditRotateHint": "Selected pages will rotate 90° clockwise.",
-  "pdfEditReorderHint": "Move pages into the order you want.",
+  "pdfEditReorderHint": "Arrange pages in the order you want.",
   "pdfEditPage": "Page {page}",
   "@pdfEditPage": {
     "placeholders": {
@@ -342,12 +342,40 @@
   "pdfEditCompressionWarningTitle": "Strong compression warning",
   "pdfEditCompressionCancel": "Cancel",
   "pdfEditCompressionConfirm": "Compress anyway",
-  "pdfEditCompressionNoReduction": "This PDF is already smaller than the compressed version. No larger copy was saved.",
+  "pdfEditCompressionNoReduction": "This file is already smaller than the compressed version. No larger copy was saved.",
   "pdfEditRun": "Run {tool}",
   "@pdfEditRun": {
     "placeholders": {
       "tool": {}
     }
   },
-  "pdfEditDone": "Finished. Edited PDF files are saved to Documents."
+  "pdfEditDone": "Finished. Edited PDF files are saved to Documents.",
+  "scannerTooltipClose": "Close",
+  "scannerTooltipFlash": "Flash",
+  "scannerTooltipSettings": "Settings",
+  "scannerTryAgain": "Try again",
+  "scannerErrorNoCamera": "No camera found on this device.",
+  "scannerErrorPermission": "Camera permission is required to scan documents.",
+  "scannerErrorStart": "Could not start the camera ({error}).",
+  "@scannerErrorStart": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "folderMultiSelectBack": "Back",
+  "folderMultiSelectChangeView": "Change view",
+  "folderMultiSelectMoreOptions": "More options",
+  "folderMultiSelectDateLabel": "Date",
+  "folderMultiSelectMerge": "Merge",
+  "folderMultiSelectExport": "Export",
+  "homeTooltipClose": "Close",
+  "homeTooltipFlash": "Flash",
+  "homeTooltipSettings": "Settings",
+  "homeTryAgain": "Try again",
+  "scanActionCamera": "Scan with Camera",
+  "scanActionGallery": "Choose from Gallery",
+  "scanExportingPdf": "Exporting PDF…",
+  "scanExportPdf": "Export as PDF",
+  "scanInfoHeader": "Scan an image",
+  "scanInfoHint": "Capture from camera or choose an image from gallery."
 }
