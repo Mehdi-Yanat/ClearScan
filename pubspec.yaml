@@ -54,6 +54,16 @@ dependencies:
   local_auth: ^3.0.2
   share_plus: ^13.3.1
   opencv_dart: ^2.2.2
+  pdf_combiner: ^6.2.2
+  file_picker: ^13.1.0
+  pdfx: ^2.11.0
+  qnox_pdf_text: ^0.1.2
+  docs_gee: ^1.5.0
+  excel_community: ^2.6.0
+  flutter_tesseract_ocr:
+    git:
+      url: https://github.com/onestudi0/tesseract_ocr.git
+      ref: 3264b46723d05e5c4a6b91ae7f3c575f534f53d2
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -99,6 +109,8 @@ flutter:
     - assets/03_splash_assets/png/branding_dark.png
     - assets/03_splash_assets/png/wordmark_light.png
     - assets/03_splash_assets/png/wordmark_dark.png
+    - assets/tessdata_config.json
+    - assets/tessdata/
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
