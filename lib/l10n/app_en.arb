@@ -271,10 +271,83 @@
   "toolAddPassword": "Add Password",
   "toolSign": "Sign Document",
   "toolSignDesc": "Add signature to your documents",
+  "signatureClear": "Clear signature",
+  "signatureColor": "Signature color",
+  "signatureBlack": "Black",
+  "signatureWhite": "White",
+  "signaturePlacementHint": "Drag your signature on the page to position it.",
+  "signaturePreviewUnavailable": "The page preview is unavailable. Select the PDF again to retry.",
   "toolWatermark": "Watermark",
   "toolWatermarkDesc": "Add watermark to your documents",
+  "watermarkText": "Watermark text",
+  "watermarkTextHint": "e.g. CONFIDENTIAL",
+  "watermarkOpacity": "Opacity",
+  "watermarkPositionHint": "Drag the watermark on the page to choose its position. The same position is used on every page.",
+  "watermarkPreviewUnavailable": "The page preview is unavailable. Select the PDF again to retry.",
+  "watermarkAllPagesHint": "The watermark will be added to every page.",
+  "watermarkApply": "Add watermark",
+  "watermarkPdfAccessFailed": "The selected PDF file could not be accessed.",
   "toolOcr": "OCR",
   "toolOcrDesc": "Extract text from images",
+  "ocrHint": "Choose an image to recognize text in English, German, or Arabic.",
+  "ocrSelectImage": "Choose image",
+  "ocrProcessing": "Recognizing text…",
+  "ocrResult": "Extracted text",
+  "ocrNoText": "No text was found in this image.",
+  "ocrFailed": "Could not recognize text: {error}",
+  "@ocrFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "ocrCopy": "Copy text",
+  "ocrCopied": "Text copied",
+  "ocrImagePreviewFailed": "Could not display the selected image.",
   "toolQrGenerator": "QR Code Generator",
-  "toolQrGeneratorDesc": "Create your own QR codes"
+  "toolQrGeneratorDesc": "Create your own QR codes",
+  "qrGeneratorHint": "Enter text or a link to create a QR code.",
+  "qrGeneratorContent": "Text or link",
+  "qrGeneratorContentHint": "Enter the content to encode",
+  "qrGeneratorShare": "Share QR code",
+  "qrGeneratorTooLong": "This content is too long to fit in a QR code.",
+  "pdfEditChoosePdf": "Choose PDF",
+  "pdfEditSourcePassword": "PDF password (if protected)",
+  "pdfEditSourcePasswordHelp": "If the PDF does not open, check the password and load it again.",
+  "pdfEditOpenFailed": "Could not open this PDF. If it is password-protected, check the password and try again.",
+  "pdfEditLoadAgain": "Load PDF",
+  "pdfEditPageCount": "{count} pages",
+  "@pdfEditPageCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "pdfEditPageRange": "Pages",
+  "pdfEditPageRangeHint": "1,3-5",
+  "pdfEditPageRangeHelp": "Enter page numbers or ranges separated by commas.",
+  "pdfEditSplitHint": "Each selected page will be saved as a separate PDF.",
+  "pdfEditRotateHint": "Selected pages will rotate 90° clockwise.",
+  "pdfEditReorderHint": "Move pages into the order you want.",
+  "pdfEditPage": "Page {page}",
+  "@pdfEditPage": {
+    "placeholders": {
+      "page": {}
+    }
+  },
+  "pdfEditMoveUp": "Move up",
+  "pdfEditMoveDown": "Move down",
+  "pdfEditNewPassword": "New password (at least 6 characters)",
+  "pdfEditConfirmPassword": "Confirm password",
+  "pdfEditPasswordsDoNotMatch": "Passwords do not match.",
+  "pdfEditCompressionNote": "Strong compression converts every page into an image. Text will no longer be selectable or searchable, and image quality may be reduced.",
+  "pdfEditCompressionWarningTitle": "Strong compression warning",
+  "pdfEditCompressionCancel": "Cancel",
+  "pdfEditCompressionConfirm": "Compress anyway",
+  "pdfEditCompressionNoReduction": "This PDF is already smaller than the compressed version. No larger copy was saved.",
+  "pdfEditRun": "Run {tool}",
+  "@pdfEditRun": {
+    "placeholders": {
+      "tool": {}
+    }
+  },
+  "pdfEditDone": "Finished. Edited PDF files are saved to Documents."
 }

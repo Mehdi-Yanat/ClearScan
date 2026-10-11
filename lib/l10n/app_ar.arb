@@ -271,10 +271,83 @@
   "toolAddPassword": "إضافة كلمة مرور",
   "toolSign": "توقيع مستند",
   "toolSignDesc": "أضف توقيعًا إلى مستنداتك",
+  "signatureClear": "مسح التوقيع",
+  "signatureColor": "لون التوقيع",
+  "signatureBlack": "أسود",
+  "signatureWhite": "أبيض",
+  "signaturePlacementHint": "اسحب توقيعك على الصفحة إلى الموضع المطلوب.",
+  "signaturePreviewUnavailable": "معاينة الصفحة غير متاحة. اختر ملف PDF مرة أخرى للمحاولة.",
   "toolWatermark": "علامة مائية",
   "toolWatermarkDesc": "أضف علامة مائية إلى مستنداتك",
+  "watermarkText": "نص العلامة المائية",
+  "watermarkTextHint": "مثال: سري",
+  "watermarkOpacity": "العتامة",
+  "watermarkPositionHint": "اسحب العلامة المائية على الصفحة لاختيار موضعها. سيُستخدم الموضع نفسه في كل الصفحات.",
+  "watermarkPreviewUnavailable": "معاينة الصفحة غير متاحة. اختر ملف PDF مرة أخرى للمحاولة.",
+  "watermarkAllPagesHint": "ستُضاف العلامة المائية إلى كل صفحة.",
+  "watermarkApply": "إضافة علامة مائية",
+  "watermarkPdfAccessFailed": "تعذر الوصول إلى ملف PDF المحدد.",
   "toolOcr": "OCR",
   "toolOcrDesc": "استخراج النص من الصور",
+  "ocrHint": "اختر صورة للتعرف على النص بالإنجليزية أو الألمانية أو العربية.",
+  "ocrSelectImage": "اختر صورة",
+  "ocrProcessing": "جارٍ التعرف على النص…",
+  "ocrResult": "النص المستخرج",
+  "ocrNoText": "لم يتم العثور على نص في هذه الصورة.",
+  "ocrFailed": "تعذر التعرف على النص: {error}",
+  "@ocrFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "ocrCopy": "نسخ النص",
+  "ocrCopied": "تم نسخ النص",
+  "ocrImagePreviewFailed": "تعذر عرض الصورة المحددة.",
   "toolQrGenerator": "مولّد رمز QR",
-  "toolQrGeneratorDesc": "أنشئ رموز QR الخاصة بك"
+  "toolQrGeneratorDesc": "أنشئ رموز QR الخاصة بك",
+  "qrGeneratorHint": "أدخل نصًا أو رابطًا لإنشاء رمز QR.",
+  "qrGeneratorContent": "نص أو رابط",
+  "qrGeneratorContentHint": "أدخل المحتوى المطلوب ترميزه",
+  "qrGeneratorShare": "مشاركة رمز QR",
+  "qrGeneratorTooLong": "هذا المحتوى أطول من أن يتسع له رمز QR.",
+  "pdfEditChoosePdf": "اختر ملف PDF",
+  "pdfEditSourcePassword": "كلمة مرور PDF (إن كان محميًا)",
+  "pdfEditSourcePasswordHelp": "إذا تعذر فتح PDF، تحقق من كلمة المرور ثم أعد تحميله.",
+  "pdfEditOpenFailed": "تعذر فتح ملف PDF. إذا كان محميًا بكلمة مرور، فتحقق منها وحاول مرة أخرى.",
+  "pdfEditLoadAgain": "تحميل PDF",
+  "pdfEditPageCount": "{count} صفحات",
+  "@pdfEditPageCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "pdfEditPageRange": "الصفحات",
+  "pdfEditPageRangeHint": "1,3-5",
+  "pdfEditPageRangeHelp": "أدخل أرقام الصفحات أو نطاقات مفصولة بفواصل.",
+  "pdfEditSplitHint": "سيتم حفظ كل صفحة محددة في ملف PDF منفصل.",
+  "pdfEditRotateHint": "سيتم تدوير الصفحات المحددة 90° باتجاه عقارب الساعة.",
+  "pdfEditReorderHint": "رتب الصفحات بالشكل المطلوب.",
+  "pdfEditPage": "الصفحة {page}",
+  "@pdfEditPage": {
+    "placeholders": {
+      "page": {}
+    }
+  },
+  "pdfEditMoveUp": "تحريك لأعلى",
+  "pdfEditMoveDown": "تحريك لأسفل",
+  "pdfEditNewPassword": "كلمة مرور جديدة (6 أحرف على الأقل)",
+  "pdfEditConfirmPassword": "تأكيد كلمة المرور",
+  "pdfEditPasswordsDoNotMatch": "كلمتا المرور غير متطابقتين.",
+  "pdfEditCompressionNote": "يحوّل الضغط القوي كل صفحة إلى صورة. لن يعود النص قابلاً للتحديد أو البحث، وقد تنخفض جودة الصور.",
+  "pdfEditCompressionWarningTitle": "تحذير من الضغط القوي",
+  "pdfEditCompressionCancel": "إلغاء",
+  "pdfEditCompressionConfirm": "ضغط على أي حال",
+  "pdfEditCompressionNoReduction": "هذا الملف أصغر بالفعل من النسخة المضغوطة. لم يتم حفظ نسخة أكبر.",
+  "pdfEditRun": "تنفيذ {tool}",
+  "@pdfEditRun": {
+    "placeholders": {
+      "tool": {}
+    }
+  },
+  "pdfEditDone": "اكتمل. تم حفظ ملفات PDF المعدلة في المستندات."
 }

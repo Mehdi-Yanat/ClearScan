@@ -271,10 +271,83 @@
   "toolAddPassword": "Passwort setzen",
   "toolSign": "Dokument signieren",
   "toolSignDesc": "Signatur zu deinen Dokumenten hinzufügen",
+  "signatureClear": "Signatur löschen",
+  "signatureColor": "Signaturfarbe",
+  "signatureBlack": "Schwarz",
+  "signatureWhite": "Weiß",
+  "signaturePlacementHint": "Ziehe deine Signatur auf der Seite an die gewünschte Position.",
+  "signaturePreviewUnavailable": "Die Seitenvorschau ist nicht verfügbar. Wähle die PDF erneut aus, um es noch einmal zu versuchen.",
   "toolWatermark": "Wasserzeichen",
   "toolWatermarkDesc": "Wasserzeichen zu deinen Dokumenten hinzufügen",
+  "watermarkText": "Wasserzeichentext",
+  "watermarkTextHint": "z. B. VERTRAULICH",
+  "watermarkOpacity": "Deckkraft",
+  "watermarkPositionHint": "Ziehe das Wasserzeichen auf der Seite an die gewünschte Position. Auf allen Seiten wird dieselbe Position verwendet.",
+  "watermarkPreviewUnavailable": "Die Seitenvorschau ist nicht verfügbar. Wähle die PDF erneut aus, um es noch einmal zu versuchen.",
+  "watermarkAllPagesHint": "Das Wasserzeichen wird auf jeder Seite hinzugefügt.",
+  "watermarkApply": "Wasserzeichen hinzufügen",
+  "watermarkPdfAccessFailed": "Auf die ausgewählte PDF-Datei kann nicht zugegriffen werden.",
   "toolOcr": "OCR",
   "toolOcrDesc": "Text aus Bildern extrahieren",
+  "ocrHint": "Wähle ein Bild aus, um Text auf Englisch, Deutsch oder Arabisch zu erkennen.",
+  "ocrSelectImage": "Bild auswählen",
+  "ocrProcessing": "Text wird erkannt…",
+  "ocrResult": "Extrahierter Text",
+  "ocrNoText": "In diesem Bild wurde kein Text gefunden.",
+  "ocrFailed": "Text konnte nicht erkannt werden: {error}",
+  "@ocrFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "ocrCopy": "Text kopieren",
+  "ocrCopied": "Text kopiert",
+  "ocrImagePreviewFailed": "Das ausgewählte Bild kann nicht angezeigt werden.",
   "toolQrGenerator": "QR-Code-Generator",
-  "toolQrGeneratorDesc": "Erstelle deine eigenen QR-Codes"
+  "toolQrGeneratorDesc": "Erstelle deine eigenen QR-Codes",
+  "qrGeneratorHint": "Gib Text oder einen Link ein, um einen QR-Code zu erstellen.",
+  "qrGeneratorContent": "Text oder Link",
+  "qrGeneratorContentHint": "Inhalt zum Kodieren eingeben",
+  "qrGeneratorShare": "QR-Code teilen",
+  "qrGeneratorTooLong": "Dieser Inhalt ist zu lang für einen QR-Code.",
+  "pdfEditChoosePdf": "PDF auswählen",
+  "pdfEditSourcePassword": "PDF-Passwort (falls geschützt)",
+  "pdfEditSourcePasswordHelp": "Falls sich die PDF nicht öffnen lässt, überprüfe das Passwort und lade sie erneut.",
+  "pdfEditOpenFailed": "PDF konnte nicht geöffnet werden. Falls sie passwortgeschützt ist, überprüfe das Passwort und versuche es erneut.",
+  "pdfEditLoadAgain": "PDF laden",
+  "pdfEditPageCount": "{count} Seiten",
+  "@pdfEditPageCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "pdfEditPageRange": "Seiten",
+  "pdfEditPageRangeHint": "1,3-5",
+  "pdfEditPageRangeHelp": "Seitennummern oder Bereiche durch Kommas trennen.",
+  "pdfEditSplitHint": "Jede ausgewählte Seite wird als separate PDF gespeichert.",
+  "pdfEditRotateHint": "Ausgewählte Seiten werden um 90° im Uhrzeigersinn gedreht.",
+  "pdfEditReorderHint": "Seiten in die gewünschte Reihenfolge bringen.",
+  "pdfEditPage": "Seite {page}",
+  "@pdfEditPage": {
+    "placeholders": {
+      "page": {}
+    }
+  },
+  "pdfEditMoveUp": "Nach oben",
+  "pdfEditMoveDown": "Nach unten",
+  "pdfEditNewPassword": "Neues Passwort (mindestens 6 Zeichen)",
+  "pdfEditConfirmPassword": "Passwort bestätigen",
+  "pdfEditPasswordsDoNotMatch": "Die Passwörter stimmen nicht überein.",
+  "pdfEditCompressionNote": "Bei der starken Komprimierung wird jede Seite in ein Bild umgewandelt. Text ist danach nicht mehr auswählbar oder durchsuchbar; die Bildqualität kann sinken.",
+  "pdfEditCompressionWarningTitle": "Warnung zur starken Komprimierung",
+  "pdfEditCompressionCancel": "Abbrechen",
+  "pdfEditCompressionConfirm": "Trotzdem komprimieren",
+  "pdfEditCompressionNoReduction": "Diese PDF ist bereits kleiner als die komprimierte Version. Es wurde keine größere Kopie gespeichert.",
+  "pdfEditRun": "{tool} ausführen",
+  "@pdfEditRun": {
+    "placeholders": {
+      "tool": {}
+    }
+  },
+  "pdfEditDone": "Fertig. Bearbeitete PDFs wurden unter Dokumente gespeichert."
 }

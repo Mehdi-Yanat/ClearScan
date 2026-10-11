@@ -1135,13 +1135,13 @@ abstract class AppLocalizations {
   /// No description provided for @pdfToExcelHint.
   ///
   /// In en, this message translates to:
-  /// **'Extract selectable text into an editable Excel sheet, organized by page and line. Scanned PDFs require OCR.'**
+  /// **'Extract PDF text into an editable Excel sheet, organized by page and line. Scanned pages are OCR’d in Arabic, English, and German.'**
   String get pdfToExcelHint;
 
   /// No description provided for @pdfToExcelConverting.
   ///
   /// In en, this message translates to:
-  /// **'Extracting PDF text…'**
+  /// **'Extracting PDF text and running OCR…'**
   String get pdfToExcelConverting;
 
   /// No description provided for @pdfToExcelProgress.
@@ -1228,6 +1228,42 @@ abstract class AppLocalizations {
   /// **'Add signature to your documents'**
   String get toolSignDesc;
 
+  /// No description provided for @signatureClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear signature'**
+  String get signatureClear;
+
+  /// No description provided for @signatureColor.
+  ///
+  /// In en, this message translates to:
+  /// **'Signature color'**
+  String get signatureColor;
+
+  /// No description provided for @signatureBlack.
+  ///
+  /// In en, this message translates to:
+  /// **'Black'**
+  String get signatureBlack;
+
+  /// No description provided for @signatureWhite.
+  ///
+  /// In en, this message translates to:
+  /// **'White'**
+  String get signatureWhite;
+
+  /// No description provided for @signaturePlacementHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Drag your signature on the page to position it.'**
+  String get signaturePlacementHint;
+
+  /// No description provided for @signaturePreviewUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'The page preview is unavailable. Select the PDF again to retry.'**
+  String get signaturePreviewUnavailable;
+
   /// No description provided for @toolWatermark.
   ///
   /// In en, this message translates to:
@@ -1239,6 +1275,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Add watermark to your documents'**
   String get toolWatermarkDesc;
+
+  /// No description provided for @watermarkText.
+  ///
+  /// In en, this message translates to:
+  /// **'Watermark text'**
+  String get watermarkText;
+
+  /// No description provided for @watermarkTextHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. CONFIDENTIAL'**
+  String get watermarkTextHint;
+
+  /// No description provided for @watermarkOpacity.
+  ///
+  /// In en, this message translates to:
+  /// **'Opacity'**
+  String get watermarkOpacity;
+
+  /// No description provided for @watermarkPositionHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Drag the watermark on the page to choose its position. The same position is used on every page.'**
+  String get watermarkPositionHint;
+
+  /// No description provided for @watermarkPreviewUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'The page preview is unavailable. Select the PDF again to retry.'**
+  String get watermarkPreviewUnavailable;
+
+  /// No description provided for @watermarkAllPagesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'The watermark will be added to every page.'**
+  String get watermarkAllPagesHint;
+
+  /// No description provided for @watermarkApply.
+  ///
+  /// In en, this message translates to:
+  /// **'Add watermark'**
+  String get watermarkApply;
+
+  /// No description provided for @watermarkPdfAccessFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The selected PDF file could not be accessed.'**
+  String get watermarkPdfAccessFailed;
 
   /// No description provided for @toolOcr.
   ///
@@ -1252,6 +1336,60 @@ abstract class AppLocalizations {
   /// **'Extract text from images'**
   String get toolOcrDesc;
 
+  /// No description provided for @ocrHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose an image to recognize text in English, German, or Arabic.'**
+  String get ocrHint;
+
+  /// No description provided for @ocrSelectImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose image'**
+  String get ocrSelectImage;
+
+  /// No description provided for @ocrProcessing.
+  ///
+  /// In en, this message translates to:
+  /// **'Recognizing text…'**
+  String get ocrProcessing;
+
+  /// No description provided for @ocrResult.
+  ///
+  /// In en, this message translates to:
+  /// **'Extracted text'**
+  String get ocrResult;
+
+  /// No description provided for @ocrNoText.
+  ///
+  /// In en, this message translates to:
+  /// **'No text was found in this image.'**
+  String get ocrNoText;
+
+  /// No description provided for @ocrFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not recognize text: {error}'**
+  String ocrFailed(Object error);
+
+  /// No description provided for @ocrCopy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy text'**
+  String get ocrCopy;
+
+  /// No description provided for @ocrCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Text copied'**
+  String get ocrCopied;
+
+  /// No description provided for @ocrImagePreviewFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not display the selected image.'**
+  String get ocrImagePreviewFailed;
+
   /// No description provided for @toolQrGenerator.
   ///
   /// In en, this message translates to:
@@ -1263,6 +1401,186 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Create your own QR codes'**
   String get toolQrGeneratorDesc;
+
+  /// No description provided for @qrGeneratorHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter text or a link to create a QR code.'**
+  String get qrGeneratorHint;
+
+  /// No description provided for @qrGeneratorContent.
+  ///
+  /// In en, this message translates to:
+  /// **'Text or link'**
+  String get qrGeneratorContent;
+
+  /// No description provided for @qrGeneratorContentHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the content to encode'**
+  String get qrGeneratorContentHint;
+
+  /// No description provided for @qrGeneratorShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Share QR code'**
+  String get qrGeneratorShare;
+
+  /// No description provided for @qrGeneratorTooLong.
+  ///
+  /// In en, this message translates to:
+  /// **'This content is too long to fit in a QR code.'**
+  String get qrGeneratorTooLong;
+
+  /// No description provided for @pdfEditChoosePdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose PDF'**
+  String get pdfEditChoosePdf;
+
+  /// No description provided for @pdfEditSourcePassword.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF password (if protected)'**
+  String get pdfEditSourcePassword;
+
+  /// No description provided for @pdfEditSourcePasswordHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'If the PDF does not open, check the password and load it again.'**
+  String get pdfEditSourcePasswordHelp;
+
+  /// No description provided for @pdfEditOpenFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open this PDF. If it is password-protected, check the password and try again.'**
+  String get pdfEditOpenFailed;
+
+  /// No description provided for @pdfEditLoadAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Load PDF'**
+  String get pdfEditLoadAgain;
+
+  /// No description provided for @pdfEditPageCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} pages'**
+  String pdfEditPageCount(Object count);
+
+  /// No description provided for @pdfEditPageRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Pages'**
+  String get pdfEditPageRange;
+
+  /// No description provided for @pdfEditPageRangeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'1,3-5'**
+  String get pdfEditPageRangeHint;
+
+  /// No description provided for @pdfEditPageRangeHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter page numbers or ranges separated by commas.'**
+  String get pdfEditPageRangeHelp;
+
+  /// No description provided for @pdfEditSplitHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Each selected page will be saved as a separate PDF.'**
+  String get pdfEditSplitHint;
+
+  /// No description provided for @pdfEditRotateHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected pages will rotate 90° clockwise.'**
+  String get pdfEditRotateHint;
+
+  /// No description provided for @pdfEditReorderHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Move pages into the order you want.'**
+  String get pdfEditReorderHint;
+
+  /// No description provided for @pdfEditPage.
+  ///
+  /// In en, this message translates to:
+  /// **'Page {page}'**
+  String pdfEditPage(Object page);
+
+  /// No description provided for @pdfEditMoveUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Move up'**
+  String get pdfEditMoveUp;
+
+  /// No description provided for @pdfEditMoveDown.
+  ///
+  /// In en, this message translates to:
+  /// **'Move down'**
+  String get pdfEditMoveDown;
+
+  /// No description provided for @pdfEditNewPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'New password (at least 6 characters)'**
+  String get pdfEditNewPassword;
+
+  /// No description provided for @pdfEditConfirmPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm password'**
+  String get pdfEditConfirmPassword;
+
+  /// No description provided for @pdfEditPasswordsDoNotMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Passwords do not match.'**
+  String get pdfEditPasswordsDoNotMatch;
+
+  /// No description provided for @pdfEditCompressionNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Strong compression converts every page into an image. Text will no longer be selectable or searchable, and image quality may be reduced.'**
+  String get pdfEditCompressionNote;
+
+  /// No description provided for @pdfEditCompressionWarningTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Strong compression warning'**
+  String get pdfEditCompressionWarningTitle;
+
+  /// No description provided for @pdfEditCompressionCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get pdfEditCompressionCancel;
+
+  /// No description provided for @pdfEditCompressionConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Compress anyway'**
+  String get pdfEditCompressionConfirm;
+
+  /// No description provided for @pdfEditCompressionNoReduction.
+  ///
+  /// In en, this message translates to:
+  /// **'This PDF is already smaller than the compressed version. No larger copy was saved.'**
+  String get pdfEditCompressionNoReduction;
+
+  /// No description provided for @pdfEditRun.
+  ///
+  /// In en, this message translates to:
+  /// **'Run {tool}'**
+  String pdfEditRun(Object tool);
+
+  /// No description provided for @pdfEditDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Finished. Edited PDF files are saved to Documents.'**
+  String get pdfEditDone;
 }
 
 class _AppLocalizationsDelegate

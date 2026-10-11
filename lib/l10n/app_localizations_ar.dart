@@ -616,10 +616,56 @@ class AppLocalizationsAr extends AppLocalizations {
   String get toolSignDesc => 'أضف توقيعًا إلى مستنداتك';
 
   @override
+  String get signatureClear => 'مسح التوقيع';
+
+  @override
+  String get signatureColor => 'لون التوقيع';
+
+  @override
+  String get signatureBlack => 'أسود';
+
+  @override
+  String get signatureWhite => 'أبيض';
+
+  @override
+  String get signaturePlacementHint =>
+      'اسحب توقيعك على الصفحة إلى الموضع المطلوب.';
+
+  @override
+  String get signaturePreviewUnavailable =>
+      'معاينة الصفحة غير متاحة. اختر ملف PDF مرة أخرى للمحاولة.';
+
+  @override
   String get toolWatermark => 'علامة مائية';
 
   @override
   String get toolWatermarkDesc => 'أضف علامة مائية إلى مستنداتك';
+
+  @override
+  String get watermarkText => 'نص العلامة المائية';
+
+  @override
+  String get watermarkTextHint => 'مثال: سري';
+
+  @override
+  String get watermarkOpacity => 'العتامة';
+
+  @override
+  String get watermarkPositionHint =>
+      'اسحب العلامة المائية على الصفحة لاختيار موضعها. سيُستخدم الموضع نفسه في كل الصفحات.';
+
+  @override
+  String get watermarkPreviewUnavailable =>
+      'معاينة الصفحة غير متاحة. اختر ملف PDF مرة أخرى للمحاولة.';
+
+  @override
+  String get watermarkAllPagesHint => 'ستُضاف العلامة المائية إلى كل صفحة.';
+
+  @override
+  String get watermarkApply => 'إضافة علامة مائية';
+
+  @override
+  String get watermarkPdfAccessFailed => 'تعذر الوصول إلى ملف PDF المحدد.';
 
   @override
   String get toolOcr => 'OCR';
@@ -628,8 +674,140 @@ class AppLocalizationsAr extends AppLocalizations {
   String get toolOcrDesc => 'استخراج النص من الصور';
 
   @override
+  String get ocrHint =>
+      'اختر صورة للتعرف على النص بالإنجليزية أو الألمانية أو العربية.';
+
+  @override
+  String get ocrSelectImage => 'اختر صورة';
+
+  @override
+  String get ocrProcessing => 'جارٍ التعرف على النص…';
+
+  @override
+  String get ocrResult => 'النص المستخرج';
+
+  @override
+  String get ocrNoText => 'لم يتم العثور على نص في هذه الصورة.';
+
+  @override
+  String ocrFailed(Object error) {
+    return 'تعذر التعرف على النص: $error';
+  }
+
+  @override
+  String get ocrCopy => 'نسخ النص';
+
+  @override
+  String get ocrCopied => 'تم نسخ النص';
+
+  @override
+  String get ocrImagePreviewFailed => 'تعذر عرض الصورة المحددة.';
+
+  @override
   String get toolQrGenerator => 'مولّد رمز QR';
 
   @override
   String get toolQrGeneratorDesc => 'أنشئ رموز QR الخاصة بك';
+
+  @override
+  String get qrGeneratorHint => 'أدخل نصًا أو رابطًا لإنشاء رمز QR.';
+
+  @override
+  String get qrGeneratorContent => 'نص أو رابط';
+
+  @override
+  String get qrGeneratorContentHint => 'أدخل المحتوى المطلوب ترميزه';
+
+  @override
+  String get qrGeneratorShare => 'مشاركة رمز QR';
+
+  @override
+  String get qrGeneratorTooLong => 'هذا المحتوى أطول من أن يتسع له رمز QR.';
+
+  @override
+  String get pdfEditChoosePdf => 'اختر ملف PDF';
+
+  @override
+  String get pdfEditSourcePassword => 'كلمة مرور PDF (إن كان محميًا)';
+
+  @override
+  String get pdfEditSourcePasswordHelp =>
+      'إذا تعذر فتح PDF، تحقق من كلمة المرور ثم أعد تحميله.';
+
+  @override
+  String get pdfEditOpenFailed =>
+      'تعذر فتح ملف PDF. إذا كان محميًا بكلمة مرور، فتحقق منها وحاول مرة أخرى.';
+
+  @override
+  String get pdfEditLoadAgain => 'تحميل PDF';
+
+  @override
+  String pdfEditPageCount(Object count) {
+    return '$count صفحات';
+  }
+
+  @override
+  String get pdfEditPageRange => 'الصفحات';
+
+  @override
+  String get pdfEditPageRangeHint => '1,3-5';
+
+  @override
+  String get pdfEditPageRangeHelp =>
+      'أدخل أرقام الصفحات أو نطاقات مفصولة بفواصل.';
+
+  @override
+  String get pdfEditSplitHint => 'سيتم حفظ كل صفحة محددة في ملف PDF منفصل.';
+
+  @override
+  String get pdfEditRotateHint =>
+      'سيتم تدوير الصفحات المحددة 90° باتجاه عقارب الساعة.';
+
+  @override
+  String get pdfEditReorderHint => 'رتب الصفحات بالشكل المطلوب.';
+
+  @override
+  String pdfEditPage(Object page) {
+    return 'الصفحة $page';
+  }
+
+  @override
+  String get pdfEditMoveUp => 'تحريك لأعلى';
+
+  @override
+  String get pdfEditMoveDown => 'تحريك لأسفل';
+
+  @override
+  String get pdfEditNewPassword => 'كلمة مرور جديدة (6 أحرف على الأقل)';
+
+  @override
+  String get pdfEditConfirmPassword => 'تأكيد كلمة المرور';
+
+  @override
+  String get pdfEditPasswordsDoNotMatch => 'كلمتا المرور غير متطابقتين.';
+
+  @override
+  String get pdfEditCompressionNote =>
+      'يحوّل الضغط القوي كل صفحة إلى صورة. لن يعود النص قابلاً للتحديد أو البحث، وقد تنخفض جودة الصور.';
+
+  @override
+  String get pdfEditCompressionWarningTitle => 'تحذير من الضغط القوي';
+
+  @override
+  String get pdfEditCompressionCancel => 'إلغاء';
+
+  @override
+  String get pdfEditCompressionConfirm => 'ضغط على أي حال';
+
+  @override
+  String get pdfEditCompressionNoReduction =>
+      'هذا الملف أصغر بالفعل من النسخة المضغوطة. لم يتم حفظ نسخة أكبر.';
+
+  @override
+  String pdfEditRun(Object tool) {
+    return 'تنفيذ $tool';
+  }
+
+  @override
+  String get pdfEditDone => 'اكتمل. تم حفظ ملفات PDF المعدلة في المستندات.';
 }

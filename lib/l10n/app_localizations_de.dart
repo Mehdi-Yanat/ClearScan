@@ -621,11 +621,59 @@ class AppLocalizationsDe extends AppLocalizations {
   String get toolSignDesc => 'Signatur zu deinen Dokumenten hinzufügen';
 
   @override
+  String get signatureClear => 'Signatur löschen';
+
+  @override
+  String get signatureColor => 'Signaturfarbe';
+
+  @override
+  String get signatureBlack => 'Schwarz';
+
+  @override
+  String get signatureWhite => 'Weiß';
+
+  @override
+  String get signaturePlacementHint =>
+      'Ziehe deine Signatur auf der Seite an die gewünschte Position.';
+
+  @override
+  String get signaturePreviewUnavailable =>
+      'Die Seitenvorschau ist nicht verfügbar. Wähle die PDF erneut aus, um es noch einmal zu versuchen.';
+
+  @override
   String get toolWatermark => 'Wasserzeichen';
 
   @override
   String get toolWatermarkDesc =>
       'Wasserzeichen zu deinen Dokumenten hinzufügen';
+
+  @override
+  String get watermarkText => 'Wasserzeichentext';
+
+  @override
+  String get watermarkTextHint => 'z. B. VERTRAULICH';
+
+  @override
+  String get watermarkOpacity => 'Deckkraft';
+
+  @override
+  String get watermarkPositionHint =>
+      'Ziehe das Wasserzeichen auf der Seite an die gewünschte Position. Auf allen Seiten wird dieselbe Position verwendet.';
+
+  @override
+  String get watermarkPreviewUnavailable =>
+      'Die Seitenvorschau ist nicht verfügbar. Wähle die PDF erneut aus, um es noch einmal zu versuchen.';
+
+  @override
+  String get watermarkAllPagesHint =>
+      'Das Wasserzeichen wird auf jeder Seite hinzugefügt.';
+
+  @override
+  String get watermarkApply => 'Wasserzeichen hinzufügen';
+
+  @override
+  String get watermarkPdfAccessFailed =>
+      'Auf die ausgewählte PDF-Datei kann nicht zugegriffen werden.';
 
   @override
   String get toolOcr => 'OCR';
@@ -634,8 +682,148 @@ class AppLocalizationsDe extends AppLocalizations {
   String get toolOcrDesc => 'Text aus Bildern extrahieren';
 
   @override
+  String get ocrHint =>
+      'Wähle ein Bild aus, um Text auf Englisch, Deutsch oder Arabisch zu erkennen.';
+
+  @override
+  String get ocrSelectImage => 'Bild auswählen';
+
+  @override
+  String get ocrProcessing => 'Text wird erkannt…';
+
+  @override
+  String get ocrResult => 'Extrahierter Text';
+
+  @override
+  String get ocrNoText => 'In diesem Bild wurde kein Text gefunden.';
+
+  @override
+  String ocrFailed(Object error) {
+    return 'Text konnte nicht erkannt werden: $error';
+  }
+
+  @override
+  String get ocrCopy => 'Text kopieren';
+
+  @override
+  String get ocrCopied => 'Text kopiert';
+
+  @override
+  String get ocrImagePreviewFailed =>
+      'Das ausgewählte Bild kann nicht angezeigt werden.';
+
+  @override
   String get toolQrGenerator => 'QR-Code-Generator';
 
   @override
   String get toolQrGeneratorDesc => 'Erstelle deine eigenen QR-Codes';
+
+  @override
+  String get qrGeneratorHint =>
+      'Gib Text oder einen Link ein, um einen QR-Code zu erstellen.';
+
+  @override
+  String get qrGeneratorContent => 'Text oder Link';
+
+  @override
+  String get qrGeneratorContentHint => 'Inhalt zum Kodieren eingeben';
+
+  @override
+  String get qrGeneratorShare => 'QR-Code teilen';
+
+  @override
+  String get qrGeneratorTooLong =>
+      'Dieser Inhalt ist zu lang für einen QR-Code.';
+
+  @override
+  String get pdfEditChoosePdf => 'PDF auswählen';
+
+  @override
+  String get pdfEditSourcePassword => 'PDF-Passwort (falls geschützt)';
+
+  @override
+  String get pdfEditSourcePasswordHelp =>
+      'Falls sich die PDF nicht öffnen lässt, überprüfe das Passwort und lade sie erneut.';
+
+  @override
+  String get pdfEditOpenFailed =>
+      'PDF konnte nicht geöffnet werden. Falls sie passwortgeschützt ist, überprüfe das Passwort und versuche es erneut.';
+
+  @override
+  String get pdfEditLoadAgain => 'PDF laden';
+
+  @override
+  String pdfEditPageCount(Object count) {
+    return '$count Seiten';
+  }
+
+  @override
+  String get pdfEditPageRange => 'Seiten';
+
+  @override
+  String get pdfEditPageRangeHint => '1,3-5';
+
+  @override
+  String get pdfEditPageRangeHelp =>
+      'Seitennummern oder Bereiche durch Kommas trennen.';
+
+  @override
+  String get pdfEditSplitHint =>
+      'Jede ausgewählte Seite wird als separate PDF gespeichert.';
+
+  @override
+  String get pdfEditRotateHint =>
+      'Ausgewählte Seiten werden um 90° im Uhrzeigersinn gedreht.';
+
+  @override
+  String get pdfEditReorderHint =>
+      'Seiten in die gewünschte Reihenfolge bringen.';
+
+  @override
+  String pdfEditPage(Object page) {
+    return 'Seite $page';
+  }
+
+  @override
+  String get pdfEditMoveUp => 'Nach oben';
+
+  @override
+  String get pdfEditMoveDown => 'Nach unten';
+
+  @override
+  String get pdfEditNewPassword => 'Neues Passwort (mindestens 6 Zeichen)';
+
+  @override
+  String get pdfEditConfirmPassword => 'Passwort bestätigen';
+
+  @override
+  String get pdfEditPasswordsDoNotMatch =>
+      'Die Passwörter stimmen nicht überein.';
+
+  @override
+  String get pdfEditCompressionNote =>
+      'Bei der starken Komprimierung wird jede Seite in ein Bild umgewandelt. Text ist danach nicht mehr auswählbar oder durchsuchbar; die Bildqualität kann sinken.';
+
+  @override
+  String get pdfEditCompressionWarningTitle =>
+      'Warnung zur starken Komprimierung';
+
+  @override
+  String get pdfEditCompressionCancel => 'Abbrechen';
+
+  @override
+  String get pdfEditCompressionConfirm => 'Trotzdem komprimieren';
+
+  @override
+  String get pdfEditCompressionNoReduction =>
+      'Diese PDF ist bereits kleiner als die komprimierte Version. Es wurde keine größere Kopie gespeichert.';
+
+  @override
+  String pdfEditRun(Object tool) {
+    return '$tool ausführen';
+  }
+
+  @override
+  String get pdfEditDone =>
+      'Fertig. Bearbeitete PDFs wurden unter Dokumente gespeichert.';
 }
