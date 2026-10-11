@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../theme/app_theme.dart';
+import '../../theme/app_theme.dart';
 
 /// Shared bottom navigation: Home · Documents · [Scan] · Settings · Profile.
 /// Index: 0 Home, 1 Documents, 2 Settings, 3 Profile. The scan button is separate.

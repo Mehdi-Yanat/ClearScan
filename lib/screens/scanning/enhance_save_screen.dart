@@ -11,8 +11,8 @@ import 'package:share_plus/share_plus.dart';
 import 'crop_adjust_screen.dart';
 import '../../services/imaging/document_quad_detector.dart';
 import '../../services/documents/document_storage.dart';
-import '../../widgets/app_snackbar.dart';
-import '../../widgets/share_sheet.dart';
+import '../../widgets/feedback/app_snackbar.dart';
+import '../../widgets/sharing/share_sheet.dart';
 
 class EnhanceSaveScreen extends StatefulWidget {
   const EnhanceSaveScreen({

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../widgets/bottom_action_bar.dart';
-import '../../widgets/app_snackbar.dart';
+import '../../widgets/actions/bottom_action_bar.dart';
+import '../../widgets/feedback/app_snackbar.dart';
 
 class DocumentViewerScreen extends StatefulWidget {
   const DocumentViewerScreen({

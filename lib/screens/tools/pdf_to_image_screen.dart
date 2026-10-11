@@ -7,7 +7,7 @@ import 'package:share_plus/share_plus.dart';
 import '../../l10n/app_localizations.dart';
 import '../../services/pdf/pdf_to_image_converter.dart';
 import '../../theme/app_theme.dart';
-import '../../widgets/app_snackbar.dart';
+import '../../widgets/feedback/app_snackbar.dart';
 
 class PdfToImageScreen extends StatefulWidget {
   const PdfToImageScreen({super.key});

@@ -10,8 +10,8 @@ import '../../l10n/app_localizations.dart' as loc;
 import '../../services/app/app_lock_service.dart';
 import '../../services/app/app_settings.dart';
 import '../../theme/app_theme.dart'; // AppColors, AppPreferences, themeModeNotifier, localeNotifier
-import '../../widgets/app_bottom_bar.dart';
-import '../../widgets/app_snackbar.dart';
+import '../../widgets/navigation/app_bottom_bar.dart';
+import '../../widgets/feedback/app_snackbar.dart';
 import 'scanner_screen.dart';
 import 'settings_screen.dart';
 

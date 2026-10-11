@@ -6,7 +6,7 @@ import 'package:intl/intl.dart';
 import '../../l10n/app_localizations.dart' as loc;
 import '../../services/app/notification_service.dart';
 import '../../theme/app_theme.dart';
-import '../../widgets/app_snackbar.dart';
+import '../../widgets/feedback/app_snackbar.dart';
 
 class NotificationsScreen extends StatefulWidget {
   const NotificationsScreen({super.key});

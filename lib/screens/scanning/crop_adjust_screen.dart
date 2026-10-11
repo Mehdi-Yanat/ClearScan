@@ -11,7 +11,7 @@ import 'package:path_provider/path_provider.dart';
 import '../../l10n/app_localizations.dart';
 import '../../services/imaging/document_quad_detector.dart';
 import '../../theme/app_theme.dart';
-import '../../widgets/app_snackbar.dart';
+import '../../widgets/feedback/app_snackbar.dart';
 
 /// What the user chose when leaving the crop screen.
 enum CropAction { next, addPage, retake }

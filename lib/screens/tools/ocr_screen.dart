@@ -8,7 +8,7 @@ import 'package:share_plus/share_plus.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../theme/app_theme.dart';
-import '../../widgets/app_snackbar.dart';
+import '../../widgets/feedback/app_snackbar.dart';
 
 class OcrScreen extends StatefulWidget {
   const OcrScreen({super.key});

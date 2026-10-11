@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../l10n/app_localizations.dart' as loc;
+import '../../l10n/app_localizations.dart' as loc;
 
 Future<String?> showFolderNameDialog(BuildContext context) async {
   return showDialog<String>(

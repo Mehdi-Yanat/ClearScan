@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../theme/app_theme.dart';
-import '../../widgets/app_bottom_bar.dart';
+import '../../widgets/navigation/app_bottom_bar.dart';
 import 'documents_screen.dart';
 import 'pdf_edit_screen.dart';
 import 'pdf_to_excel_screen.dart';

@@ -18,7 +18,7 @@ import '../../services/imaging/id_card_composer.dart';
 import '../../services/documents/document_storage.dart';
 import '../../services/imaging/document_quad_detector.dart';
 import '../../services/app/notification_service.dart';
-import '../../widgets/app_snackbar.dart';
+import '../../widgets/feedback/app_snackbar.dart';
 
 enum ScanMode {
   idCard(1.586),

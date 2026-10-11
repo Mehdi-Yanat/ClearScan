@@ -19,11 +19,11 @@ import '../../services/documents/folder_repository.dart';
 import '../../services/app/notification_service.dart';
 import '../../services/documents/recent_documents.dart';
 import '../../theme/app_theme.dart';
-import '../../widgets/app_bottom_bar.dart';
-import '../../widgets/app_snackbar.dart';
-import '../../widgets/bottom_action_bar.dart';
-import '../../widgets/folder_name_dialog.dart';
-import '../../widgets/share_sheet.dart';
+import '../../widgets/navigation/app_bottom_bar.dart';
+import '../../widgets/feedback/app_snackbar.dart';
+import '../../widgets/actions/bottom_action_bar.dart';
+import '../../widgets/documents/folder_name_dialog.dart';
+import '../../widgets/sharing/share_sheet.dart';
 
 // Hero card stays dark navy in both themes, so its text/paper use fixed colors.
 const _heroBackground = Color(0xFF0F2A33);
