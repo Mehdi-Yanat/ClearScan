@@ -64,6 +64,8 @@ dependencies:
     git:
       url: https://github.com/onestudi0/tesseract_ocr.git
       ref: 3264b46723d05e5c4a6b91ae7f3c575f534f53d2
+  syncfusion_flutter_pdf: ^35.1.39
+  qr: ^3.0.2
 dev_dependencies:
   flutter_test:
     sdk: flutter
