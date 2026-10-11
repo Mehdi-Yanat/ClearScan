@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:clear_scan/screens/scanning/scanner_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -12,7 +13,6 @@ import '../../services/app/app_settings.dart';
 import '../../theme/app_theme.dart'; // AppColors, AppPreferences, themeModeNotifier, localeNotifier
 import '../../widgets/navigation/app_bottom_bar.dart';
 import '../../widgets/feedback/app_snackbar.dart';
-import 'package:clear_scan/screens/scanning/scanner_screen.dart';
 import 'settings_screen.dart';
 
 // Storage card stays dark navy in both themes.
