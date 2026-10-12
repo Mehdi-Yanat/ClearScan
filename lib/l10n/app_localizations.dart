@@ -688,6 +688,24 @@ abstract class AppLocalizations {
   /// **'Front captured. Capture back.'**
   String get scanModeBackSideHint;
 
+  /// No description provided for @scanIdFrontLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Front'**
+  String get scanIdFrontLabel;
+
+  /// No description provided for @scanIdBackLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get scanIdBackLabel;
+
+  /// No description provided for @scanRetakeIdFront.
+  ///
+  /// In en, this message translates to:
+  /// **'Retake front'**
+  String get scanRetakeIdFront;
+
   /// No description provided for @scanModePassportHint.
   ///
   /// In en, this message translates to:

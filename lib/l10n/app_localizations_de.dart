@@ -322,6 +322,15 @@ class AppLocalizationsDe extends AppLocalizations {
       'Vorderseite erfasst. Rückseite aufnehmen.';
 
   @override
+  String get scanIdFrontLabel => 'Vorderseite';
+
+  @override
+  String get scanIdBackLabel => 'Rückseite';
+
+  @override
+  String get scanRetakeIdFront => 'Vorderseite erneut aufnehmen';
+
+  @override
   String get scanModePassportHint => 'Datenseite des Reisepasses erfassen.';
 
   @override

@@ -319,6 +319,15 @@ class AppLocalizationsAr extends AppLocalizations {
   String get scanModeBackSideHint => 'تم التقاط الأمام. التقط الخلف.';
 
   @override
+  String get scanIdFrontLabel => 'الوجه الأمامي';
+
+  @override
+  String get scanIdBackLabel => 'الوجه الخلفي';
+
+  @override
+  String get scanRetakeIdFront => 'أعد التقاط الوجه الأمامي';
+
+  @override
   String get scanModePassportHint => 'ضع صفحة بيانات الجواز في الإطار.';
 
   @override

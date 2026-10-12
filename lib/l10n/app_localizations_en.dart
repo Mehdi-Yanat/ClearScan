@@ -319,6 +319,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get scanModeBackSideHint => 'Front captured. Capture back.';
 
   @override
+  String get scanIdFrontLabel => 'Front';
+
+  @override
+  String get scanIdBackLabel => 'Back';
+
+  @override
+  String get scanRetakeIdFront => 'Retake front';
+
+  @override
   String get scanModePassportHint => 'Frame the passport data page.';
 
   @override

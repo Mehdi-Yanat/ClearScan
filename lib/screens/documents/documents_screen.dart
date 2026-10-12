@@ -145,9 +145,7 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
   // ── actions ──
 
   Future<void> _openScanner() async {
-    await Navigator.of(context).push<void>(
-      MaterialPageRoute<void>(builder: (_) => const ScannerScreen()),
-    );
+    await ScannerScreen.open(context);
     if (mounted) await _loadFiles();
   }
 

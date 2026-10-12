@@ -215,8 +215,7 @@ class _FolderMultiSelectScreenState extends State<FolderMultiSelectScreen> {
   }
 
   void _openScanner() {
-    Navigator.of(context)
-        .push(MaterialPageRoute<void>(builder: (_) => const ScannerScreen()));
+    ScannerScreen.open(context);
   }
 
   void _onDocumentTap(int index) {

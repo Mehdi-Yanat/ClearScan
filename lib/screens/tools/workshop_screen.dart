@@ -29,8 +29,7 @@ class WorkshopScreen extends StatefulWidget {
 
 class _WorkshopScreenState extends State<WorkshopScreen> {
   void _openScanner() {
-    Navigator.of(context)
-        .push(MaterialPageRoute<void>(builder: (_) => const ScannerScreen()));
+    ScannerScreen.open(context);
   }
 
   void _openPdfToImage() {

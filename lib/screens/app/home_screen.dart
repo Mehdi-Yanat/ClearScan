@@ -183,15 +183,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _openScannerWithMode(ScanMode mode) {
-    Navigator.of(context)
-        .push(
-          MaterialPageRoute<void>(
-            builder: (_) => ScannerScreen(initialMode: mode),
-          ),
-        )
-        .then((_) {
-          if (mounted) _refreshRecentDocuments();
-        });
+    ScannerScreen.open(context, initialMode: mode).then((_) {
+      if (mounted) _refreshRecentDocuments();
+    });
   }
 
   Future<void> _importImage() async {

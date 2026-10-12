@@ -7,8 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../services/imaging/card_corner_mask.dart';
 import 'crop_adjust_screen.dart';
 import 'enhance_save_screen.dart';
 import '../../l10n/app_localizations.dart';
@@ -32,6 +34,52 @@ enum ScanMode {
   final double aspect;
 
   bool get isCard => this == ScanMode.idCard;
+
+  /// Every mode except QR gets the live outline + guidance.
+  bool get usesLiveDetection => this != ScanMode.qr;
+
+  /// Shutter fires by itself after a few stable frames.
+  bool get autoCapture =>
+      this == ScanMode.idCard ||
+      this == ScanMode.passport ||
+      this == ScanMode.document;
+
+  QuadParams get quadParams => switch (this) {
+    ScanMode.idCard || ScanMode.passport => QuadParams.card(aspect),
+    ScanMode.document ||
+    ScanMode.book => QuadParams.paper(targetAspect: aspect),
+    ScanMode.qr => QuadParams.paper(),
+  };
+
+  /// Corners closer than this to the frame border (0..1) mean "move away".
+  double get edgeMargin => switch (this) {
+    ScanMode.idCard || ScanMode.passport => 0.12,
+    _ => 0.02,
+  };
+
+  /// Quad area (fraction of the frame) in which a capture is considered good.
+  (double, double) get stableAreaRange => switch (this) {
+    ScanMode.idCard => (0.03, 0.62),
+    ScanMode.passport => (0.05, 0.75),
+    _ => (0.15, 0.97),
+  };
+
+  /// Laplacian-variance floor; mostly-blank paper has far less texture than a card.
+  double get minSharpness => isCard || this == ScanMode.passport ? 18 : 6;
+
+  /// Mean corner movement (0..1 of the frame) allowed between two frames
+  /// before the shot stops counting as "held steady".
+  double get stabilityThreshold =>
+      isCard || this == ScanMode.passport ? 0.006 : 0.012;
+
+  /// that hides the warp fringe without touching content.
+  double get cornerRadiusFraction => switch (this) {
+    ScanMode.idCard => 0.04,
+    ScanMode.passport => 0.03,
+    ScanMode.document => 0.015,
+    ScanMode.book => 0.012,
+    ScanMode.qr => 0,
+  };
 }
 
 class ScannerScreen extends StatefulWidget {
@@ -46,6 +94,35 @@ class ScannerScreen extends StatefulWidget {
   final void Function(XFile file, String mode)? onCaptured;
 
   final ScanMode initialMode;
+
+  static Future<void> open(
+    BuildContext context, {
+    ScanMode initialMode = ScanMode.document,
+  }) async {
+    final permission = await Permission.camera.request();
+    if (!context.mounted) return;
+    if (!permission.isGranted) {
+      final permanentlyDenied = permission.isPermanentlyDenied;
+      showAppSnackBar(
+        context,
+        permanentlyDenied
+            ? 'Camera access is disabled. Enable it in app settings to scan documents.'
+            : 'Camera permission is required to scan documents.',
+        action: permanentlyDenied
+            ? SnackBarAction(
+                label: 'Settings',
+                onPressed: () => openAppSettings(),
+              )
+            : null,
+      );
+      return;
+    }
+    await Navigator.of(context).push<void>(
+      MaterialPageRoute<void>(
+        builder: (_) => ScannerScreen(initialMode: initialMode),
+      ),
+    );
+  }
 
   @override
   State<ScannerScreen> createState() => _ScannerScreenState();
@@ -288,7 +365,7 @@ class _ScannerScreenState extends State<ScannerScreen>
       await _initFuture;
       if (mounted) {
         setState(() {});
-        if (_mode.isCard) await _startCardFrameStream(controller);
+        if (_mode.usesLiveDetection) await _startCardFrameStream(controller);
       }
     } on CameraException catch (e) {
       if (!mounted) return;
@@ -353,7 +430,7 @@ class _ScannerScreenState extends State<ScannerScreen>
     } finally {
       if (mounted) {
         setState(() => _busy = false);
-        if (_mode.isCard && identical(_camera, controller)) {
+        if (_mode.usesLiveDetection && identical(_camera, controller)) {
           await _startCardFrameStream(controller);
         }
       }
@@ -362,7 +439,7 @@ class _ScannerScreenState extends State<ScannerScreen>
 
   Future<void> _startCardFrameStream(CameraController controller) async {
     if (!mounted ||
-        !_mode.isCard ||
+        !_mode.usesLiveDetection ||
         !controller.value.isInitialized ||
         controller.value.isStreamingImages) {
       return;
@@ -383,7 +460,7 @@ class _ScannerScreenState extends State<ScannerScreen>
     final now = DateTime.now();
     if (!mounted ||
         _busy ||
-        !_mode.isCard ||
+        !_mode.usesLiveDetection ||
         _processingCardFrame ||
         now.difference(_lastCardFrameAt).inMilliseconds < 300 ||
         frame.planes.isEmpty) {
@@ -430,7 +507,7 @@ class _ScannerScreenState extends State<ScannerScreen>
     try {
       final assessment = await CardQuadDetector.assessFrame(
         input,
-        targetAspectRatio: mode.aspect,
+        params: mode.quadParams,
       );
       if (!mounted ||
           !identical(_camera, controller) ||
@@ -441,24 +518,22 @@ class _ScannerScreenState extends State<ScannerScreen>
       final guidance = _guidanceForCardFrame(assessment, mode);
       final corners = assessment.corners;
       final nearBoundary =
-          corners != null &&
-          corners.any(
-            (point) =>
-                point.dx <= 0.12 ||
-                point.dx >= 0.88 ||
-                point.dy <= 0.12 ||
-                point.dy >= 0.88,
-          );
+          corners != null && _nearBoundary(corners, mode.edgeMargin);
+      final (minArea, maxArea) = mode.stableAreaRange;
       final stable =
           corners != null &&
           !nearBoundary &&
-          assessment.confidence >= 0.52 &&
-          assessment.areaRatio >= 0.025 &&
-          assessment.areaRatio <= 0.62 &&
-          assessment.sharpness >= 18 &&
+          assessment.confidence >= 0.70 &&
+          assessment.areaRatio >= minArea &&
+          assessment.areaRatio <= maxArea &&
+          assessment.sharpness >= mode.minSharpness &&
           assessment.glareRatio <= 0.18 &&
           assessment.brightness >= 38 &&
-          _cornersAreStable(corners, _previousCardCorners);
+          _cornersAreStable(
+            corners,
+            _previousCardCorners,
+            mode.stabilityThreshold,
+          );
       if (stable) {
         _stableCardFrames++;
       } else {
@@ -471,7 +546,12 @@ class _ScannerScreenState extends State<ScannerScreen>
       } else {
         setState(() {});
       }
-      if (_stableCardFrames >= 5 && !_busy) {
+      final waitingForIdBack =
+          mode == ScanMode.idCard && _capturedFronts.containsKey(mode);
+      if (mode.autoCapture &&
+          !waitingForIdBack &&
+          _stableCardFrames >= 5 &&
+          !_busy) {
         unawaited(_capture());
       }
     } on Exception catch (error) {
@@ -490,26 +570,34 @@ class _ScannerScreenState extends State<ScannerScreen>
   String _guidanceForCardFrame(CardFrameAssessment assessment, ScanMode mode) {
     final l10n = AppLocalizations.of(context)!;
     if (assessment.corners == null) return l10n.scanGuidanceKeepInFrame;
-    if (assessment.corners!.any(
-      (point) =>
-          point.dx <= 0.12 ||
-          point.dx >= 0.88 ||
-          point.dy <= 0.12 ||
-          point.dy >= 0.88,
-    )) {
+    if (_nearBoundary(assessment.corners!, mode.edgeMargin)) {
       return l10n.scanGuidanceMoveAwayFromEdge;
     }
-    if (assessment.sharpness < 18) return l10n.scanGuidanceHoldSteady;
+    if (assessment.sharpness < mode.minSharpness) {
+      return l10n.scanGuidanceHoldSteady;
+    }
     if (assessment.glareRatio > 0.18) return l10n.scanGuidanceReduceGlare;
     if (assessment.brightness < 38) return l10n.scanGuidanceImproveLighting;
-    if (assessment.areaRatio < 0.025) return l10n.scanGuidanceMoveCloser;
-    if (assessment.areaRatio > 0.62) return l10n.scanGuidanceMoveBack;
-    return _capturedFronts.containsKey(mode)
-        ? l10n.scanModeBackSideHint
-        : l10n.scanGuidanceAlignCard;
+    final (minArea, maxArea) = mode.stableAreaRange;
+    if (assessment.areaRatio < minArea) return l10n.scanGuidanceMoveCloser;
+    if (assessment.areaRatio > maxArea) return l10n.scanGuidanceMoveBack;
+    if (_capturedFronts.containsKey(mode)) return l10n.scanModeBackSideHint;
+    return mode.isCard ? l10n.scanGuidanceAlignCard : _getScanModeHint(mode);
   }
 
-  bool _cornersAreStable(List<Offset> current, List<Offset>? previous) {
+  bool _nearBoundary(List<Offset> corners, double margin) => corners.any(
+    (point) =>
+        point.dx <= margin ||
+        point.dx >= 1 - margin ||
+        point.dy <= margin ||
+        point.dy >= 1 - margin,
+  );
+
+  bool _cornersAreStable(
+    List<Offset> current,
+    List<Offset>? previous, [
+    double threshold = 0.012,
+  ]) {
     if (previous == null || previous.length != current.length) return false;
     final meanMovement =
         List.generate(
@@ -517,7 +605,7 @@ class _ScannerScreenState extends State<ScannerScreen>
           (index) => (current[index] - previous[index]).distance,
         ).reduce((a, b) => a + b) /
         current.length;
-    return meanMovement < 0.012;
+    return meanMovement < threshold;
   }
 
   List<Offset>? _smoothCorners(List<Offset>? current, List<Offset>? previous) {
@@ -545,12 +633,15 @@ class _ScannerScreenState extends State<ScannerScreen>
     final controller = _camera;
     _resetCardTracking();
     try {
-      if (_mode.isCard != mode.isCard &&
+      if (_mode.usesLiveDetection != mode.usesLiveDetection &&
           controller?.value.isStreamingImages == true) {
         await controller!.stopImageStream();
       }
-      setState(() => _mode = mode);
-      if (mode.isCard && controller != null) {
+      setState(() {
+        _mode = mode;
+        _cardGuidance = null;
+      });
+      if (mode.usesLiveDetection && controller != null) {
         await _startCardFrameStream(controller);
       }
     } on CameraException catch (error) {
@@ -576,7 +667,12 @@ class _ScannerScreenState extends State<ScannerScreen>
 
       final frontPath = _capturedFronts[_mode];
       if (frontPath == null) {
-        setState(() => _capturedFronts[_mode] = croppedPath);
+        HapticFeedback.selectionClick();
+        _resetCardTracking();
+        setState(() {
+          _capturedFronts[_mode] = croppedPath;
+          _cardGuidance = AppLocalizations.of(context)!.scanModeBackSideHint;
+        });
         return;
       }
 
@@ -653,6 +749,26 @@ class _ScannerScreenState extends State<ScannerScreen>
     _ => false,
   };
 
+  Future<void> _retakeIdFront() async {
+    final path = _capturedFronts[ScanMode.idCard];
+    if (path == null) return;
+    final frontFile = File(path);
+    try {
+      if (await frontFile.exists()) {
+        await frontFile.delete();
+      }
+    } on FileSystemException catch (error) {
+      _showSnack('Could not remove the captured front: $error');
+      return;
+    }
+    if (!mounted) return;
+    _resetCardTracking();
+    setState(() {
+      _capturedFronts.remove(ScanMode.idCard);
+      _cardGuidance = AppLocalizations.of(context)!.scanModeIdCardHint;
+    });
+  }
+
   Future<String?> _cropImage(String imagePath) async {
     final result = await Navigator.of(context).push<CropResult>(
       MaterialPageRoute<CropResult>(
@@ -665,7 +781,15 @@ class _ScannerScreenState extends State<ScannerScreen>
         ),
       ),
     );
-    return result?.path;
+    final croppedPath = result?.path;
+    if (croppedPath == null) return null;
+    // The warp maps the sharp corners of the object, so rounded corners leave
+    // small background wedges. Fill them (for ID cards: before the two sides
+    // are combined).
+    final radius = _mode.cornerRadiusFraction;
+    return radius > 0
+        ? maskCardCorners(croppedPath, radiusFraction: radius)
+        : croppedPath;
   }
 
   Future<File> _combineIdSides(String frontPath, String backPath) async {
@@ -784,7 +908,7 @@ class _ScannerScreenState extends State<ScannerScreen>
           fit: StackFit.expand,
           children: [
             _buildPreview(context),
-            if (_mode.isCard && _displayCardCorners != null)
+            if (_mode.usesLiveDetection && _displayCardCorners != null)
               Positioned.fill(
                 child: IgnorePointer(
                   child: CustomPaint(
@@ -824,12 +948,27 @@ class _ScannerScreenState extends State<ScannerScreen>
                       ),
                     ),
                     _HintPill(
-                      text: _mode.isCard
+                      text: _mode.usesLiveDetection
                           ? _cardGuidance ??
-                                AppLocalizations.of(context)!
-                                    .scanGuidanceAlignCard
+                                (_mode.isCard
+                                    ? AppLocalizations.of(context)!
+                                          .scanGuidanceAlignCard
+                                    : _getScanModeHint(_mode))
                           : _getScanModeHint(_mode),
                     ),
+                    if (_mode == ScanMode.idCard) ...[
+                      const SizedBox(height: 12),
+                      _IdCardProgress(
+                        frontCaptured: _capturedFronts.containsKey(_mode),
+                        frontLabel: AppLocalizations.of(context)!
+                            .scanIdFrontLabel,
+                        backLabel: AppLocalizations.of(context)!
+                            .scanIdBackLabel,
+                        retakeLabel: AppLocalizations.of(context)!
+                            .scanRetakeIdFront,
+                        onRetakeFront: _retakeIdFront,
+                      ),
+                    ],
                     const SizedBox(height: 18),
                     _ModeSelector(
                       selected: _mode,
@@ -1143,6 +1282,94 @@ class _HintPill extends StatelessWidget {
           fontWeight: FontWeight.w500,
         ),
       ),
+    );
+  }
+}
+
+class _IdCardProgress extends StatelessWidget {
+  const _IdCardProgress({
+    required this.frontCaptured,
+    required this.frontLabel,
+    required this.backLabel,
+    required this.retakeLabel,
+    required this.onRetakeFront,
+  });
+
+  final bool frontCaptured;
+  final String frontLabel;
+  final String backLabel;
+  final String retakeLabel;
+  final VoidCallback onRetakeFront;
+
+  @override
+  Widget build(BuildContext context) {
+    Widget step(String label, int number, {required bool complete}) {
+      final color = complete ? const Color(0xFF2CC4CF) : Colors.white70;
+      return Expanded(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              complete ? Icons.check_circle_rounded : Icons.circle_outlined,
+              color: color,
+              size: 18,
+            ),
+            const SizedBox(width: 7),
+            Flexible(
+              child: Text(
+                '$number. $label',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  color: color,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          constraints: const BoxConstraints(minHeight: 42),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
+          decoration: BoxDecoration(
+            color: Colors.black.withValues(alpha: 0.42),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.14)),
+          ),
+          child: Row(
+            children: [
+              step(frontLabel, 1, complete: frontCaptured),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: Icon(
+                  Icons.chevron_right_rounded,
+                  color: Colors.white.withValues(alpha: 0.55),
+                  size: 18,
+                ),
+              ),
+              step(backLabel, 2, complete: false),
+            ],
+          ),
+        ),
+        if (frontCaptured)
+          TextButton.icon(
+            onPressed: onRetakeFront,
+            style: TextButton.styleFrom(
+              foregroundColor: Colors.white,
+              visualDensity: VisualDensity.compact,
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+            ),
+            icon: const Icon(Icons.refresh_rounded, size: 17),
+            label: Text(retakeLabel),
+          ),
+      ],
     );
   }
 }

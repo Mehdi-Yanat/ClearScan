@@ -133,8 +133,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _openScanner() {
-    Navigator.of(context)
-        .push(MaterialPageRoute<void>(builder: (_) => const ScannerScreen()));
+    ScannerScreen.open(context);
   }
 
   Future<void> _openSettings() async {
