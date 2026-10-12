@@ -60,7 +60,7 @@ class _CropAdjustScreenState extends State<CropAdjustScreen> {
   /// Quad in normalized image coordinates (0..1): TL, TR, BR, BL.
   List<Offset> _quad = _defaultQuad();
 
-  static List<Offset> _defaultQuad() => const [
+  static List<Offset> _defaultQuad() => [
     Offset(0.08, 0.08),
     Offset(0.92, 0.08),
     Offset(0.92, 0.92),
@@ -135,7 +135,7 @@ class _CropAdjustScreenState extends State<CropAdjustScreen> {
         return;
       }
       HapticFeedback.selectionClick();
-      setState(() => _quad = detected);
+      setState(() => _quad = List<Offset>.of(detected));
     } on Exception {
       if (mounted) _showAutoCropMessage();
     } finally {
