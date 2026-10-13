@@ -136,6 +136,8 @@ class _ScannerScreenState extends State<ScannerScreen>
   CameraController? _camera;
   Future<void>? _initFuture;
   String? _error;
+  bool _isAppForeground = true;
+  bool _startingCardFrameStream = false;
 
   late ScanMode _mode = widget.initialMode;
   int _flashIndex = 0;
@@ -173,12 +175,21 @@ class _ScannerScreenState extends State<ScannerScreen>
     if (state == AppLifecycleState.inactive ||
         state == AppLifecycleState.paused ||
         state == AppLifecycleState.detached) {
+      _isAppForeground = false;
       final controller = _camera;
       _camera = null;
       _resetCardTracking();
       unawaited(controller?.dispose());
     } else if (state == AppLifecycleState.resumed) {
-      _initCamera();
+      _isAppForeground = true;
+      unawaited(_resumeCamera());
+    }
+  }
+
+  Future<void> _resumeCamera() async {
+    await _initCamera();
+    if (mounted && _isAppForeground && _camera == null) {
+      await _initCamera();
     }
   }
 
@@ -250,9 +261,10 @@ class _ScannerScreenState extends State<ScannerScreen>
       quality,
       'Could not save scan quality',
     );
+    final pendingInitialization = _initFuture;
+    if (pendingInitialization != null) await pendingInitialization;
     final oldCamera = _camera;
     _camera = null;
-    _initFuture = null;
     await oldCamera?.dispose();
     if (mounted) await _initCamera();
   }
@@ -337,11 +349,25 @@ class _ScannerScreenState extends State<ScannerScreen>
     );
   }
 
-  Future<void> _initCamera() async {
-    if (!mounted) return;
+  Future<void> _initCamera() {
+    if (!mounted || !_isAppForeground) return Future<void>.value();
+    final pendingInitialization = _initFuture;
+    if (pendingInitialization != null) return pendingInitialization;
+    if (_camera?.value.isInitialized == true) return Future<void>.value();
+
+    late final Future<void> initialization;
+    initialization = _initializeCamera().whenComplete(() {
+      if (identical(_initFuture, initialization)) _initFuture = null;
+    });
+    _initFuture = initialization;
+    return initialization;
+  }
+
+  Future<void> _initializeCamera() async {
     setState(() => _error = null);
     try {
       final cameras = await availableCameras();
+      if (!mounted || !_isAppForeground) return;
       if (cameras.isEmpty) {
         setState(() => _error = 'No camera found on this device.');
         return;
@@ -357,12 +383,14 @@ class _ScannerScreenState extends State<ScannerScreen>
         imageFormatGroup: ImageFormatGroup.yuv420,
       );
       _camera = controller;
-      _initFuture = controller.initialize().then((_) async {
-        await controller.setFlashMode(_flashModes[_flashIndex]);
-        await controller.lockCaptureOrientation(DeviceOrientation.portraitUp);
-      });
+      await controller.initialize();
+      if (!mounted || !_isAppForeground || !identical(_camera, controller)) {
+        await controller.dispose();
+        return;
+      }
+      await controller.setFlashMode(_flashModes[_flashIndex]);
+      await controller.lockCaptureOrientation(DeviceOrientation.portraitUp);
       setState(() {});
-      await _initFuture;
       if (mounted) {
         setState(() {});
         if (_mode.usesLiveDetection) await _startCardFrameStream(controller);
@@ -439,26 +467,46 @@ class _ScannerScreenState extends State<ScannerScreen>
 
   Future<void> _startCardFrameStream(CameraController controller) async {
     if (!mounted ||
+        _startingCardFrameStream ||
         !_mode.usesLiveDetection ||
         !controller.value.isInitialized ||
         controller.value.isStreamingImages) {
       return;
     }
+    _startingCardFrameStream = true;
     try {
       await controller.startImageStream(
         (frame) => _processCardFrame(controller, frame),
       );
+      if ((!mounted ||
+              !_isAppForeground ||
+              !identical(_camera, controller) ||
+              !_mode.usesLiveDetection) &&
+          controller.value.isStreamingImages) {
+        await controller.stopImageStream();
+      }
     } on CameraException catch (error) {
       if (!_cardStreamUnavailableShown) {
         _cardStreamUnavailableShown = true;
         _showSnack('Live card guidance unavailable; use the shutter: $error');
       }
+    } on PlatformException catch (error) {
+      if (!_cardStreamUnavailableShown) {
+        _cardStreamUnavailableShown = true;
+        _showSnack(
+          'Live card guidance unavailable; use the shutter: '
+          '${error.message ?? error.code}',
+        );
+      }
+    } finally {
+      _startingCardFrameStream = false;
     }
   }
 
   void _processCardFrame(CameraController controller, CameraImage frame) {
     final now = DateTime.now();
     if (!mounted ||
+        !identical(_camera, controller) ||
         _busy ||
         !_mode.usesLiveDetection ||
         _processingCardFrame ||
