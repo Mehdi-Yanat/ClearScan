@@ -10,13 +10,132 @@
   "german": "German",
   "arabic": "Arabic",
   "freePlan": "Free plan",
+  "authGuestTitle": "Guest",
+  "authGuestDescription": "Sign in to access your account",
+  "authSignIn": "Sign in",
+  "authSignOut": "Sign out",
+  "authTitle": "Your account",
+  "authSignInSubtitle": "Sign in to your ClearScan account.",
+  "authSignUpSubtitle": "Create an account to get started.",
+  "authCreateAccount": "Create account",
+  "authFullName": "Full name",
+  "authEmail": "Email",
+  "authPassword": "Password",
+  "authNameRequired": "Enter your name.",
+  "authInvalidEmail": "Enter a valid email address.",
+  "authPasswordTooShort": "Password must be at least 6 characters.",
+  "authHaveAccount": "Already have an account? Sign in",
+  "authNeedAccount": "New to ClearScan? Create an account",
+  "authBackendNotConfigured": "Account sign-in is not set up yet.",
+  "authBackendSetupInstructions": "Run the VS Code task \"Run with Supabase\" or .\\tool\\flutter_with_supabase.ps1 run. This loads the URL and publishable key from .env. Never add secret keys to the app.",
+  "authCheckEmail": "Check your email to confirm your account.",
+  "authContinueWithGoogle": "Continue with Google",
+  "authOr": "or",
+  "authGoogleNotConfigured": "Set google_ID_client in .env to your Google Web client ID, then restart with Run with Supabase.",
+  "cloudStorage": "Cloud storage",
+  "cloudStorageLoading": "Loading...",
+  "cloudBackupCount": "{count} backups",
+  "@cloudBackupCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "cloudStorageUsed": "{size} used",
+  "@cloudStorageUsed": {
+    "placeholders": {
+      "size": {}
+    }
+  },
+  "cloudStoragePrivacy": "Private backups, available only to your account.",
+  "cloudBackupChooseDocuments": "Choose documents to back up",
+  "cloudNoLocalDocuments": "No local documents found.",
+  "cloudBackupSelected": "Back up {count} selected",
+  "@cloudBackupSelected": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "cloudUploading": "Uploading...",
+  "cloudUploadAction": "Backup",
+  "cloudUploadError": "Could not back up to cloud: {error}",
+  "cloudCopyLink": "Copy link",
+  "cloudLinkCopied": "Link copied. It expires in 24 hours.",
+  "cloudLinkError": "Could not create share link: {error}",
+  "@cloudUploadError": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "@cloudLinkError": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "cloudBackups": "Cloud backups",
+  "cloudNoBackups": "You have no cloud backups yet.",
+  "cloudRestore": "Restore to this device",
+  "cloudCancel": "Cancel",
+  "cloudDeleteConfirmTitle": "Delete cloud backup?",
+  "cloudDeleteConfirmMessage": "Delete {name} from cloud backups? The local copy stays.",
+  "@cloudDeleteConfirmMessage": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "cloudDeleteComplete": "Deleted {name} from cloud backups.",
+  "@cloudDeleteComplete": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "cloudDeleteError": "Could not delete cloud backup: {error}",
+  "@cloudDeleteError": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "cloudBackupComplete": "Backed up {count} document(s).",
+  "@cloudBackupComplete": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "cloudBackupPartialFailure": "Backed up {count}; error: {error}",
+  "@cloudBackupPartialFailure": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "error": {}
+    }
+  },
+  "cloudRestoreComplete": "Restored {name} to this device.",
+  "@cloudRestoreComplete": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "cloudStorageError": "Could not restore backup: {error}",
+  "@cloudStorageError": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "cloudRefresh": "Refresh backups",
+  "cloudManageBackups": "Manage backups",
   "on": "On",
   "off": "Off",
   "comingSoon": "Coming soon",
   "backupAndSync": "Backup & Sync",
   "appLock": "App Lock",
   "appLockAuthReason": "Authenticate to unlock ClearScan.",
-  "appLockAuthenticationFailed": "Authentication failed. Try again to unlock ClearScan.",
+  "appLockAuthenticationFailed": "Authentication failed. Try again.",
   "appLockAuthenticationError": "Could not authenticate: {error}",
   "@appLockAuthenticationError": {
     "placeholders": {
@@ -37,7 +156,7 @@
   "system": "System",
   "rateStoreListing": "Open store listing",
   "helpCenterEmail": "Open help center / email",
-  "helpEmailLaunchFailed": "Could not open your email app. Contact {email} instead.",
+  "helpEmailLaunchFailed": "Can't open email. Contact {email}.",
   "@helpEmailLaunchFailed": {
     "placeholders": {
       "email": {}
@@ -63,7 +182,7 @@
   "share": "Share",
   "rename": "Rename",
   "delete": "Delete",
-  "documentDeleteConfirmation": "Delete {name}? This cannot be undone.",
+  "documentDeleteConfirmation": "Delete {name}? This can't be undone.",
   "@documentDeleteConfirmation": {
     "placeholders": {
       "name": {}
@@ -105,11 +224,11 @@
   "items": "items",
   "noDocumentsFound": "No documents found",
   "onboardingSlideScanTitle": "Scan Anything",
-  "onboardingSlideScanSubtitle": "Turn paper into crisp, searchable PDFs\nin seconds, right from your phone.",
+  "onboardingSlideScanSubtitle": "Create clear, searchable PDFs\nfrom paper in seconds.",
   "onboardingSlideOrganizeTitle": "Organize Everything",
-  "onboardingSlideOrganizeSubtitle": "Keep IDs, contracts and receipts\nneatly sorted in folders.",
+  "onboardingSlideOrganizeSubtitle": "Sort IDs, contracts and receipts\ninto folders.",
   "onboardingSlideSignTitle": "Edit & Sign",
-  "onboardingSlideSignSubtitle": "Merge, compress, sign and share\nyour documents in a few taps.",
+  "onboardingSlideSignSubtitle": "Merge, compress, sign and share\nin a few taps.",
   "onboardingSkip": "Skip",
   "onboardingGetStarted": "Get Started",
   "onboardingAgreeTerms": "By continuing you agree to Terms & Privacy",
@@ -157,7 +276,7 @@
   "settingsFormatPdf": "PDF",
   "settingsFormatJpg": "JPG",
   "settingsClearCacheTitle": "Clear cache?",
-  "settingsClearCacheMessage": "Temporary files will be deleted. Your documents are not affected.",
+  "settingsClearCacheMessage": "Temporary files will be deleted. Documents stay safe.",
   "settingsCancel": "Cancel",
   "settingsClear": "Clear",
   "settingsCacheCleared": "Cache cleared",
@@ -176,8 +295,8 @@
   "cropAdjustAutoCrop": "Auto crop",
   "cropAdjustAddPage": "Add page",
   "cropAdjustErrorOpenImage": "Could not open this image.",
-  "cropAdjustErrorCropImage": "Could not crop the image. Adjust the corners and try again.",
-  "cropAdjustErrorDetectEdges": "Could not detect document edges. Adjust the corners manually.",
+  "cropAdjustErrorCropImage": "Couldn't crop image. Adjust the corners and retry.",
+  "cropAdjustErrorDetectEdges": "Couldn't detect edges. Adjust the corners manually.",
   "workshopTitle": "Workshop",
   "workshopConvert": "Convert",
   "workshopEditPdf": "Edit PDF",
@@ -186,7 +305,7 @@
   "toolPdfToImage": "PDF to Image",
   "pdfToWordTitle": "PDF to Word",
   "pdfToWordSelectPdf": "Choose a PDF",
-  "pdfToWordHint": "Extract PDF text into an editable Word document. Scanned pages are OCR’d in Arabic, English, and German. Layout may be simplified.",
+  "pdfToWordHint": "Export PDF text to editable Word. Scans support Arabic, English, and German OCR; layout may change.",
   "pdfToWordConverting": "Extracting PDF text and running OCR…",
   "pdfToWordProgress": "Processed {completed} of {total} pages",
   "@pdfToWordProgress": {
@@ -242,7 +361,7 @@
   "toolPdfToExcel": "PDF to Excel",
   "pdfToExcelTitle": "PDF to Excel",
   "pdfToExcelSelectPdf": "Choose a PDF",
-  "pdfToExcelHint": "Extract PDF text into an editable Excel sheet, organized by page and line. Scanned pages are OCR’d in Arabic, English, and German.",
+  "pdfToExcelHint": "Export PDF text to Excel by page and line. Scans support Arabic, English, and German OCR.",
   "pdfToExcelConverting": "Extracting PDF text and running OCR…",
   "pdfToExcelProgress": "Processed {completed} of {total} pages",
   "@pdfToExcelProgress": {
@@ -279,13 +398,13 @@
   "signatureBlack": "Black",
   "signatureWhite": "White",
   "signaturePlacementHint": "Drag your signature on the page to position it.",
-  "signaturePreviewUnavailable": "The page preview is unavailable. Select the PDF again to retry.",
+  "signaturePreviewUnavailable": "Preview unavailable. Select the PDF again.",
   "toolWatermark": "Watermark",
   "toolWatermarkDesc": "Add watermark to your documents",
   "watermarkText": "Watermark text",
   "watermarkTextHint": "e.g. CONFIDENTIAL",
   "watermarkOpacity": "Opacity",
-  "watermarkPositionHint": "Drag the watermark on the page to choose its position. The same position is used on every page.",
+  "watermarkPositionHint": "Drag the watermark to set its position on every page.",
   "watermarkPreviewUnavailable": "The page preview is unavailable.",
   "watermarkAllPagesHint": "Watermark will be added to all pages.",
   "watermarkApply": "Add watermark",
@@ -315,8 +434,8 @@
   "qrGeneratorTooLong": "This content is too long to fit in a QR code.",
   "pdfEditChoosePdf": "Choose PDF",
   "pdfEditSourcePassword": "PDF password (if protected)",
-  "pdfEditSourcePasswordHelp": "If the PDF does not open, check the password and load it again.",
-  "pdfEditOpenFailed": "Could not open this PDF. If it is password-protected, check the password and try again.",
+  "pdfEditSourcePasswordHelp": "Check the password, then reopen the PDF.",
+  "pdfEditOpenFailed": "Couldn't open PDF. Check its password and retry.",
   "pdfEditLoadAgain": "Load PDF",
   "pdfEditPageCount": "{count} pages",
   "@pdfEditPageCount": {
@@ -341,11 +460,11 @@
   "pdfEditNewPassword": "New password (at least 6 characters)",
   "pdfEditConfirmPassword": "Confirm password",
   "pdfEditPasswordsDoNotMatch": "Passwords do not match.",
-  "pdfEditCompressionNote": "Strong compression converts every page into an image. Text will no longer be selectable or searchable, and image quality may be reduced.",
+  "pdfEditCompressionNote": "Strong compression turns pages into images; text won't be selectable/searchable, and quality may drop.",
   "pdfEditCompressionWarningTitle": "Strong compression warning",
   "pdfEditCompressionCancel": "Cancel",
   "pdfEditCompressionConfirm": "Compress anyway",
-  "pdfEditCompressionNoReduction": "This file is already smaller than the compressed version. No larger copy was saved.",
+  "pdfEditCompressionNoReduction": "Compressed file was larger. Original kept.",
   "pdfEditRun": "Run {tool}",
   "@pdfEditRun": {
     "placeholders": {

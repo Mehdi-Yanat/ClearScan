@@ -1,6 +1,5 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
-
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -40,6 +39,180 @@ class AppLocalizationsAr extends AppLocalizations {
   String get freePlan => 'خطة مجانية';
 
   @override
+  String get authGuestTitle => 'زائر';
+
+  @override
+  String get authGuestDescription => 'سجّل الدخول للوصول إلى حسابك';
+
+  @override
+  String get authSignIn => 'تسجيل الدخول';
+
+  @override
+  String get authSignOut => 'تسجيل الخروج';
+
+  @override
+  String get authTitle => 'حسابك';
+
+  @override
+  String get authSignInSubtitle => 'سجّل الدخول إلى حساب ClearScan.';
+
+  @override
+  String get authSignUpSubtitle => 'أنشئ حسابًا للبدء.';
+
+  @override
+  String get authCreateAccount => 'إنشاء حساب';
+
+  @override
+  String get authFullName => 'الاسم الكامل';
+
+  @override
+  String get authEmail => 'البريد الإلكتروني';
+
+  @override
+  String get authPassword => 'كلمة المرور';
+
+  @override
+  String get authNameRequired => 'أدخل اسمك.';
+
+  @override
+  String get authInvalidEmail => 'أدخل عنوان بريد إلكتروني صالحًا.';
+
+  @override
+  String get authPasswordTooShort => 'يجب أن تتكون كلمة المرور من 6 أحرف على الأقل.';
+
+  @override
+  String get authHaveAccount => 'لديك حساب بالفعل؟ سجّل الدخول';
+
+  @override
+  String get authNeedAccount => 'جديد في ClearScan؟ أنشئ حسابًا';
+
+  @override
+  String get authBackendNotConfigured => 'لم يتم إعداد تسجيل الدخول إلى الحساب بعد.';
+
+  @override
+  String get authBackendSetupInstructions => 'شغّل مهمة VS Code ‏\"Run with Supabase\" أو الأمر .\\tool\\flutter_with_supabase.ps1 run. سيحمّل الرابط والمفتاح العام من .env. لا تضع مفاتيح سرية في التطبيق.';
+
+  @override
+  String get authCheckEmail => 'تحقق من بريدك الإلكتروني لتأكيد حسابك.';
+
+  @override
+  String get authContinueWithGoogle => 'المتابعة باستخدام Google';
+
+  @override
+  String get authOr => 'أو';
+
+  @override
+  String get authGoogleNotConfigured => 'عيّن google_ID_client في .env إلى معرّف Google Web، ثم أعد التشغيل عبر Run with Supabase.';
+
+  @override
+  String get cloudStorage => 'التخزين السحابي';
+
+  @override
+  String get cloudStorageLoading => 'جارٍ التحميل...';
+
+  @override
+  String cloudBackupCount(int count) {
+    return '$count نسخة احتياطية';
+  }
+
+  @override
+  String cloudStorageUsed(Object size) {
+    return 'المستخدم: $size';
+  }
+
+  @override
+  String get cloudStoragePrivacy => 'نسخ خاصة بحسابك فقط.';
+
+  @override
+  String get cloudBackupChooseDocuments => 'اختر المستندات لنسخها احتياطيًا';
+
+  @override
+  String get cloudNoLocalDocuments => 'لم يتم العثور على مستندات محلية.';
+
+  @override
+  String cloudBackupSelected(int count) {
+    return 'نسخ $count المحددة احتياطيًا';
+  }
+
+  @override
+  String get cloudUploading => 'جارٍ الرفع...';
+
+  @override
+  String get cloudUploadAction => 'نسخ سحابي';
+
+  @override
+  String cloudUploadError(Object error) {
+    return 'تعذر النسخ إلى السحابة: $error';
+  }
+
+  @override
+  String get cloudCopyLink => 'نسخ الرابط';
+
+  @override
+  String get cloudLinkCopied => 'تم نسخ الرابط. تنتهي صلاحيته خلال 24 ساعة.';
+
+  @override
+  String cloudLinkError(Object error) {
+    return 'تعذر إنشاء رابط المشاركة: $error';
+  }
+
+  @override
+  String get cloudBackups => 'النسخ السحابية';
+
+  @override
+  String get cloudNoBackups => 'لا توجد نسخ سحابية حتى الآن.';
+
+  @override
+  String get cloudRestore => 'استعادة إلى هذا الجهاز';
+
+  @override
+  String get cloudCancel => 'إلغاء';
+
+  @override
+  String get cloudDeleteConfirmTitle => 'حذف النسخة السحابية؟';
+
+  @override
+  String cloudDeleteConfirmMessage(Object name) {
+    return 'حذف $name من السحابة؟ ستبقى النسخة المحلية.';
+  }
+
+  @override
+  String cloudDeleteComplete(Object name) {
+    return 'تم حذف $name من النسخ السحابية.';
+  }
+
+  @override
+  String cloudDeleteError(Object error) {
+    return 'تعذر حذف النسخة السحابية: $error';
+  }
+
+  @override
+  String cloudBackupComplete(int count) {
+    return 'تم نسخ $count مستند احتياطيًا.';
+  }
+
+  @override
+  String cloudBackupPartialFailure(int count, Object error) {
+    return 'تم نسخ $count؛ خطأ: $error';
+  }
+
+  @override
+  String cloudRestoreComplete(Object name) {
+    return 'تمت استعادة $name إلى هذا الجهاز.';
+  }
+
+  @override
+  String cloudStorageError(Object error) {
+    return 'تعذرت استعادة النسخة الاحتياطية: $error';
+  }
+
+  @override
+  String get cloudRefresh => 'تحديث النسخ';
+
+  @override
+  String get cloudManageBackups => 'إدارة النسخ';
+
+  @override
   String get on => 'مفعل';
 
   @override
@@ -58,8 +231,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get appLockAuthReason => 'تحقق من هويتك لفتح ClearScan.';
 
   @override
-  String get appLockAuthenticationFailed =>
-      'فشل التحقق. حاول مرة أخرى لفتح ClearScan.';
+  String get appLockAuthenticationFailed => 'فشل التحقق. حاول مجددًا.';
 
   @override
   String appLockAuthenticationError(Object error) {
@@ -110,7 +282,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String helpEmailLaunchFailed(Object email) {
-    return 'تعذر فتح تطبيق البريد الإلكتروني. راسل $email مباشرةً.';
+    return 'تعذر فتح البريد. راسل $email.';
   }
 
   @override
@@ -175,7 +347,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String documentDeleteConfirmation(Object name) {
-    return 'هل تريد حذف $name؟ لا يمكن التراجع عن هذا الإجراء.';
+    return 'حذف $name؟ لا يمكن التراجع.';
   }
 
   @override
@@ -261,22 +433,19 @@ class AppLocalizationsAr extends AppLocalizations {
   String get onboardingSlideScanTitle => 'امسح كل شيء';
 
   @override
-  String get onboardingSlideScanSubtitle =>
-      'حول الورق إلى PDFs واضحة وقابلة للبحث\nفي ثوانٍ، مباشرة من هاتفك.';
+  String get onboardingSlideScanSubtitle => 'حوّل الورق إلى PDF واضح وقابل للبحث\nفي ثوانٍ.';
 
   @override
   String get onboardingSlideOrganizeTitle => 'نظم كل شيء';
 
   @override
-  String get onboardingSlideOrganizeSubtitle =>
-      'احتفظ ببطاقات الهوية والعقود والإيصالات\nمرتبة بشكل منظم في المجلدات.';
+  String get onboardingSlideOrganizeSubtitle => 'رتّب الهويات والعقود والإيصالات\nفي مجلدات.';
 
   @override
   String get onboardingSlideSignTitle => 'عدل ووقع';
 
   @override
-  String get onboardingSlideSignSubtitle =>
-      'دمج، ضغط، توقيع ومشاركة\nمستنداتك في بضع نقرات.';
+  String get onboardingSlideSignSubtitle => 'ادمج مستنداتك واضغطها ووقّعها وشاركها\nبسهولة.';
 
   @override
   String get onboardingSkip => 'تخطي';
@@ -285,8 +454,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get onboardingGetStarted => 'ابدأ الآن';
 
   @override
-  String get onboardingAgreeTerms =>
-      'بالمتابعة، أنت توافق على الشروط وسياسة الخصوصية';
+  String get onboardingAgreeTerms => 'بالمتابعة، أنت توافق على الشروط وسياسة الخصوصية';
 
   @override
   String get onboardingTileIdCards => 'بطاقات الهوية';
@@ -421,8 +589,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get settingsClearCacheTitle => 'مسح التخزين المؤقت؟';
 
   @override
-  String get settingsClearCacheMessage =>
-      'سيتم حذف الملفات المؤقتة. مستنداتك لن تتأثر.';
+  String get settingsClearCacheMessage => 'سيتم حذف الملفات المؤقتة فقط.';
 
   @override
   String get settingsCancel => 'إلغاء';
@@ -466,12 +633,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get cropAdjustErrorOpenImage => 'لم يتم فتح الصورة.';
 
   @override
-  String get cropAdjustErrorCropImage =>
-      'لم يتم قص الصورة. اضبط الزوايا وحاول مرة أخرى.';
+  String get cropAdjustErrorCropImage => 'تعذر قص الصورة. اضبط الزوايا.';
 
   @override
-  String get cropAdjustErrorDetectEdges =>
-      'تعذر اكتشاف حواف المستند. اضبط الزوايا يدويًا.';
+  String get cropAdjustErrorDetectEdges => 'تعذر اكتشاف الحواف. اضبطها يدويًا.';
 
   @override
   String get workshopTitle => 'الورشة';
@@ -498,8 +663,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get pdfToWordSelectPdf => 'اختيار ملف PDF';
 
   @override
-  String get pdfToWordHint =>
-      'استخرج نص PDF إلى مستند Word قابل للتحرير. تتم معالجة الصفحات الممسوحة ضوئيًا بـ OCR بالعربية والإنجليزية والألمانية. قد يختلف التنسيق.';
+  String get pdfToWordHint => 'صدّر نص PDF إلى Word. يدعم OCR العربية والإنجليزية والألمانية؛ قد يختلف التنسيق.';
 
   @override
   String get pdfToWordConverting => 'جارٍ استخراج النص وتشغيل OCR…';
@@ -570,8 +734,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get pdfToExcelSelectPdf => 'اختيار ملف PDF';
 
   @override
-  String get pdfToExcelHint =>
-      'استخرج نص PDF إلى جدول Excel قابل للتحرير، مرتب حسب الصفحة والسطر. تتم معالجة الصفحات الممسوحة ضوئيًا بـ OCR بالعربية والإنجليزية والألمانية.';
+  String get pdfToExcelHint => 'صدّر نص PDF إلى Excel حسب الصفحة والسطر. يدعم OCR العربية والإنجليزية والألمانية.';
 
   @override
   String get pdfToExcelConverting => 'جارٍ استخراج النص وتشغيل OCR…';
@@ -637,12 +800,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get signatureWhite => 'أبيض';
 
   @override
-  String get signaturePlacementHint =>
-      'اسحب توقيعك على الصفحة إلى الموضع المطلوب.';
+  String get signaturePlacementHint => 'اسحب توقيعك على الصفحة إلى الموضع المطلوب.';
 
   @override
-  String get signaturePreviewUnavailable =>
-      'معاينة الصفحة غير متاحة. اختر ملف PDF مرة أخرى للمحاولة.';
+  String get signaturePreviewUnavailable => 'المعاينة غير متاحة. اختر PDF مجددًا.';
 
   @override
   String get toolWatermark => 'علامة مائية';
@@ -660,8 +821,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get watermarkOpacity => 'العتامة';
 
   @override
-  String get watermarkPositionHint =>
-      'اسحب العلامة المائية على الصفحة لاختيار موضعها. سيُستخدم الموضع نفسه في كل الصفحات.';
+  String get watermarkPositionHint => 'اسحب العلامة المائية لتحديد موضعها في كل الصفحات.';
 
   @override
   String get watermarkPreviewUnavailable => 'معاينة الصفحة غير متاحة.';
@@ -682,8 +842,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get toolOcrDesc => 'استخراج النص من الصور';
 
   @override
-  String get ocrHint =>
-      'اختر صورة للتعرف على النص بالإنجليزية أو الألمانية أو العربية.';
+  String get ocrHint => 'اختر صورة للتعرف على النص بالإنجليزية أو الألمانية أو العربية.';
 
   @override
   String get ocrSelectImage => 'اختر صورة';
@@ -739,12 +898,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get pdfEditSourcePassword => 'كلمة مرور PDF (إن كان محميًا)';
 
   @override
-  String get pdfEditSourcePasswordHelp =>
-      'إذا تعذر فتح PDF، تحقق من كلمة المرور ثم أعد تحميله.';
+  String get pdfEditSourcePasswordHelp => 'تحقق من كلمة المرور ثم أعد فتح PDF.';
 
   @override
-  String get pdfEditOpenFailed =>
-      'تعذر فتح هذا PDF. إذا كان محميًا، تحقق من كلمة المرور وحاول مرة أخرى.';
+  String get pdfEditOpenFailed => 'تعذر فتح PDF. تحقق من كلمة المرور وحاول مجددًا.';
 
   @override
   String get pdfEditLoadAgain => 'تحميل PDF';
@@ -761,15 +918,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get pdfEditPageRangeHint => '1,3-5';
 
   @override
-  String get pdfEditPageRangeHelp =>
-      'أدخل أرقام الصفحات أو نطاقات مفصولة بفواصل.';
+  String get pdfEditPageRangeHelp => 'أدخل أرقام الصفحات أو نطاقات مفصولة بفواصل.';
 
   @override
   String get pdfEditSplitHint => 'كل صفحة مختارة ستحفظ كملف PDF منفصل.';
 
   @override
-  String get pdfEditRotateHint =>
-      'الصفحات المختارة تدور 90° باتجاه عقارب الساعة.';
+  String get pdfEditRotateHint => 'الصفحات المختارة تدور 90° باتجاه عقارب الساعة.';
 
   @override
   String get pdfEditReorderHint => 'رتب الصفحات بالشكل المطلوب.';
@@ -795,8 +950,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get pdfEditPasswordsDoNotMatch => 'كلمتا المرور غير متطابقتين.';
 
   @override
-  String get pdfEditCompressionNote =>
-      'ضغط قوي يحول كل صفحة إلى صورة. النص لن يكون قابلاً للتحديد أو البحث، وقد تنخفض جودة الصور.';
+  String get pdfEditCompressionNote => 'الضغط القوي يحوّل الصفحات إلى صور؛ لن يمكن تحديد النص أو البحث عنه وقد تقل الجودة.';
 
   @override
   String get pdfEditCompressionWarningTitle => 'تحذير من الضغط القوي';
@@ -808,8 +962,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get pdfEditCompressionConfirm => 'ضغط على أي حال';
 
   @override
-  String get pdfEditCompressionNoReduction =>
-      'هذا الملف أصغر بالفعل من النسخة المضغوطة. لم يتم حفظ نسخة أكبر.';
+  String get pdfEditCompressionNoReduction => 'النسخة المضغوطة أكبر. تم الاحتفاظ بالأصل.';
 
   @override
   String pdfEditRun(Object tool) {
@@ -817,8 +970,7 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get pdfEditDone =>
-      'تم الإنتهاء. تم حفظ ملفات PDF المعدلة في المستندات.';
+  String get pdfEditDone => 'تم الإنتهاء. تم حفظ ملفات PDF المعدلة في المستندات.';
 
   @override
   String get scannerTooltipClose => 'إغلاق';

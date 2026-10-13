@@ -7,8 +7,10 @@ import 'screens/tools/workshop_screen.dart';
 import 'screens/app/home_screen.dart';
 import 'screens/app/onboarding_screen.dart';
 import 'screens/account/profile_screens.dart';
+import 'screens/account/auth_screen.dart';
 import 'screens/app/splash_screen.dart';
 import 'services/app/app_lock_service.dart';
+import 'services/auth/supabase_auth_service.dart';
 import 'theme/app_theme.dart'; // AppTheme, AppPreferences, themeModeNotifier, localeNotifier
 import 'l10n/app_localizations.dart' as loc;
 
@@ -20,6 +22,7 @@ Future<void> main() async {
   themeModeNotifier.value = await AppPreferences.getThemeMode();
   localeNotifier.value = await AppPreferences.getLocale();
   await AppLockService.initialize();
+  await SupabaseAuthService.initialize();
   runApp(const MyApp());
 }
 
@@ -49,6 +52,7 @@ class MyApp extends StatelessWidget {
             '/notifications': (context) => const NotificationsScreen(),
             '/workshop': (context) => const WorkshopScreen(),
             '/profile': (context) => const ProfileScreen(),
+            '/auth': (context) => const AuthScreen(),
           },
           home: const _AppEntry(),
           builder: (context, child) =>

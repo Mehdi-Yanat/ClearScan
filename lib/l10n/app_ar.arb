@@ -10,13 +10,132 @@
   "german": "الألمانية",
   "arabic": "العربية",
   "freePlan": "خطة مجانية",
+  "authGuestTitle": "زائر",
+  "authGuestDescription": "سجّل الدخول للوصول إلى حسابك",
+  "authSignIn": "تسجيل الدخول",
+  "authSignOut": "تسجيل الخروج",
+  "authTitle": "حسابك",
+  "authSignInSubtitle": "سجّل الدخول إلى حساب ClearScan.",
+  "authSignUpSubtitle": "أنشئ حسابًا للبدء.",
+  "authCreateAccount": "إنشاء حساب",
+  "authFullName": "الاسم الكامل",
+  "authEmail": "البريد الإلكتروني",
+  "authPassword": "كلمة المرور",
+  "authNameRequired": "أدخل اسمك.",
+  "authInvalidEmail": "أدخل عنوان بريد إلكتروني صالحًا.",
+  "authPasswordTooShort": "يجب أن تتكون كلمة المرور من 6 أحرف على الأقل.",
+  "authHaveAccount": "لديك حساب بالفعل؟ سجّل الدخول",
+  "authNeedAccount": "جديد في ClearScan؟ أنشئ حسابًا",
+  "authBackendNotConfigured": "لم يتم إعداد تسجيل الدخول إلى الحساب بعد.",
+  "authBackendSetupInstructions": "شغّل مهمة VS Code ‏\"Run with Supabase\" أو الأمر .\\tool\\flutter_with_supabase.ps1 run. سيحمّل الرابط والمفتاح العام من .env. لا تضع مفاتيح سرية في التطبيق.",
+  "authCheckEmail": "تحقق من بريدك الإلكتروني لتأكيد حسابك.",
+  "authContinueWithGoogle": "المتابعة باستخدام Google",
+  "authOr": "أو",
+  "authGoogleNotConfigured": "عيّن google_ID_client في .env إلى معرّف Google Web، ثم أعد التشغيل عبر Run with Supabase.",
+  "cloudStorage": "التخزين السحابي",
+  "cloudStorageLoading": "جارٍ التحميل...",
+  "cloudBackupCount": "{count} نسخة احتياطية",
+  "@cloudBackupCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "cloudStorageUsed": "المستخدم: {size}",
+  "@cloudStorageUsed": {
+    "placeholders": {
+      "size": {}
+    }
+  },
+  "cloudStoragePrivacy": "نسخ خاصة بحسابك فقط.",
+  "cloudBackupChooseDocuments": "اختر المستندات لنسخها احتياطيًا",
+  "cloudNoLocalDocuments": "لم يتم العثور على مستندات محلية.",
+  "cloudBackupSelected": "نسخ {count} المحددة احتياطيًا",
+  "@cloudBackupSelected": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "cloudUploading": "جارٍ الرفع...",
+  "cloudUploadAction": "نسخ سحابي",
+  "cloudUploadError": "تعذر النسخ إلى السحابة: {error}",
+  "cloudCopyLink": "نسخ الرابط",
+  "cloudLinkCopied": "تم نسخ الرابط. تنتهي صلاحيته خلال 24 ساعة.",
+  "cloudLinkError": "تعذر إنشاء رابط المشاركة: {error}",
+  "@cloudUploadError": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "@cloudLinkError": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "cloudBackups": "النسخ السحابية",
+  "cloudNoBackups": "لا توجد نسخ سحابية حتى الآن.",
+  "cloudRestore": "استعادة إلى هذا الجهاز",
+  "cloudCancel": "إلغاء",
+  "cloudDeleteConfirmTitle": "حذف النسخة السحابية؟",
+  "cloudDeleteConfirmMessage": "حذف {name} من السحابة؟ ستبقى النسخة المحلية.",
+  "@cloudDeleteConfirmMessage": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "cloudDeleteComplete": "تم حذف {name} من النسخ السحابية.",
+  "@cloudDeleteComplete": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "cloudDeleteError": "تعذر حذف النسخة السحابية: {error}",
+  "@cloudDeleteError": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "cloudBackupComplete": "تم نسخ {count} مستند احتياطيًا.",
+  "@cloudBackupComplete": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "cloudBackupPartialFailure": "تم نسخ {count}؛ خطأ: {error}",
+  "@cloudBackupPartialFailure": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "error": {}
+    }
+  },
+  "cloudRestoreComplete": "تمت استعادة {name} إلى هذا الجهاز.",
+  "@cloudRestoreComplete": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "cloudStorageError": "تعذرت استعادة النسخة الاحتياطية: {error}",
+  "@cloudStorageError": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "cloudRefresh": "تحديث النسخ",
+  "cloudManageBackups": "إدارة النسخ",
   "on": "مفعل",
   "off": "معطل",
   "comingSoon": "قريبًا",
   "backupAndSync": "النسخ الاحتياطي والمزامنة",
   "appLock": "قفل التطبيق",
   "appLockAuthReason": "تحقق من هويتك لفتح ClearScan.",
-  "appLockAuthenticationFailed": "فشل التحقق. حاول مرة أخرى لفتح ClearScan.",
+  "appLockAuthenticationFailed": "فشل التحقق. حاول مجددًا.",
   "appLockAuthenticationError": "تعذر التحقق: {error}",
   "@appLockAuthenticationError": {
     "placeholders": {
@@ -37,7 +156,7 @@
   "system": "النظام",
   "rateStoreListing": "فتح قائمة المتجر",
   "helpCenterEmail": "فتح مركز المساعدة / البريد الإلكتروني",
-  "helpEmailLaunchFailed": "تعذر فتح تطبيق البريد الإلكتروني. راسل {email} مباشرةً.",
+  "helpEmailLaunchFailed": "تعذر فتح البريد. راسل {email}.",
   "@helpEmailLaunchFailed": {
     "placeholders": {
       "email": {}
@@ -63,7 +182,7 @@
   "share": "مشاركة",
   "rename": "إعادة التسمية",
   "delete": "حذف",
-  "documentDeleteConfirmation": "هل تريد حذف {name}؟ لا يمكن التراجع عن هذا الإجراء.",
+  "documentDeleteConfirmation": "حذف {name}؟ لا يمكن التراجع.",
   "@documentDeleteConfirmation": {
     "placeholders": {
       "name": {}
@@ -105,11 +224,11 @@
   "items": "العناصر",
   "noDocumentsFound": "لم يتم العثور على مستندات",
   "onboardingSlideScanTitle": "امسح كل شيء",
-  "onboardingSlideScanSubtitle": "حول الورق إلى PDFs واضحة وقابلة للبحث\nفي ثوانٍ، مباشرة من هاتفك.",
+  "onboardingSlideScanSubtitle": "حوّل الورق إلى PDF واضح وقابل للبحث\nفي ثوانٍ.",
   "onboardingSlideOrganizeTitle": "نظم كل شيء",
-  "onboardingSlideOrganizeSubtitle": "احتفظ ببطاقات الهوية والعقود والإيصالات\nمرتبة بشكل منظم في المجلدات.",
+  "onboardingSlideOrganizeSubtitle": "رتّب الهويات والعقود والإيصالات\nفي مجلدات.",
   "onboardingSlideSignTitle": "عدل ووقع",
-  "onboardingSlideSignSubtitle": "دمج، ضغط، توقيع ومشاركة\nمستنداتك في بضع نقرات.",
+  "onboardingSlideSignSubtitle": "ادمج مستنداتك واضغطها ووقّعها وشاركها\nبسهولة.",
   "onboardingSkip": "تخطي",
   "onboardingGetStarted": "ابدأ الآن",
   "onboardingAgreeTerms": "بالمتابعة، أنت توافق على الشروط وسياسة الخصوصية",
@@ -157,7 +276,7 @@
   "settingsFormatPdf": "PDF",
   "settingsFormatJpg": "JPG",
   "settingsClearCacheTitle": "مسح التخزين المؤقت؟",
-  "settingsClearCacheMessage": "سيتم حذف الملفات المؤقتة. مستنداتك لن تتأثر.",
+  "settingsClearCacheMessage": "سيتم حذف الملفات المؤقتة فقط.",
   "settingsCancel": "إلغاء",
   "settingsClear": "مسح",
   "settingsCacheCleared": "تم مسح التخزين المؤقت",
@@ -176,8 +295,8 @@
   "cropAdjustAutoCrop": "قص تلقائي",
   "cropAdjustAddPage": "إضافة صفحة",
   "cropAdjustErrorOpenImage": "لم يتم فتح الصورة.",
-  "cropAdjustErrorCropImage": "لم يتم قص الصورة. اضبط الزوايا وحاول مرة أخرى.",
-  "cropAdjustErrorDetectEdges": "تعذر اكتشاف حواف المستند. اضبط الزوايا يدويًا.",
+  "cropAdjustErrorCropImage": "تعذر قص الصورة. اضبط الزوايا.",
+  "cropAdjustErrorDetectEdges": "تعذر اكتشاف الحواف. اضبطها يدويًا.",
   "workshopTitle": "الورشة",
   "workshopConvert": "تحويل",
   "workshopEditPdf": "تعديل PDF",
@@ -186,7 +305,7 @@
   "toolPdfToImage": "PDF إلى صورة",
   "pdfToWordTitle": "تحويل PDF إلى Word",
   "pdfToWordSelectPdf": "اختيار ملف PDF",
-  "pdfToWordHint": "استخرج نص PDF إلى مستند Word قابل للتحرير. تتم معالجة الصفحات الممسوحة ضوئيًا بـ OCR بالعربية والإنجليزية والألمانية. قد يختلف التنسيق.",
+  "pdfToWordHint": "صدّر نص PDF إلى Word. يدعم OCR العربية والإنجليزية والألمانية؛ قد يختلف التنسيق.",
   "pdfToWordConverting": "جارٍ استخراج النص وتشغيل OCR…",
   "pdfToWordProgress": "تمت معالجة {completed} من أصل {total} صفحات",
   "@pdfToWordProgress": {
@@ -242,7 +361,7 @@
   "toolPdfToExcel": "PDF إلى Excel",
   "pdfToExcelTitle": "تحويل PDF إلى Excel",
   "pdfToExcelSelectPdf": "اختيار ملف PDF",
-  "pdfToExcelHint": "استخرج نص PDF إلى جدول Excel قابل للتحرير، مرتب حسب الصفحة والسطر. تتم معالجة الصفحات الممسوحة ضوئيًا بـ OCR بالعربية والإنجليزية والألمانية.",
+  "pdfToExcelHint": "صدّر نص PDF إلى Excel حسب الصفحة والسطر. يدعم OCR العربية والإنجليزية والألمانية.",
   "pdfToExcelConverting": "جارٍ استخراج النص وتشغيل OCR…",
   "pdfToExcelProgress": "تمت معالجة {completed} من أصل {total} صفحات",
   "@pdfToExcelProgress": {
@@ -279,13 +398,13 @@
   "signatureBlack": "أسود",
   "signatureWhite": "أبيض",
   "signaturePlacementHint": "اسحب توقيعك على الصفحة إلى الموضع المطلوب.",
-  "signaturePreviewUnavailable": "معاينة الصفحة غير متاحة. اختر ملف PDF مرة أخرى للمحاولة.",
+  "signaturePreviewUnavailable": "المعاينة غير متاحة. اختر PDF مجددًا.",
   "toolWatermark": "علامة مائية",
   "toolWatermarkDesc": "إضافة علامة مائية إلى مستنداتك",
   "watermarkText": "نص العلامة المائية",
   "watermarkTextHint": "مثال: سري",
   "watermarkOpacity": "العتامة",
-  "watermarkPositionHint": "اسحب العلامة المائية على الصفحة لاختيار موضعها. سيُستخدم الموضع نفسه في كل الصفحات.",
+  "watermarkPositionHint": "اسحب العلامة المائية لتحديد موضعها في كل الصفحات.",
   "watermarkPreviewUnavailable": "معاينة الصفحة غير متاحة.",
   "watermarkAllPagesHint": "ستُضاف العلامة المائية إلى كل صفحة.",
   "watermarkApply": "إضافة علامة مائية",
@@ -315,8 +434,8 @@
   "qrGeneratorTooLong": "هذا المحتوى أطول من أن يتسع له رمز QR.",
   "pdfEditChoosePdf": "اختر PDF",
   "pdfEditSourcePassword": "كلمة مرور PDF (إن كان محميًا)",
-  "pdfEditSourcePasswordHelp": "إذا تعذر فتح PDF، تحقق من كلمة المرور ثم أعد تحميله.",
-  "pdfEditOpenFailed": "تعذر فتح هذا PDF. إذا كان محميًا، تحقق من كلمة المرور وحاول مرة أخرى.",
+  "pdfEditSourcePasswordHelp": "تحقق من كلمة المرور ثم أعد فتح PDF.",
+  "pdfEditOpenFailed": "تعذر فتح PDF. تحقق من كلمة المرور وحاول مجددًا.",
   "pdfEditLoadAgain": "تحميل PDF",
   "pdfEditPageCount": "{count} صفحات",
   "@pdfEditPageCount": {
@@ -341,11 +460,11 @@
   "pdfEditNewPassword": "كلمة مرور جديدة (على الأقل 6 أحرف)",
   "pdfEditConfirmPassword": "تأكيد كلمة المرور",
   "pdfEditPasswordsDoNotMatch": "كلمتا المرور غير متطابقتين.",
-  "pdfEditCompressionNote": "ضغط قوي يحول كل صفحة إلى صورة. النص لن يكون قابلاً للتحديد أو البحث، وقد تنخفض جودة الصور.",
+  "pdfEditCompressionNote": "الضغط القوي يحوّل الصفحات إلى صور؛ لن يمكن تحديد النص أو البحث عنه وقد تقل الجودة.",
   "pdfEditCompressionWarningTitle": "تحذير من الضغط القوي",
   "pdfEditCompressionCancel": "إلغاء",
   "pdfEditCompressionConfirm": "ضغط على أي حال",
-  "pdfEditCompressionNoReduction": "هذا الملف أصغر بالفعل من النسخة المضغوطة. لم يتم حفظ نسخة أكبر.",
+  "pdfEditCompressionNoReduction": "النسخة المضغوطة أكبر. تم الاحتفاظ بالأصل.",
   "pdfEditRun": "تشغيل {tool}",
   "@pdfEditRun": {
     "placeholders": {

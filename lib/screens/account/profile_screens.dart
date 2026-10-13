@@ -5,11 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'cloud_storage_screen.dart';
+import 'auth_screen.dart';
 import '../../l10n/app_localizations.dart' as loc;
 import '../../services/app/app_lock_service.dart';
 import '../../services/app/app_settings.dart';
+import '../../services/auth/supabase_auth_service.dart';
+import '../../services/documents/cloud_document_storage.dart';
 import '../../theme/app_theme.dart'; // AppColors, AppPreferences, themeModeNotifier, localeNotifier
 import '../../widgets/navigation/app_bottom_bar.dart';
 import '../../widgets/feedback/app_snackbar.dart';
@@ -37,14 +42,12 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   String? _appVersion;
 
-  final String _name = 'John Doe';
-  final String _email = 'john.doe@email.com';
-
-  final double _usedGb = 2.4;
-  final double _totalGb = 5;
-
   SharedPreferences? _prefs;
   bool _lockOn = false;
+  bool _signingOut = false;
+  bool _loadingCloudUsage = false;
+  CloudStorageUsage? _cloudUsage;
+  String? _cloudStorageError;
   String _language = 'English'; // display string
 
   // Mapping between display strings and Locale objects
@@ -63,17 +66,57 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     super.initState();
     _loadPrefs();
+    SupabaseAuthService.currentUser.addListener(_onAccountChanged);
+    _refreshCloudUsage();
     themeModeNotifier.addListener(_onThemeChanged);
   }
 
   @override
   void dispose() {
     themeModeNotifier.removeListener(_onThemeChanged);
+    SupabaseAuthService.currentUser.removeListener(_onAccountChanged);
     super.dispose();
   }
 
   void _onThemeChanged() {
     if (mounted) setState(() {});
+  }
+
+  void _onAccountChanged() {
+    _refreshCloudUsage();
+  }
+
+  Future<void> _refreshCloudUsage() async {
+    if (SupabaseAuthService.currentUser.value == null) {
+      if (mounted) {
+        setState(() {
+          _cloudUsage = null;
+          _cloudStorageError = null;
+          _loadingCloudUsage = false;
+        });
+      }
+      return;
+    }
+
+    setState(() {
+      _loadingCloudUsage = true;
+      _cloudStorageError = null;
+    });
+    try {
+      final usage = await loadCloudStorageUsage();
+      if (mounted) setState(() => _cloudUsage = usage);
+    } on Exception catch (error) {
+      if (mounted) setState(() => _cloudStorageError = error.toString());
+    } finally {
+      if (mounted) setState(() => _loadingCloudUsage = false);
+    }
+  }
+
+  Future<void> _openCloudStorage() async {
+    await Navigator.of(
+      context,
+    ).push(MaterialPageRoute<void>(builder: (_) => const CloudStorageScreen()));
+    await _refreshCloudUsage();
   }
 
   Future<void> _loadPrefs() async {
@@ -121,8 +164,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     await AppPreferences.setThemeMode(mode);
   }
 
-  String get _initials {
-    final parts = _name
+  String _initials(String name) {
+    final parts = name
         .trim()
         .split(RegExp(r'\s+'))
         .where((p) => p.isNotEmpty)
@@ -134,6 +177,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   void _openScanner() {
     ScannerScreen.open(context);
+  }
+
+  Future<void> _handleAccountAction(User? user) async {
+    if (user == null) {
+      await Navigator.of(context)
+          .push(MaterialPageRoute<void>(builder: (_) => const AuthScreen()));
+      return;
+    }
+
+    setState(() => _signingOut = true);
+    try {
+      await SupabaseAuthService.signOut();
+    } on Exception catch (error) {
+      _snack('Could not sign out: $error');
+    } finally {
+      if (mounted) setState(() => _signingOut = false);
+    }
   }
 
   Future<void> _openSettings() async {
@@ -267,9 +327,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
       _ProfileRowData(
         icon: Icons.cloud_outlined,
         label: loc.AppLocalizations.of(context)!.backupAndSync,
-        value: loc.AppLocalizations.of(context)!.comingSoon,
-        valueColor: AppColors.danger,
-        onTap: null,
+        value: loc.AppLocalizations.of(context)!.cloudManageBackups,
+        onTap: () {
+          if (SupabaseAuthService.currentUser.value == null) {
+            _handleAccountAction(null);
+          } else {
+            _openCloudStorage();
+          }
+        },
       ),
       _ProfileRowData(
         icon: Icons.shield_outlined,
@@ -375,14 +440,42 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ],
               ),
               const SizedBox(height: 12),
-              _AccountCard(
-                initials: _initials,
-                name: _name,
-                email: _email,
-                plan: loc.AppLocalizations.of(context)!.freePlan,
+              ValueListenableBuilder<User?>(
+                valueListenable: SupabaseAuthService.currentUser,
+                builder: (context, user, _) {
+                  final l10n = loc.AppLocalizations.of(context)!;
+                  final metadataName = user?.userMetadata?['full_name'];
+                  final name =
+                      metadataName is String && metadataName.trim().isNotEmpty
+                      ? metadataName.trim()
+                      : user?.email?.split('@').first ?? l10n.authGuestTitle;
+                  return _AccountCard(
+                    initials: _initials(name),
+                    name: name,
+                    email: user?.email ?? l10n.authGuestDescription,
+                    plan: user == null ? null : l10n.freePlan,
+                    actionLabel: user == null
+                        ? l10n.authSignIn
+                        : l10n.authSignOut,
+                    onAction: _signingOut
+                        ? null
+                        : () => _handleAccountAction(user),
+                  );
+                },
               ),
               const SizedBox(height: 14),
-              _StorageCard(usedGb: _usedGb, totalGb: _totalGb),
+              ValueListenableBuilder<User?>(
+                valueListenable: SupabaseAuthService.currentUser,
+                builder: (context, user, _) => _StorageCard(
+                  usage: _cloudUsage,
+                  loading: _loadingCloudUsage,
+                  error: _cloudStorageError,
+                  signedIn: user != null,
+                  onManage: () => user == null
+                      ? _handleAccountAction(null)
+                      : _openCloudStorage(),
+                ),
+              ),
               const SizedBox(height: 14),
               // Material (not Container) so the InkWell ripples are visible.
               Material(
@@ -423,12 +516,16 @@ class _AccountCard extends StatelessWidget {
     required this.name,
     required this.email,
     required this.plan,
+    required this.actionLabel,
+    required this.onAction,
   });
 
   final String initials;
   final String name;
   final String email;
-  final String plan;
+  final String? plan;
+  final String actionLabel;
+  final VoidCallback? onAction;
 
   @override
   Widget build(BuildContext context) {
@@ -441,74 +538,83 @@ class _AccountCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: AppColors.border(context)),
       ),
-      child: Row(
+      child: Column(
         children: [
-          CircleAvatar(
-            radius: 32,
-            backgroundColor: primary,
-            child: Text(
-              initials,
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.w700,
-                color: _onPrimary(context),
-              ),
-            ),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  name,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+          Row(
+            children: [
+              CircleAvatar(
+                radius: 32,
+                backgroundColor: primary,
+                child: Text(
+                  initials,
                   style: TextStyle(
-                    fontSize: 17,
+                    fontSize: 22,
                     fontWeight: FontWeight.w700,
-                    color: AppColors.ink(context),
+                    color: _onPrimary(context),
                   ),
                 ),
-                const SizedBox(height: 2),
-                Text(
-                  email,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: AppColors.textMuted(context),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 3,
-                  ),
-                  decoration: BoxDecoration(
-                    // Translucent tint stays visible on the card in both themes.
-                    color: primary.withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(11),
-                  ),
-                  child: Text(
-                    plan,
-                    style: TextStyle(
-                      fontSize: 10.5,
-                      fontWeight: FontWeight.w700,
-                      color: primary,
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.ink(context),
+                      ),
                     ),
-                  ),
+                    const SizedBox(height: 2),
+                    Text(
+                      email,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: AppColors.textMuted(context),
+                      ),
+                    ),
+                    if (plan != null) ...[
+                      const SizedBox(height: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 3,
+                        ),
+                        decoration: BoxDecoration(
+                          color: primary.withValues(alpha: 0.15),
+                          borderRadius: BorderRadius.circular(11),
+                        ),
+                        child: Text(
+                          plan!,
+                          style: TextStyle(
+                            fontSize: 10.5,
+                            fontWeight: FontWeight.w700,
+                            color: primary,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ],
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  'Coming soon',
-                  style: TextStyle(
-                    fontSize: 10,
-                    color: AppColors.textMuted(context),
-                  ),
-                ),
-              ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Align(
+            alignment: AlignmentDirectional.centerEnd,
+            child: TextButton.icon(
+              onPressed: onAction,
+              icon: Icon(
+                plan == null ? Icons.login_rounded : Icons.logout_rounded,
+                size: 18,
+              ),
+              label: Text(actionLabel),
             ),
           ),
         ],
@@ -518,15 +624,33 @@ class _AccountCard extends StatelessWidget {
 }
 
 class _StorageCard extends StatelessWidget {
-  const _StorageCard({required this.usedGb, required this.totalGb});
+  const _StorageCard({
+    required this.usage,
+    required this.loading,
+    required this.error,
+    required this.signedIn,
+    required this.onManage,
+  });
 
-  final double usedGb;
-  final double totalGb;
+  final CloudStorageUsage? usage;
+  final bool loading;
+  final String? error;
+  final bool signedIn;
+  final VoidCallback? onManage;
+
+  String _formatBytes(int bytes) {
+    if (bytes < 1024) return '$bytes B';
+    if (bytes < 1024 * 1024) return '${(bytes / 1024).toStringAsFixed(1)} KB';
+    if (bytes < 1024 * 1024 * 1024) {
+      return '${(bytes / (1024 * 1024)).toStringAsFixed(1)} MB';
+    }
+    return '${(bytes / (1024 * 1024 * 1024)).toStringAsFixed(2)} GB';
+  }
 
   @override
   Widget build(BuildContext context) {
-    final fraction = totalGb <= 0 ? 0.0 : (usedGb / totalGb).clamp(0.0, 1.0);
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final l10n = loc.AppLocalizations.of(context)!;
 
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 18, 20, 20),
@@ -538,9 +662,9 @@ class _StorageCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Storage',
-            style: TextStyle(fontSize: 12, color: _heroMutedText),
+          Text(
+            l10n.cloudStorage,
+            style: const TextStyle(fontSize: 12, color: _heroMutedText),
           ),
           const SizedBox(height: 6),
           Row(
@@ -548,7 +672,9 @@ class _StorageCard extends StatelessWidget {
             textBaseline: TextBaseline.alphabetic,
             children: [
               Text(
-                '${usedGb.toStringAsFixed(1)} GB',
+                loading
+                    ? l10n.cloudStorageLoading
+                    : _formatBytes(usage?.sizeBytes ?? 0),
                 style: const TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.w700,
@@ -557,31 +683,30 @@ class _StorageCard extends StatelessWidget {
               ),
               const SizedBox(width: 8),
               Text(
-                'of ${totalGb.toStringAsFixed(0)} GB used',
+                l10n.cloudBackupCount(usage?.fileCount ?? 0),
                 style: const TextStyle(fontSize: 12, color: _heroMutedText),
               ),
             ],
           ),
-          const SizedBox(height: 14),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(4),
-            child: Stack(
-              children: [
-                Container(
-                  height: 8,
-                  color: Colors.white.withValues(alpha: 0.15),
-                ),
-                FractionallySizedBox(
-                  widthFactor: fraction,
-                  child: Container(height: 8, color: _heroAccent),
-                ),
-              ],
+          if (error != null) ...[
+            const SizedBox(height: 8),
+            Text(
+              error!,
+              style: const TextStyle(color: Color(0xFFFFA8A8), fontSize: 11),
             ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            'Coming soon',
-            style: TextStyle(fontSize: 10, color: AppColors.textMuted(context)),
+          ],
+          const SizedBox(height: 8),
+          TextButton.icon(
+            onPressed: onManage,
+            style: TextButton.styleFrom(
+              foregroundColor: _heroAccent,
+              padding: EdgeInsets.zero,
+            ),
+            icon: Icon(
+              signedIn ? Icons.cloud_sync_outlined : Icons.login_rounded,
+              size: 18,
+            ),
+            label: Text(signedIn ? l10n.cloudManageBackups : l10n.authSignIn),
           ),
         ],
       ),
@@ -597,14 +722,12 @@ class _ProfileRowData {
     required this.label,
     required this.onTap,
     this.value,
-    this.valueColor,
   });
 
   final IconData icon;
   final String label;
   final String? value;
   final VoidCallback? onTap;
-  final Color? valueColor;
 }
 
 class _ProfileRow extends StatelessWidget {

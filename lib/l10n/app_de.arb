@@ -10,13 +10,132 @@
   "german": "Deutsch",
   "arabic": "Arabisch",
   "freePlan": "Kostenloser Plan",
+  "authGuestTitle": "Gast",
+  "authGuestDescription": "Melde dich an, um auf dein Konto zuzugreifen",
+  "authSignIn": "Anmelden",
+  "authSignOut": "Abmelden",
+  "authTitle": "Dein Konto",
+  "authSignInSubtitle": "Melde dich bei deinem ClearScan-Konto an.",
+  "authSignUpSubtitle": "Erstelle ein Konto, um loszulegen.",
+  "authCreateAccount": "Konto erstellen",
+  "authFullName": "Vollständiger Name",
+  "authEmail": "E-Mail",
+  "authPassword": "Passwort",
+  "authNameRequired": "Gib deinen Namen ein.",
+  "authInvalidEmail": "Gib eine gültige E-Mail-Adresse ein.",
+  "authPasswordTooShort": "Das Passwort muss mindestens 6 Zeichen lang sein.",
+  "authHaveAccount": "Du hast bereits ein Konto? Anmelden",
+  "authNeedAccount": "Neu bei ClearScan? Konto erstellen",
+  "authBackendNotConfigured": "Die Kontoanmeldung ist noch nicht eingerichtet.",
+  "authBackendSetupInstructions": "Starte die VS-Code-Aufgabe \"Run with Supabase\" oder führe .\\tool\\flutter_with_supabase.ps1 run aus. URL und Publishable Key kommen aus .env. Keine geheimen Schlüssel in die App einfügen.",
+  "authCheckEmail": "Bestätige dein Konto über den Link in deiner E-Mail.",
+  "authContinueWithGoogle": "Mit Google fortfahren",
+  "authOr": "oder",
+  "authGoogleNotConfigured": "Setze google_ID_client in .env auf deine Google-Web-Client-ID und starte mit Run with Supabase neu.",
+  "cloudStorage": "Cloud-Speicher",
+  "cloudStorageLoading": "Wird geladen...",
+  "cloudBackupCount": "{count} Sicherungen",
+  "@cloudBackupCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "cloudStorageUsed": "{size} verwendet",
+  "@cloudStorageUsed": {
+    "placeholders": {
+      "size": {}
+    }
+  },
+  "cloudStoragePrivacy": "Private Sicherungen, nur für dein Konto.",
+  "cloudBackupChooseDocuments": "Dokumente für die Sicherung auswählen",
+  "cloudNoLocalDocuments": "Keine lokalen Dokumente gefunden.",
+  "cloudBackupSelected": "{count} ausgewählte sichern",
+  "@cloudBackupSelected": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "cloudUploading": "Wird hochgeladen...",
+  "cloudUploadAction": "Backup",
+  "cloudUploadError": "Cloud-Sicherung fehlgeschlagen: {error}",
+  "cloudCopyLink": "Link kopieren",
+  "cloudLinkCopied": "Link kopiert. Er ist 24 Stunden gültig.",
+  "cloudLinkError": "Freigabelink konnte nicht erstellt werden: {error}",
+  "@cloudUploadError": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "@cloudLinkError": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "cloudBackups": "Cloud-Sicherungen",
+  "cloudNoBackups": "Du hast noch keine Cloud-Sicherungen.",
+  "cloudRestore": "Auf diesem Gerät wiederherstellen",
+  "cloudCancel": "Abbrechen",
+  "cloudDeleteConfirmTitle": "Cloud-Sicherung löschen?",
+  "cloudDeleteConfirmMessage": "{name} aus der Cloud löschen? Die lokale Kopie bleibt.",
+  "@cloudDeleteConfirmMessage": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "cloudDeleteComplete": "{name} wurde aus den Cloud-Sicherungen gelöscht.",
+  "@cloudDeleteComplete": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "cloudDeleteError": "Cloud-Sicherung konnte nicht gelöscht werden: {error}",
+  "@cloudDeleteError": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "cloudBackupComplete": "{count} Dokument(e) gesichert.",
+  "@cloudBackupComplete": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "cloudBackupPartialFailure": "{count} gesichert; Fehler: {error}",
+  "@cloudBackupPartialFailure": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "error": {}
+    }
+  },
+  "cloudRestoreComplete": "{name} auf diesem Gerät wiederhergestellt.",
+  "@cloudRestoreComplete": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "cloudStorageError": "Sicherung konnte nicht wiederhergestellt werden: {error}",
+  "@cloudStorageError": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "cloudRefresh": "Sicherungen aktualisieren",
+  "cloudManageBackups": "Sicherungen verwalten",
   "on": "Ein",
   "off": "Aus",
   "comingSoon": "Demnächst verfügbar",
   "backupAndSync": "Sicherung & Synchronisierung",
   "appLock": "App-Sperre",
   "appLockAuthReason": "Authentifizieren, um ClearScan zu entsperren.",
-  "appLockAuthenticationFailed": "Authentifizierung fehlgeschlagen. Versuche erneut, ClearScan zu entsperren.",
+  "appLockAuthenticationFailed": "Authentifizierung fehlgeschlagen. Bitte erneut versuchen.",
   "appLockAuthenticationError": "Authentifizierung fehlgeschlagen: {error}",
   "@appLockAuthenticationError": {
     "placeholders": {
@@ -37,7 +156,7 @@
   "system": "System",
   "rateStoreListing": "Store öffnen",
   "helpCenterEmail": "Hilfezentrum / E-Mail öffnen",
-  "helpEmailLaunchFailed": "Die E-Mail-App konnte nicht geöffnet werden. Schreibe stattdessen an {email}.",
+  "helpEmailLaunchFailed": "E-Mail-App nicht verfügbar. Schreibe an {email}.",
   "@helpEmailLaunchFailed": {
     "placeholders": {
       "email": {}
@@ -63,7 +182,7 @@
   "share": "Teilen",
   "rename": "Umbenennen",
   "delete": "Löschen",
-  "documentDeleteConfirmation": "\"{name}\" löschen? Dies kann nicht rückgängig gemacht werden.",
+  "documentDeleteConfirmation": "\"{name}\" löschen? Dies ist endgültig.",
   "@documentDeleteConfirmation": {
     "placeholders": {
       "name": {}
@@ -105,11 +224,11 @@
   "items": "Einträge",
   "noDocumentsFound": "Keine Dokumente gefunden",
   "onboardingSlideScanTitle": "Alles scannen",
-  "onboardingSlideScanSubtitle": "Wandle Papier in klare, durchsuchbare PDFs\nin Sekunden, direkt von deinem Telefon.",
+  "onboardingSlideScanSubtitle": "Erstelle klare, durchsuchbare PDFs\nin Sekunden aus Papier.",
   "onboardingSlideOrganizeTitle": "Alles organisieren",
-  "onboardingSlideOrganizeSubtitle": "Behalte Ausweise, Verträge und Quittungen\nordentlich sortiert in Ordnern.",
+  "onboardingSlideOrganizeSubtitle": "Sortiere Ausweise, Verträge und Belege\nin Ordnern.",
   "onboardingSlideSignTitle": "Bearbeiten & Unterschreiben",
-  "onboardingSlideSignSubtitle": "Zusammenführen, komprimieren, unterschreiben und teilen\nDeine Dokumente in wenigen Tipps.",
+  "onboardingSlideSignSubtitle": "Zusammenführen, komprimieren, signieren und teilen\nmit wenigen Fingertipps.",
   "onboardingSkip": "Überspringen",
   "onboardingGetStarted": "Los geht's",
   "onboardingAgreeTerms": "Indem du fortfährst, stimmst du den Nutzungsbedingungen und der Datenschutzerklärung zu.",
@@ -157,7 +276,7 @@
   "settingsFormatPdf": "PDF",
   "settingsFormatJpg": "JPG",
   "settingsClearCacheTitle": "Cache leeren?",
-  "settingsClearCacheMessage": "Temporäre Dateien werden gelöscht. Ihre Dokumente bleiben unverändert.",
+  "settingsClearCacheMessage": "Temporäre Dateien löschen. Dokumente bleiben erhalten.",
   "settingsCancel": "Abbrechen",
   "settingsClear": "Leeren",
   "settingsCacheCleared": "Cache geleert",
@@ -176,8 +295,8 @@
   "cropAdjustAutoCrop": "Automatisch zuschneiden",
   "cropAdjustAddPage": "Seite hinzufügen",
   "cropAdjustErrorOpenImage": "Konnte das Bild nicht öffnen.",
-  "cropAdjustErrorCropImage": "Konnte das Bild nicht zuschneiden. Passe die Ecken an und versuche es erneut.",
-  "cropAdjustErrorDetectEdges": "Dokumentkanten konnten nicht erkannt werden. Passe die Ecken manuell an.",
+  "cropAdjustErrorCropImage": "Bildzuschnitt fehlgeschlagen. Passe die Ecken an.",
+  "cropAdjustErrorDetectEdges": "Kanten nicht erkannt. Passe sie manuell an.",
   "workshopTitle": "Werkstatt",
   "workshopConvert": "Konvertieren",
   "workshopEditPdf": "PDF bearbeiten",
@@ -186,7 +305,7 @@
   "toolPdfToImage": "PDF zu Bild",
   "pdfToWordTitle": "PDF zu Word",
   "pdfToWordSelectPdf": "PDF auswählen",
-  "pdfToWordHint": "Extrahiere PDF-Text in ein bearbeitbares Word-Dokument. Gescannte Seiten werden per OCR auf Arabisch, Englisch und Deutsch erkannt. Das Layout kann vereinfacht sein.",
+  "pdfToWordHint": "PDF-Text als Word exportieren. OCR für Arabisch, Englisch und Deutsch; Layout kann abweichen.",
   "pdfToWordConverting": "PDF-Text wird extrahiert und per OCR erkannt…",
   "pdfToWordProgress": "{completed} von {total} Seiten verarbeitet",
   "@pdfToWordProgress": {
@@ -242,7 +361,7 @@
   "toolPdfToExcel": "PDF zu Excel",
   "pdfToExcelTitle": "PDF zu Excel",
   "pdfToExcelSelectPdf": "PDF auswählen",
-  "pdfToExcelHint": "Extrahiere PDF-Text in eine bearbeitbare Excel-Tabelle, sortiert nach Seite und Zeile. Gescannte Seiten werden per OCR auf Arabisch, Englisch und Deutsch erkannt.",
+  "pdfToExcelHint": "PDF-Text nach Seite und Zeile in Excel exportieren. OCR: Arabisch, Englisch und Deutsch.",
   "pdfToExcelConverting": "PDF-Text wird extrahiert und per OCR erkannt…",
   "pdfToExcelProgress": "{completed} von {total} Seiten verarbeitet",
   "@pdfToExcelProgress": {
@@ -279,13 +398,13 @@
   "signatureBlack": "Schwarz",
   "signatureWhite": "Weiß",
   "signaturePlacementHint": "Ziehe deine Signatur auf der Seite an die gewünschte Position.",
-  "signaturePreviewUnavailable": "Die Seitenvorschau ist nicht verfügbar. Wähle die PDF erneut aus, um es noch einmal zu versuchen.",
+  "signaturePreviewUnavailable": "Vorschau nicht verfügbar. Wähle die PDF erneut aus.",
   "toolWatermark": "Wasserzeichen",
   "toolWatermarkDesc": "Wasserzeichen zu deinen Dokumenten hinzufügen",
   "watermarkText": "Wasserzeichentext",
   "watermarkTextHint": "z. B. VERTRAULICH",
   "watermarkOpacity": "Deckkraft",
-  "watermarkPositionHint": "Ziehe das Wasserzeichen auf der Seite an die gewünschte Position. Auf allen Seiten wird dieselbe Position verwendet.",
+  "watermarkPositionHint": "Ziehe das Wasserzeichen an die gewünschte Position auf allen Seiten.",
   "watermarkPreviewUnavailable": "Die Seitenvorschau ist nicht verfügbar.",
   "watermarkAllPagesHint": "Das Wasserzeichen wird auf jeder Seite hinzugefügt.",
   "watermarkApply": "Wasserzeichen hinzufügen",
@@ -315,8 +434,8 @@
   "qrGeneratorTooLong": "Dieser Inhalt ist zu lang für einen QR-Code.",
   "pdfEditChoosePdf": "PDF auswählen",
   "pdfEditSourcePassword": "PDF-Passwort (falls geschützt)",
-  "pdfEditSourcePasswordHelp": "Falls sich die PDF nicht öffnen lässt, überprüfe das Passwort und lade sie erneut.",
-  "pdfEditOpenFailed": "PDF konnte nicht geöffnet werden. Falls sie passwortgeschützt ist, überprüfe das Passwort und versuche es erneut.",
+  "pdfEditSourcePasswordHelp": "Passwort prüfen und PDF erneut öffnen.",
+  "pdfEditOpenFailed": "PDF konnte nicht geöffnet werden. Passwort prüfen und erneut versuchen.",
   "pdfEditLoadAgain": "PDF laden",
   "pdfEditPageCount": "{count} Seiten",
   "@pdfEditPageCount": {
@@ -341,11 +460,11 @@
   "pdfEditNewPassword": "Neues Passwort (mindestens 6 Zeichen)",
   "pdfEditConfirmPassword": "Passwort bestätigen",
   "pdfEditPasswordsDoNotMatch": "Die Passwörter stimmen nicht überein.",
-  "pdfEditCompressionNote": "Bei der starken Komprimierung wird jede Seite in ein Bild umgewandelt. Text ist danach nicht mehr auswählbar oder durchsuchbar; die Bildqualität kann sinken.",
+  "pdfEditCompressionNote": "Starke Komprimierung macht Seiten zu Bildern. Text ist nicht mehr auswählbar/durchsuchbar; Qualität kann sinken.",
   "pdfEditCompressionWarningTitle": "Warnung zur starken Komprimierung",
   "pdfEditCompressionCancel": "Abbrechen",
   "pdfEditCompressionConfirm": "Trotzdem komprimieren",
-  "pdfEditCompressionNoReduction": "Diese PDF ist bereits kleiner als die komprimierte Version. Es wurde keine größere Kopie gespeichert.",
+  "pdfEditCompressionNoReduction": "Komprimierte Datei wäre größer. Original behalten.",
   "pdfEditRun": "{tool} ausführen",
   "@pdfEditRun": {
     "placeholders": {

@@ -63,8 +63,7 @@ import 'app_localizations_en.dart';
 /// be consistent with the languages listed in the AppLocalizations.supportedLocales
 /// property.
 abstract class AppLocalizations {
-  AppLocalizations(String locale)
-    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+  AppLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -72,8 +71,7 @@ abstract class AppLocalizations {
     return Localizations.of<AppLocalizations>(context, AppLocalizations);
   }
 
-  static const LocalizationsDelegate<AppLocalizations> delegate =
-      _AppLocalizationsDelegate();
+  static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
 
   /// A list of this localizations delegate along with the default localizations
   /// delegates.
@@ -85,19 +83,18 @@ abstract class AppLocalizations {
   /// Additional delegates can be added by appending to this list in
   /// MaterialApp. This list does not have to be used at all if a custom list
   /// of delegates is preferred or required.
-  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
-      <LocalizationsDelegate<dynamic>>[
-        delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ];
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = <LocalizationsDelegate<dynamic>>[
+    delegate,
+    GlobalMaterialLocalizations.delegate,
+    GlobalCupertinoLocalizations.delegate,
+    GlobalWidgetsLocalizations.delegate,
+  ];
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
     Locale('ar'),
     Locale('de'),
-    Locale('en'),
+    Locale('en')
   ];
 
   /// No description provided for @appTitle.
@@ -160,6 +157,306 @@ abstract class AppLocalizations {
   /// **'Free plan'**
   String get freePlan;
 
+  /// No description provided for @authGuestTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Guest'**
+  String get authGuestTitle;
+
+  /// No description provided for @authGuestDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to access your account'**
+  String get authGuestDescription;
+
+  /// No description provided for @authSignIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in'**
+  String get authSignIn;
+
+  /// No description provided for @authSignOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out'**
+  String get authSignOut;
+
+  /// No description provided for @authTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your account'**
+  String get authTitle;
+
+  /// No description provided for @authSignInSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to your ClearScan account.'**
+  String get authSignInSubtitle;
+
+  /// No description provided for @authSignUpSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create an account to get started.'**
+  String get authSignUpSubtitle;
+
+  /// No description provided for @authCreateAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Create account'**
+  String get authCreateAccount;
+
+  /// No description provided for @authFullName.
+  ///
+  /// In en, this message translates to:
+  /// **'Full name'**
+  String get authFullName;
+
+  /// No description provided for @authEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get authEmail;
+
+  /// No description provided for @authPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get authPassword;
+
+  /// No description provided for @authNameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your name.'**
+  String get authNameRequired;
+
+  /// No description provided for @authInvalidEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid email address.'**
+  String get authInvalidEmail;
+
+  /// No description provided for @authPasswordTooShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Password must be at least 6 characters.'**
+  String get authPasswordTooShort;
+
+  /// No description provided for @authHaveAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Already have an account? Sign in'**
+  String get authHaveAccount;
+
+  /// No description provided for @authNeedAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'New to ClearScan? Create an account'**
+  String get authNeedAccount;
+
+  /// No description provided for @authBackendNotConfigured.
+  ///
+  /// In en, this message translates to:
+  /// **'Account sign-in is not set up yet.'**
+  String get authBackendNotConfigured;
+
+  /// No description provided for @authBackendSetupInstructions.
+  ///
+  /// In en, this message translates to:
+  /// **'Run the VS Code task \"Run with Supabase\" or .\\tool\\flutter_with_supabase.ps1 run. This loads the URL and publishable key from .env. Never add secret keys to the app.'**
+  String get authBackendSetupInstructions;
+
+  /// No description provided for @authCheckEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Check your email to confirm your account.'**
+  String get authCheckEmail;
+
+  /// No description provided for @authContinueWithGoogle.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue with Google'**
+  String get authContinueWithGoogle;
+
+  /// No description provided for @authOr.
+  ///
+  /// In en, this message translates to:
+  /// **'or'**
+  String get authOr;
+
+  /// No description provided for @authGoogleNotConfigured.
+  ///
+  /// In en, this message translates to:
+  /// **'Set google_ID_client in .env to your Google Web client ID, then restart with Run with Supabase.'**
+  String get authGoogleNotConfigured;
+
+  /// No description provided for @cloudStorage.
+  ///
+  /// In en, this message translates to:
+  /// **'Cloud storage'**
+  String get cloudStorage;
+
+  /// No description provided for @cloudStorageLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading...'**
+  String get cloudStorageLoading;
+
+  /// No description provided for @cloudBackupCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} backups'**
+  String cloudBackupCount(int count);
+
+  /// No description provided for @cloudStorageUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'{size} used'**
+  String cloudStorageUsed(Object size);
+
+  /// No description provided for @cloudStoragePrivacy.
+  ///
+  /// In en, this message translates to:
+  /// **'Private backups, available only to your account.'**
+  String get cloudStoragePrivacy;
+
+  /// No description provided for @cloudBackupChooseDocuments.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose documents to back up'**
+  String get cloudBackupChooseDocuments;
+
+  /// No description provided for @cloudNoLocalDocuments.
+  ///
+  /// In en, this message translates to:
+  /// **'No local documents found.'**
+  String get cloudNoLocalDocuments;
+
+  /// No description provided for @cloudBackupSelected.
+  ///
+  /// In en, this message translates to:
+  /// **'Back up {count} selected'**
+  String cloudBackupSelected(int count);
+
+  /// No description provided for @cloudUploading.
+  ///
+  /// In en, this message translates to:
+  /// **'Uploading...'**
+  String get cloudUploading;
+
+  /// No description provided for @cloudUploadAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup'**
+  String get cloudUploadAction;
+
+  /// No description provided for @cloudUploadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not back up to cloud: {error}'**
+  String cloudUploadError(Object error);
+
+  /// No description provided for @cloudCopyLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy link'**
+  String get cloudCopyLink;
+
+  /// No description provided for @cloudLinkCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Link copied. It expires in 24 hours.'**
+  String get cloudLinkCopied;
+
+  /// No description provided for @cloudLinkError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not create share link: {error}'**
+  String cloudLinkError(Object error);
+
+  /// No description provided for @cloudBackups.
+  ///
+  /// In en, this message translates to:
+  /// **'Cloud backups'**
+  String get cloudBackups;
+
+  /// No description provided for @cloudNoBackups.
+  ///
+  /// In en, this message translates to:
+  /// **'You have no cloud backups yet.'**
+  String get cloudNoBackups;
+
+  /// No description provided for @cloudRestore.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore to this device'**
+  String get cloudRestore;
+
+  /// No description provided for @cloudCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cloudCancel;
+
+  /// No description provided for @cloudDeleteConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete cloud backup?'**
+  String get cloudDeleteConfirmTitle;
+
+  /// No description provided for @cloudDeleteConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete {name} from cloud backups? The local copy stays.'**
+  String cloudDeleteConfirmMessage(Object name);
+
+  /// No description provided for @cloudDeleteComplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleted {name} from cloud backups.'**
+  String cloudDeleteComplete(Object name);
+
+  /// No description provided for @cloudDeleteError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not delete cloud backup: {error}'**
+  String cloudDeleteError(Object error);
+
+  /// No description provided for @cloudBackupComplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Backed up {count} document(s).'**
+  String cloudBackupComplete(int count);
+
+  /// No description provided for @cloudBackupPartialFailure.
+  ///
+  /// In en, this message translates to:
+  /// **'Backed up {count}; error: {error}'**
+  String cloudBackupPartialFailure(int count, Object error);
+
+  /// No description provided for @cloudRestoreComplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Restored {name} to this device.'**
+  String cloudRestoreComplete(Object name);
+
+  /// No description provided for @cloudStorageError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not restore backup: {error}'**
+  String cloudStorageError(Object error);
+
+  /// No description provided for @cloudRefresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh backups'**
+  String get cloudRefresh;
+
+  /// No description provided for @cloudManageBackups.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage backups'**
+  String get cloudManageBackups;
+
   /// No description provided for @on.
   ///
   /// In en, this message translates to:
@@ -199,7 +496,7 @@ abstract class AppLocalizations {
   /// No description provided for @appLockAuthenticationFailed.
   ///
   /// In en, this message translates to:
-  /// **'Authentication failed. Try again to unlock ClearScan.'**
+  /// **'Authentication failed. Try again.'**
   String get appLockAuthenticationFailed;
 
   /// No description provided for @appLockAuthenticationError.
@@ -295,7 +592,7 @@ abstract class AppLocalizations {
   /// No description provided for @helpEmailLaunchFailed.
   ///
   /// In en, this message translates to:
-  /// **'Could not open your email app. Contact {email} instead.'**
+  /// **'Can\'t open email. Contact {email}.'**
   String helpEmailLaunchFailed(Object email);
 
   /// No description provided for @scanAnythingSaveEverything.
@@ -421,7 +718,7 @@ abstract class AppLocalizations {
   /// No description provided for @documentDeleteConfirmation.
   ///
   /// In en, this message translates to:
-  /// **'Delete {name}? This cannot be undone.'**
+  /// **'Delete {name}? This can\'t be undone.'**
   String documentDeleteConfirmation(Object name);
 
   /// No description provided for @documentRenameSuccess.
@@ -583,7 +880,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingSlideScanSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Turn paper into crisp, searchable PDFs\nin seconds, right from your phone.'**
+  /// **'Create clear, searchable PDFs\nfrom paper in seconds.'**
   String get onboardingSlideScanSubtitle;
 
   /// No description provided for @onboardingSlideOrganizeTitle.
@@ -595,7 +892,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingSlideOrganizeSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Keep IDs, contracts and receipts\nneatly sorted in folders.'**
+  /// **'Sort IDs, contracts and receipts\ninto folders.'**
   String get onboardingSlideOrganizeSubtitle;
 
   /// No description provided for @onboardingSlideSignTitle.
@@ -607,7 +904,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingSlideSignSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Merge, compress, sign and share\nyour documents in a few taps.'**
+  /// **'Merge, compress, sign and share\nin a few taps.'**
   String get onboardingSlideSignSubtitle;
 
   /// No description provided for @onboardingSkip.
@@ -895,7 +1192,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsClearCacheMessage.
   ///
   /// In en, this message translates to:
-  /// **'Temporary files will be deleted. Your documents are not affected.'**
+  /// **'Temporary files will be deleted. Documents stay safe.'**
   String get settingsClearCacheMessage;
 
   /// No description provided for @settingsCancel.
@@ -979,13 +1276,13 @@ abstract class AppLocalizations {
   /// No description provided for @cropAdjustErrorCropImage.
   ///
   /// In en, this message translates to:
-  /// **'Could not crop the image. Adjust the corners and try again.'**
+  /// **'Couldn\'t crop image. Adjust the corners and retry.'**
   String get cropAdjustErrorCropImage;
 
   /// No description provided for @cropAdjustErrorDetectEdges.
   ///
   /// In en, this message translates to:
-  /// **'Could not detect document edges. Adjust the corners manually.'**
+  /// **'Couldn\'t detect edges. Adjust the corners manually.'**
   String get cropAdjustErrorDetectEdges;
 
   /// No description provided for @workshopTitle.
@@ -1039,7 +1336,7 @@ abstract class AppLocalizations {
   /// No description provided for @pdfToWordHint.
   ///
   /// In en, this message translates to:
-  /// **'Extract PDF text into an editable Word document. Scanned pages are OCR’d in Arabic, English, and German. Layout may be simplified.'**
+  /// **'Export PDF text to editable Word. Scans support Arabic, English, and German OCR; layout may change.'**
   String get pdfToWordHint;
 
   /// No description provided for @pdfToWordConverting.
@@ -1153,7 +1450,7 @@ abstract class AppLocalizations {
   /// No description provided for @pdfToExcelHint.
   ///
   /// In en, this message translates to:
-  /// **'Extract PDF text into an editable Excel sheet, organized by page and line. Scanned pages are OCR’d in Arabic, English, and German.'**
+  /// **'Export PDF text to Excel by page and line. Scans support Arabic, English, and German OCR.'**
   String get pdfToExcelHint;
 
   /// No description provided for @pdfToExcelConverting.
@@ -1279,7 +1576,7 @@ abstract class AppLocalizations {
   /// No description provided for @signaturePreviewUnavailable.
   ///
   /// In en, this message translates to:
-  /// **'The page preview is unavailable. Select the PDF again to retry.'**
+  /// **'Preview unavailable. Select the PDF again.'**
   String get signaturePreviewUnavailable;
 
   /// No description provided for @toolWatermark.
@@ -1315,7 +1612,7 @@ abstract class AppLocalizations {
   /// No description provided for @watermarkPositionHint.
   ///
   /// In en, this message translates to:
-  /// **'Drag the watermark on the page to choose its position. The same position is used on every page.'**
+  /// **'Drag the watermark to set its position on every page.'**
   String get watermarkPositionHint;
 
   /// No description provided for @watermarkPreviewUnavailable.
@@ -1465,13 +1762,13 @@ abstract class AppLocalizations {
   /// No description provided for @pdfEditSourcePasswordHelp.
   ///
   /// In en, this message translates to:
-  /// **'If the PDF does not open, check the password and load it again.'**
+  /// **'Check the password, then reopen the PDF.'**
   String get pdfEditSourcePasswordHelp;
 
   /// No description provided for @pdfEditOpenFailed.
   ///
   /// In en, this message translates to:
-  /// **'Could not open this PDF. If it is password-protected, check the password and try again.'**
+  /// **'Couldn\'t open PDF. Check its password and retry.'**
   String get pdfEditOpenFailed;
 
   /// No description provided for @pdfEditLoadAgain.
@@ -1561,7 +1858,7 @@ abstract class AppLocalizations {
   /// No description provided for @pdfEditCompressionNote.
   ///
   /// In en, this message translates to:
-  /// **'Strong compression converts every page into an image. Text will no longer be selectable or searchable, and image quality may be reduced.'**
+  /// **'Strong compression turns pages into images; text won\'t be selectable/searchable, and quality may drop.'**
   String get pdfEditCompressionNote;
 
   /// No description provided for @pdfEditCompressionWarningTitle.
@@ -1585,7 +1882,7 @@ abstract class AppLocalizations {
   /// No description provided for @pdfEditCompressionNoReduction.
   ///
   /// In en, this message translates to:
-  /// **'This file is already smaller than the compressed version. No larger copy was saved.'**
+  /// **'Compressed file was larger. Original kept.'**
   String get pdfEditCompressionNoReduction;
 
   /// No description provided for @pdfEditRun.
@@ -1739,8 +2036,7 @@ abstract class AppLocalizations {
   String get scanInfoHint;
 }
 
-class _AppLocalizationsDelegate
-    extends LocalizationsDelegate<AppLocalizations> {
+class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();
 
   @override
@@ -1749,28 +2045,26 @@ class _AppLocalizationsDelegate
   }
 
   @override
-  bool isSupported(Locale locale) =>
-      <String>['ar', 'de', 'en'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>['ar', 'de', 'en'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
 }
 
 AppLocalizations lookupAppLocalizations(Locale locale) {
+
+
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
-    case 'ar':
-      return AppLocalizationsAr();
-    case 'de':
-      return AppLocalizationsDe();
-    case 'en':
-      return AppLocalizationsEn();
+    case 'ar': return AppLocalizationsAr();
+    case 'de': return AppLocalizationsDe();
+    case 'en': return AppLocalizationsEn();
   }
 
   throw FlutterError(
     'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
     'an issue with the localizations generation tool. Please file an issue '
     'on GitHub with a reproducible sample app and the gen-l10n configuration '
-    'that was used.',
+    'that was used.'
   );
 }
