@@ -9,8 +9,10 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 import 'crop_adjust_screen.dart';
+import '../../l10n/app_localizations.dart' as loc;
 import '../../services/imaging/document_quad_detector.dart';
 import '../../services/documents/document_storage.dart';
+import '../../services/documents/cloud_document_storage.dart';
 import '../../services/sharing/share_sheet_actions.dart';
 import '../../widgets/feedback/app_snackbar.dart';
 import '../../widgets/sharing/share_sheet.dart';
@@ -209,6 +211,7 @@ class _EnhanceSaveScreenState extends State<EnhanceSaveScreen> {
 
   Future<void> _onExportPdf() async {
     if (_saving) return;
+    final l10n = loc.AppLocalizations.of(context)!;
     final fileName = _fileNameController.text.trim();
     if (fileName.isEmpty) {
       _showSnackBar('Please enter a file name');
@@ -265,6 +268,18 @@ class _EnhanceSaveScreenState extends State<EnhanceSaveScreen> {
               debugPrint('Could not remove temporary PDF: $error');
             }
           }
+        } else if (action == ShareSheetAction.cloud) {
+          await uploadCloudFile(name: pdfName, bytes: pdfBytes);
+          if (mounted) {
+            _showSnackBar(l10n.cloudBackupComplete(1));
+          }
+        } else if (action == ShareSheetAction.copyLink) {
+          final link = await uploadCloudFileAndCreateShareLink(
+            name: pdfName,
+            bytes: pdfBytes,
+          );
+          await Clipboard.setData(ClipboardData(text: link));
+          if (mounted) _showSnackBar(l10n.cloudLinkCopied);
         } else {
           await performShareSheetAction(
             action: action,
@@ -275,15 +290,19 @@ class _EnhanceSaveScreenState extends State<EnhanceSaveScreen> {
         }
       }
     } catch (error) {
-      _showSnackBar(switch (action) {
-        ShareSheetAction.email => 'Could not email the PDF: $error',
-        ShareSheetAction.print => 'Could not print the PDF: $error',
-        ShareSheetAction.asImages =>
-          'Could not share the PDF as images: $error',
-        ShareSheetAction.asText =>
-          'Could not extract or share PDF text: $error',
-        _ => 'Could not export the PDF: $error',
-      });
+      if (mounted) {
+        _showSnackBar(switch (action) {
+          ShareSheetAction.email => 'Could not email the PDF: $error',
+          ShareSheetAction.print => 'Could not print the PDF: $error',
+          ShareSheetAction.asImages =>
+            'Could not share the PDF as images: $error',
+          ShareSheetAction.asText =>
+            'Could not extract or share PDF text: $error',
+          ShareSheetAction.cloud => l10n.cloudUploadError(error.toString()),
+          ShareSheetAction.copyLink => l10n.cloudLinkError(error.toString()),
+          _ => 'Could not export the PDF: $error',
+        });
+      }
     } finally {
       if (mounted) setState(() => _saving = false);
     }

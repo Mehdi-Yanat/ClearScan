@@ -11,7 +11,16 @@ import 'package:share_plus/share_plus.dart';
 
 import '../documents/document_storage.dart';
 
-enum ShareSheetAction { share, email, export, print, asImages, asText }
+enum ShareSheetAction {
+  share,
+  email,
+  export,
+  print,
+  asImages,
+  asText,
+  cloud,
+  copyLink,
+}
 
 const _ocrLanguages = 'eng+deu+ara';
 
@@ -51,6 +60,8 @@ Future<void> performShareSheetAction({
       );
     case ShareSheetAction.share:
     case ShareSheetAction.export:
+    case ShareSheetAction.cloud:
+    case ShareSheetAction.copyLink:
       throw ArgumentError.value(
         action,
         'action',

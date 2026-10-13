@@ -18,6 +18,7 @@ import '../../l10n/app_localizations.dart' as loc;
 import '../../services/documents/document_storage.dart';
 import '../../services/documents/folder_repository.dart';
 import '../../services/app/notification_service.dart';
+import '../../services/documents/cloud_document_storage.dart';
 import '../../services/documents/recent_documents.dart';
 import '../../services/sharing/share_sheet_actions.dart';
 import '../../theme/app_theme.dart';
@@ -89,6 +90,19 @@ class _HomeScreenState extends State<HomeScreen> {
         if (!mounted) return;
         _refreshRecentDocuments();
         _showFolderError('Saved to device');
+      } else if (action == ShareSheetAction.cloud) {
+        await uploadDocument(document);
+        if (mounted) {
+          _showFolderError(
+            loc.AppLocalizations.of(context)!.cloudBackupComplete(1),
+          );
+        }
+      } else if (action == ShareSheetAction.copyLink) {
+        final link = await uploadDocumentAndCreateShareLink(document);
+        await Clipboard.setData(ClipboardData(text: link));
+        if (mounted) {
+          _showFolderError(loc.AppLocalizations.of(context)!.cloudLinkCopied);
+        }
       } else if (action != ShareSheetAction.share) {
         await performShareSheetAction(
           action: action,
@@ -113,6 +127,10 @@ class _HomeScreenState extends State<HomeScreen> {
             'Could not share document as images: $error',
           ShareSheetAction.asText =>
             'Could not extract or share document text: $error',
+          ShareSheetAction.cloud =>
+            loc.AppLocalizations.of(context)!.cloudUploadError(error.toString()),
+          ShareSheetAction.copyLink =>
+            loc.AppLocalizations.of(context)!.cloudLinkError(error.toString()),
           _ => 'Could not share document: $error',
         });
       }

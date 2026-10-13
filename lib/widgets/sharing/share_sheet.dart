@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 
+import '../../l10n/app_localizations.dart' as loc;
 import '../../services/sharing/share_sheet_actions.dart';
 
 export '../../services/sharing/share_sheet_actions.dart' show ShareSheetAction;
@@ -122,7 +123,11 @@ class _ShareSheetState extends State<_ShareSheet> {
         icon: Icons.email_outlined,
         action: ShareSheetAction.email,
       ),
-      const _ShareSheetOptionData(label: 'Copy link', icon: Icons.link_rounded),
+      _ShareSheetOptionData(
+        label: loc.AppLocalizations.of(context)!.cloudCopyLink,
+        icon: Icons.link_rounded,
+        action: ShareSheetAction.copyLink,
+      ),
       _ShareSheetOptionData(
         label: widget.exportLabel ?? 'Save',
         icon: Icons.file_download_outlined,
@@ -133,7 +138,11 @@ class _ShareSheetState extends State<_ShareSheet> {
         icon: Icons.print_outlined,
         action: ShareSheetAction.print,
       ),
-      const _ShareSheetOptionData(label: 'Cloud', icon: Icons.cloud_outlined),
+      _ShareSheetOptionData(
+        label: loc.AppLocalizations.of(context)!.cloudUploadAction,
+        icon: Icons.cloud_outlined,
+        action: ShareSheetAction.cloud,
+      ),
       const _ShareSheetOptionData(
         label: 'As images',
         icon: Icons.image_outlined,

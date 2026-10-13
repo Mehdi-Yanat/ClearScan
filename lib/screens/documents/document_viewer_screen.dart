@@ -5,6 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../l10n/app_localizations.dart' as loc;
+import '../../services/documents/cloud_document_storage.dart';
 import '../../services/documents/recent_documents.dart';
 import '../../services/sharing/share_sheet_actions.dart';
 import '../../widgets/feedback/app_snackbar.dart';
@@ -51,6 +53,23 @@ class _DocumentViewerScreenState extends State<DocumentViewerScreen> {
       if (action == ShareSheetAction.export) {
         await saveRecentDocumentToDevice(widget.document);
         if (mounted) showAppSnackBar(context, 'Saved to device');
+      } else if (action == ShareSheetAction.cloud) {
+        await uploadDocument(widget.document);
+        if (mounted) {
+          showAppSnackBar(
+            context,
+            loc.AppLocalizations.of(context)!.cloudBackupComplete(1),
+          );
+        }
+      } else if (action == ShareSheetAction.copyLink) {
+        final link = await uploadDocumentAndCreateShareLink(widget.document);
+        await Clipboard.setData(ClipboardData(text: link));
+        if (mounted) {
+          showAppSnackBar(
+            context,
+            loc.AppLocalizations.of(context)!.cloudLinkCopied,
+          );
+        }
       } else if (action != ShareSheetAction.share) {
         await performShareSheetAction(
           action: action,
@@ -78,6 +97,10 @@ class _DocumentViewerScreenState extends State<DocumentViewerScreen> {
             'Could not share document as images: $error',
           ShareSheetAction.asText =>
             'Could not extract or share document text: $error',
+          ShareSheetAction.cloud =>
+            loc.AppLocalizations.of(context)!.cloudUploadError(error.toString()),
+          ShareSheetAction.copyLink =>
+            loc.AppLocalizations.of(context)!.cloudLinkError(error.toString()),
           _ => 'Could not share document: $error',
         });
       }
