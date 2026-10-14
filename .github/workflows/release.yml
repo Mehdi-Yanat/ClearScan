@@ -5,12 +5,21 @@ on:
     tags:
       - 'v*'
   workflow_dispatch:
+    inputs:
+      version:
+        description: 'Semantic version to release, e.g. 1.0.1-beta.1'
+        required: true
+        type: string
 
 jobs:
   release:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    env:
+      SUPABASE_PROJECT_URL: ${{ vars.SUPABASE_PROJECT_URL }}
+      SUPABASE_PUBLISHABLE_KEY: ${{ vars.SUPABASE_PUBLISHABLE_KEY }}
+      GOOGLE_ID_CLIENT: ${{ vars.GOOGLE_ID_CLIENT }}
 
     steps:
       - name: Checkout code
@@ -65,13 +74,15 @@ jobs:
 
       - name: Determine release version
         id: version
+        env:
+          RELEASE_VERSION: ${{ inputs.version }}
         run: |
           if [[ "$GITHUB_REF" == refs/tags/v* ]]; then
             version="${GITHUB_REF_NAME#v}"
             tag="$GITHUB_REF_NAME"
           else
-            version="$(sed -n 's/^version: \([^+]*\).*/\1/p' pubspec.yaml)"
-            tag="v${version%%+*}"
+            version="$RELEASE_VERSION"
+            tag="v$version"
           fi
           if [[ ! "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+([+-][0-9A-Za-z.-]+)?$ ]]; then
             echo "::error::Expected a semantic version tag such as v1.2.3; got: $version"
@@ -80,17 +91,32 @@ jobs:
           echo "name=${version%%+*}" >> "$GITHUB_OUTPUT"
           echo "tag=$tag" >> "$GITHUB_OUTPUT"
 
+      - name: Validate app configuration
+        run: |
+          for variable_name in SUPABASE_PROJECT_URL SUPABASE_PUBLISHABLE_KEY; do
+            if [[ -z "${!variable_name}" ]]; then
+              echo "::error::Missing required GitHub Actions variable: ${variable_name}"
+              exit 1
+            fi
+          done
+
       - name: Build Release APK
         run: |
           flutter build apk --release \
             --build-name="${{ steps.version.outputs.name }}" \
-            --build-number="${{ github.run_number }}"
+            --build-number="${{ github.run_number }}" \
+            --dart-define="supabase_project_url=${SUPABASE_PROJECT_URL}" \
+            --dart-define="supabase_publishable_key=${SUPABASE_PUBLISHABLE_KEY}" \
+            --dart-define="google_ID_client=${GOOGLE_ID_CLIENT}"
 
       - name: Build App Bundle
         run: |
           flutter build appbundle --release \
             --build-name="${{ steps.version.outputs.name }}" \
-            --build-number="${{ github.run_number }}"
+            --build-number="${{ github.run_number }}" \
+            --dart-define="supabase_project_url=${SUPABASE_PROJECT_URL}" \
+            --dart-define="supabase_publishable_key=${SUPABASE_PUBLISHABLE_KEY}" \
+            --dart-define="google_ID_client=${GOOGLE_ID_CLIENT}"
 
       - name: Name release artifacts
         run: |
@@ -108,5 +134,6 @@ jobs:
             build/app/outputs/flutter-apk/ClearScan-${{ steps.version.outputs.name }}.apk
             build/app/outputs/bundle/release/ClearScan-${{ steps.version.outputs.name }}.aab
           generate_release_notes: true
+          prerelease: ${{ contains(steps.version.outputs.name, '-') }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

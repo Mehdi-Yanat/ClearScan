@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:clear_scan/services/documents/recent_documents.dart';
 import 'package:flutter/services.dart';
@@ -20,7 +19,8 @@ void main() {
       '${tempDirectory.path}${Platform.pathSeparator}documents',
     );
     await documentsDirectory.create();
-    pathProvider.setMockMethodCallHandler((call) async {
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(pathProvider, (call) async {
       if (call.method == 'getApplicationDocumentsDirectory') {
         return tempDirectory.path;
       }
@@ -30,7 +30,8 @@ void main() {
   });
 
   tearDown(() async {
-    pathProvider.setMockMethodCallHandler(null);
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(pathProvider, null);
     if (await tempDirectory.exists()) {
       await tempDirectory.delete(recursive: true);
     }

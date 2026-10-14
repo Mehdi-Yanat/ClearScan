@@ -1,5 +1,4 @@
 import 'dart:typed_data';
-import 'dart:ui';
 
 import 'package:clear_scan/services/imaging/quad_refiner.dart';
 import 'package:flutter_test/flutter_test.dart';

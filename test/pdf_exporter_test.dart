@@ -15,17 +15,19 @@ void main() {
     tempDirectory = await Directory.systemTemp.createTemp(
       'clearscan-pdf-export-',
     );
-    pathProvider.setMockMethodCallHandler((call) async {
-      if (call.method == 'getApplicationDocumentsDirectory') {
-        return tempDirectory.path;
-      }
-      if (call.method == 'getExternalStorageDirectories') return <String>[];
-      throw MissingPluginException('Unexpected method ${call.method}');
-    });
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(pathProvider, (call) async {
+          if (call.method == 'getApplicationDocumentsDirectory') {
+            return tempDirectory.path;
+          }
+          if (call.method == 'getExternalStorageDirectories') return <String>[];
+          throw MissingPluginException('Unexpected method ${call.method}');
+        });
   });
 
   tearDown(() async {
-    pathProvider.setMockMethodCallHandler(null);
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(pathProvider, null);
     if (await tempDirectory.exists()) {
       await tempDirectory.delete(recursive: true);
     }
