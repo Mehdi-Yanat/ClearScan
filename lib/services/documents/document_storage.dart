@@ -19,7 +19,10 @@ Future<File> saveCroppedDocument({
   required String name,
 }) async {
   final documentsDirectory = await getApplicationDocumentsDirectory();
-  final scansDirectory = Directory('${documentsDirectory.path}/documents');
+  final separator = Platform.pathSeparator;
+  final scansDirectory = Directory(
+    '${documentsDirectory.path}${separator}documents',
+  );
   await scansDirectory.create(recursive: true);
 
   final safeName = name
@@ -27,7 +30,9 @@ Future<File> saveCroppedDocument({
       .trim()
       .replaceAll(RegExp(r'\s+'), '_');
   final timestamp = DateTime.now().microsecondsSinceEpoch;
-  final destination = File('${scansDirectory.path}/${safeName}_$timestamp.jpg');
+  final destination = File(
+    '${scansDirectory.path}${separator}${safeName}_$timestamp.jpg',
+  );
   return File(imagePath).copy(destination.path);
 }
 
@@ -42,7 +47,10 @@ Future<File> saveEnhancedDocument({
     _ => throw FormatException('Unsupported document format: $format'),
   };
   final documentsDirectory = await getApplicationDocumentsDirectory();
-  final scansDirectory = Directory('${documentsDirectory.path}/documents');
+  final separator = Platform.pathSeparator;
+  final scansDirectory = Directory(
+    '${documentsDirectory.path}${separator}documents',
+  );
   await scansDirectory.create(recursive: true);
 
   final safeName = name
@@ -56,10 +64,14 @@ Future<File> saveEnhancedDocument({
   final bytes = extension == 'pdf'
       ? await createPdfFromImage(imageBytes)
       : imageBytes;
-  var destination = File('${scansDirectory.path}/$safeName.$extension');
+  var destination = File(
+    '${scansDirectory.path}${separator}$safeName.$extension',
+  );
   var suffix = 2;
   while (await destination.exists()) {
-    destination = File('${scansDirectory.path}/${safeName}_$suffix.$extension');
+    destination = File(
+      '${scansDirectory.path}${separator}${safeName}_$suffix.$extension',
+    );
     suffix++;
   }
   await destination.writeAsBytes(bytes, flush: true);
@@ -82,15 +94,18 @@ Future<SavedPdf> saveEnhancedPdfToDevice({
       : '$safeName.pdf';
   final pdfBytes = await createPdfFromImage(imageBytes);
   final documentsDirectory = await getApplicationDocumentsDirectory();
-  final scansDirectory = Directory('${documentsDirectory.path}/documents');
+  final separator = Platform.pathSeparator;
+  final scansDirectory = Directory(
+    '${documentsDirectory.path}${separator}documents',
+  );
   await scansDirectory.create(recursive: true);
 
-  var appCopy = File('${scansDirectory.path}/$requestedFilename');
+  var appCopy = File('${scansDirectory.path}${separator}$requestedFilename');
   final extensionIndex = requestedFilename.lastIndexOf('.');
   final stem = requestedFilename.substring(0, extensionIndex);
   var suffix = 2;
   while (await appCopy.exists()) {
-    appCopy = File('${scansDirectory.path}/${stem}_$suffix.pdf');
+    appCopy = File('${scansDirectory.path}${separator}${stem}_$suffix.pdf');
     suffix++;
   }
   await appCopy.writeAsBytes(pdfBytes, flush: true);

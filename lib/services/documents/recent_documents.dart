@@ -102,7 +102,9 @@ Future<void> saveRecentDocumentToDevice(RecentDocument document) async {
 Future<void> importRecentDocument(String name, Uint8List bytes) async {
   if (bytes.isEmpty) throw const FormatException('The selected file is empty.');
 
-  final safeName = name.replaceAll(RegExp(r'[\\/:*?"<>|]'), '_').trim();
+  final safeName = name
+      .trim()
+      .replaceAll(RegExp(r'[\\/:*?"<>|\s]'), '_');
   if (safeName.isEmpty || safeName == '.' || safeName == '..') {
     throw const FormatException('The selected file has an invalid name.');
   }
@@ -187,7 +189,8 @@ Future<List<RecentDocument>> _loadLocalDocuments() async {
   );
   final directories = <Directory>[
     appDocumentsDirectory,
-    ...?await getExternalStorageDirectories(type: StorageDirectory.downloads),
+    if (Platform.isAndroid)
+      ...?await getExternalStorageDirectories(type: StorageDirectory.downloads),
   ];
   final documents = <RecentDocument>[];
   final seenPaths = <String>{};

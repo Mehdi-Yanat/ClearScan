@@ -2,6 +2,7 @@ import 'package:clear_scan/main.dart' as app;
 import 'package:clear_scan/screens/app/home_screen.dart';
 import 'package:clear_scan/screens/app/onboarding_screen.dart';
 import 'package:clear_scan/screens/app/splash_screen.dart';
+import 'package:flutter/material.dart' show ElevatedButton, TextButton;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -19,7 +20,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byType(OnboardingPage), findsOneWidget);
 
-    await tester.tap(find.text('Get Started'));
+    await tester.tap(find.widgetWithText(ElevatedButton, 'Get Started'));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 500));
 
@@ -37,7 +38,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byType(OnboardingPage), findsOneWidget);
 
-    await tester.tap(find.text('Skip'));
+    await tester.tap(find.widgetWithText(TextButton, 'Skip'));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 500));
 

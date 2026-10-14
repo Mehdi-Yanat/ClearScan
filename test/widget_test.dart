@@ -9,7 +9,8 @@ void main() {
   ) async {
     SharedPreferences.setMockInitialValues({});
     await tester.pumpWidget(const MyApp());
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
 
     expect(find.byType(OnboardingPage), findsOneWidget);
     expect(find.text('Get Started'), findsOneWidget);

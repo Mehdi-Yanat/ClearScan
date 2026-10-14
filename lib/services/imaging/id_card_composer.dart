@@ -11,8 +11,8 @@ Uint8List composeIdCardSides(List<Uint8List> sides) {
     );
   }
 
-  final decodedFront = img.decodeImage(sides[0]);
-  final decodedBack = img.decodeImage(sides[1]);
+  final decodedFront = _decodeImage(sides[0]);
+  final decodedBack = _decodeImage(sides[1]);
   if (decodedFront == null || decodedBack == null) {
     throw const FormatException('Could not read both captured document sides.');
   }
@@ -44,6 +44,14 @@ Uint8List composeIdCardSides(List<Uint8List> sides) {
     dstY: margin + frontImage.height + gap,
   );
   return Uint8List.fromList(img.encodeJpg(combined, quality: 95));
+}
+
+img.Image? _decodeImage(Uint8List bytes) {
+  try {
+    return img.decodeImage(bytes);
+  } on RangeError {
+    throw const FormatException('Could not read both captured document sides.');
+  }
 }
 
 img.Image _landscape(img.Image image) =>

@@ -372,7 +372,7 @@ class _PaperLines extends StatelessWidget {
         const SizedBox(height: 16),
         for (var i = 0; i < 7; i++) ...[
           line(i % 3 == 0 ? 0.7 : 1),
-          const SizedBox(height: 13),
+          const SizedBox(height: 12),
         ],
       ],
     );

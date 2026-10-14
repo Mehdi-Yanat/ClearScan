@@ -225,7 +225,10 @@ void _flattenIllumination(Uint8List rgb, int w, int h) {
 
   // Dark photos or graphics should not be treated as white paper.
   final vals = [...grid]..sort();
-  final floor = vals[vals.length ~/ 2] * 0.5;
+  final median = vals[vals.length ~/ 2];
+  final upper = vals[(vals.length * 0.9).floor()];
+  if (upper - median < 12) return;
+  final floor = median * 0.5;
   for (var i = 0; i < grid.length; i++) {
     if (grid[i] < floor) grid[i] = floor;
   }
