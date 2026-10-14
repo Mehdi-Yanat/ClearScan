@@ -31,7 +31,7 @@ Future<File> saveCroppedDocument({
       .replaceAll(RegExp(r'\s+'), '_');
   final timestamp = DateTime.now().microsecondsSinceEpoch;
   final destination = File(
-    '${scansDirectory.path}${separator}${safeName}_$timestamp.jpg',
+    '${scansDirectory.path}$separator${safeName}_$timestamp.jpg',
   );
   return File(imagePath).copy(destination.path);
 }
@@ -65,12 +65,12 @@ Future<File> saveEnhancedDocument({
       ? await createPdfFromImage(imageBytes)
       : imageBytes;
   var destination = File(
-    '${scansDirectory.path}${separator}$safeName.$extension',
+    '${scansDirectory.path}$separator$safeName.$extension',
   );
   var suffix = 2;
   while (await destination.exists()) {
     destination = File(
-      '${scansDirectory.path}${separator}${safeName}_$suffix.$extension',
+      '${scansDirectory.path}$separator${safeName}_$suffix.$extension',
     );
     suffix++;
   }
@@ -100,12 +100,12 @@ Future<SavedPdf> saveEnhancedPdfToDevice({
   );
   await scansDirectory.create(recursive: true);
 
-  var appCopy = File('${scansDirectory.path}${separator}$requestedFilename');
+  var appCopy = File('${scansDirectory.path}$separator$requestedFilename');
   final extensionIndex = requestedFilename.lastIndexOf('.');
   final stem = requestedFilename.substring(0, extensionIndex);
   var suffix = 2;
   while (await appCopy.exists()) {
-    appCopy = File('${scansDirectory.path}${separator}${stem}_$suffix.pdf');
+    appCopy = File('${scansDirectory.path}$separator${stem}_$suffix.pdf');
     suffix++;
   }
   await appCopy.writeAsBytes(pdfBytes, flush: true);
