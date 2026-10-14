@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:clear_scan/widgets/navigation/app_bottom_bar.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -148,6 +149,30 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
   Future<void> _openScanner() async {
     await ScannerScreen.open(context);
     if (mounted) await _loadFiles();
+  }
+
+  Future<void> _importFile() async {
+    try {
+      final file = await FilePicker.pickFile(
+        type: FileType.custom,
+        allowedExtensions: const ['pdf', 'jpg', 'jpeg', 'png'],
+      );
+      if (!mounted || file == null) return;
+
+      final path = file.path;
+      if (path == null || path.isEmpty) {
+        throw const FileSystemException(
+          'The selected file could not be accessed.',
+        );
+      }
+      await importRecentDocument(file.name, await File(path).readAsBytes());
+
+      if (!mounted) return;
+      await _loadFiles();
+      if (mounted) _snack('"${file.name}" imported');
+    } on Exception catch (error) {
+      if (mounted) _snack('Could not import file: $error');
+    }
   }
 
   void _snack(String message, {SnackBarAction? action}) {
@@ -686,10 +711,12 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
             'Could not share document as images: $error',
           ShareSheetAction.asText =>
             'Could not extract or share document text: $error',
-          ShareSheetAction.cloud =>
-            loc.AppLocalizations.of(context)!.cloudUploadError(error.toString()),
-          ShareSheetAction.copyLink =>
-            loc.AppLocalizations.of(context)!.cloudLinkError(error.toString()),
+          ShareSheetAction.cloud => loc.AppLocalizations.of(
+            context,
+          )!.cloudUploadError(error.toString()),
+          ShareSheetAction.copyLink => loc.AppLocalizations.of(
+            context,
+          )!.cloudLinkError(error.toString()),
           _ => 'Could not share document: $error',
         });
       }
@@ -868,7 +895,6 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
               label: loc.AppLocalizations.of(context)!.importFile,
               onTap: () {
                 Navigator.of(sheetContext).pop('import');
-                // TODO: file picker import
               },
             ),
             const SizedBox(height: 8),
@@ -879,6 +905,7 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
     if (!mounted) return;
     if (action == 'scan') _openScanner();
     if (action == 'folder') await _createFolder();
+    if (action == 'import') await _importFile();
   }
 
   // ── build ──

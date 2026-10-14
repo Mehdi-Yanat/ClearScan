@@ -1,4 +1,4 @@
-package com.example.scanner
+package com.opensource.clearscan
 
 import android.content.ContentValues
 import android.net.Uri
@@ -12,7 +12,7 @@ import android.content.res.Configuration
 import io.flutter.plugin.common.MethodChannel
 
 class MainActivity : FlutterFragmentActivity() {
-	private val CHANNEL = "com.example.scanner/files"
+	private val CHANNEL = "com.opensource.clearscan/files"
 
 	override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
 		super.configureFlutterEngine(flutterEngine)

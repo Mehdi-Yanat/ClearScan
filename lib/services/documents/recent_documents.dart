@@ -27,7 +27,7 @@ class RecentDocument {
   }
 }
 
-const _androidFilesChannel = MethodChannel('com.example.scanner/files');
+const _androidFilesChannel = MethodChannel('com.opensource.clearscan/files');
 const _supportedExtensions = {'pdf', 'jpg', 'jpeg', 'png'};
 
 Future<Uint8List> readRecentDocumentBytes(RecentDocument document) async {
@@ -96,6 +96,44 @@ Future<void> saveRecentDocumentToDevice(RecentDocument document) async {
     );
     suffix++;
   }
+  await destination.writeAsBytes(bytes, flush: true);
+}
+
+Future<void> importRecentDocument(String name, Uint8List bytes) async {
+  if (bytes.isEmpty) throw const FormatException('The selected file is empty.');
+
+  final safeName = name.replaceAll(RegExp(r'[\\/:*?"<>|]'), '_').trim();
+  if (safeName.isEmpty || safeName == '.' || safeName == '..') {
+    throw const FormatException('The selected file has an invalid name.');
+  }
+  final extension = safeName.split('.').last.toLowerCase();
+  if (!_supportedExtensions.contains(extension)) {
+    throw FormatException('Files of type .$extension are not supported.');
+  }
+
+  final documentsDirectory = await getApplicationDocumentsDirectory();
+  final targetDirectory = Directory(
+    '${documentsDirectory.path}${Platform.pathSeparator}documents',
+  );
+  await targetDirectory.create(recursive: true);
+
+  final extensionIndex = safeName.lastIndexOf('.');
+  final stem = extensionIndex > 0
+      ? safeName.substring(0, extensionIndex)
+      : safeName;
+  final suffix = extensionIndex > 0 ? safeName.substring(extensionIndex) : '';
+  var destination = File(
+    '${targetDirectory.path}${Platform.pathSeparator}$safeName',
+  );
+  var duplicateNumber = 2;
+  while (await destination.exists()) {
+    destination = File(
+      '${targetDirectory.path}${Platform.pathSeparator}'
+      '${stem}_$duplicateNumber$suffix',
+    );
+    duplicateNumber++;
+  }
+
   await destination.writeAsBytes(bytes, flush: true);
 }
 

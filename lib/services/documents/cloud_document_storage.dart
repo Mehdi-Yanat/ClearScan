@@ -111,9 +111,7 @@ Future<void> uploadDocument(RecentDocument document) async {
   await uploadCloudFile(name: name, bytes: bytes);
 }
 
-Future<String> uploadDocumentAndCreateShareLink(
-  RecentDocument document,
-) async {
+Future<String> uploadDocumentAndCreateShareLink(RecentDocument document) async {
   final name = _safeFilename(document.name);
   final bytes = await readRecentDocumentBytes(document);
   return uploadCloudFileAndCreateShareLink(name: name, bytes: bytes);
@@ -130,11 +128,13 @@ Future<String> uploadCloudFile({
   }
   final objectName = '${DateTime.now().microsecondsSinceEpoch}--$safeName';
   final objectPath = '${_userPrefix(client)}/$objectName';
-  await client.storage.from(_bucketName).uploadBinary(
-    objectPath,
-    bytes,
-    fileOptions: FileOptions(contentType: _mimeType(safeName)),
-  );
+  await client.storage
+      .from(_bucketName)
+      .uploadBinary(
+        objectPath,
+        bytes,
+        fileOptions: FileOptions(contentType: _mimeType(safeName)),
+      );
   return objectPath;
 }
 

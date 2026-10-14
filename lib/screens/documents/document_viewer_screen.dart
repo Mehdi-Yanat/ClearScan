@@ -22,7 +22,7 @@ class DocumentViewerScreen extends StatefulWidget {
 }
 
 class _DocumentViewerScreenState extends State<DocumentViewerScreen> {
-  static const _filesChannel = MethodChannel('com.example.scanner/files');
+  static const _filesChannel = MethodChannel('com.opensource.clearscan/files');
   Uint8List? _pdfBytes;
   Object? _pdfLoadError;
   bool _loadingPdf = false;
@@ -97,10 +97,12 @@ class _DocumentViewerScreenState extends State<DocumentViewerScreen> {
             'Could not share document as images: $error',
           ShareSheetAction.asText =>
             'Could not extract or share document text: $error',
-          ShareSheetAction.cloud =>
-            loc.AppLocalizations.of(context)!.cloudUploadError(error.toString()),
-          ShareSheetAction.copyLink =>
-            loc.AppLocalizations.of(context)!.cloudLinkError(error.toString()),
+          ShareSheetAction.cloud => loc.AppLocalizations.of(
+            context,
+          )!.cloudUploadError(error.toString()),
+          ShareSheetAction.copyLink => loc.AppLocalizations.of(
+            context,
+          )!.cloudLinkError(error.toString()),
           _ => 'Could not share document: $error',
         });
       }

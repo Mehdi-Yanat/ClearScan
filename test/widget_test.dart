@@ -1,14 +1,17 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:clear_scan/screens/scanning/scanner_screen.dart';
 import 'package:clear_scan/main.dart';
+import 'package:clear_scan/screens/app/onboarding_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
-  testWidgets('Verify MyApp renders ScannerPage', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
+  testWidgets('MyApp shows onboarding on first launch', (
+    WidgetTester tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({});
     await tester.pumpWidget(const MyApp());
+    await tester.pumpAndSettle();
 
-    // Verify that our app starts on the ScannerPage by checking for the title.
-    expect(find.text('ClearScan'), findsOneWidget);
-    expect(find.byType(ScannerScreen), findsOneWidget);
+    expect(find.byType(OnboardingPage), findsOneWidget);
+    expect(find.text('Get Started'), findsOneWidget);
   });
 }

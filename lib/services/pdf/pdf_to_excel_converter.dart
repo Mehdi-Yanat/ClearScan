@@ -10,7 +10,7 @@ import 'package:qnox_pdf_text/qnox_pdf_text.dart';
 
 typedef PdfExcelConversionProgress = void Function(int completed, int total);
 
-const _filesChannel = MethodChannel('com.example.scanner/files');
+const _filesChannel = MethodChannel('com.opensource.clearscan/files');
 const _excelMimeType =
     'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
 const _ocrLanguages = 'eng+deu+ara';

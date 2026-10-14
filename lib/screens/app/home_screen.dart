@@ -127,10 +127,12 @@ class _HomeScreenState extends State<HomeScreen> {
             'Could not share document as images: $error',
           ShareSheetAction.asText =>
             'Could not extract or share document text: $error',
-          ShareSheetAction.cloud =>
-            loc.AppLocalizations.of(context)!.cloudUploadError(error.toString()),
-          ShareSheetAction.copyLink =>
-            loc.AppLocalizations.of(context)!.cloudLinkError(error.toString()),
+          ShareSheetAction.cloud => loc.AppLocalizations.of(
+            context,
+          )!.cloudUploadError(error.toString()),
+          ShareSheetAction.copyLink => loc.AppLocalizations.of(
+            context,
+          )!.cloudLinkError(error.toString()),
           _ => 'Could not share document: $error',
         });
       }

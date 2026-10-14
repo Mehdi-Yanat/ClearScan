@@ -77,7 +77,10 @@ Future<Uint8List> roundCardCornerBytes(
       data.offsetInBytes,
       data.lengthInBytes,
     );
-    return await compute(_encodeJpeg, _EncodeJob(rgba, width, height, jpegQuality));
+    return await compute(
+      _encodeJpeg,
+      _EncodeJob(rgba, width, height, jpegQuality),
+    );
   } finally {
     source?.dispose();
     rendered?.dispose();

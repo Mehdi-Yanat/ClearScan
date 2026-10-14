@@ -20,7 +20,7 @@ class SignDocumentScreen extends StatefulWidget {
 }
 
 class _SignDocumentScreenState extends State<SignDocumentScreen> {
-  static const _filesChannel = MethodChannel('com.example.scanner/files');
+  static const _filesChannel = MethodChannel('com.opensource.clearscan/files');
   static const _signatureSize = Size(1200, 360);
   static const _previewHeight = 360.0;
 

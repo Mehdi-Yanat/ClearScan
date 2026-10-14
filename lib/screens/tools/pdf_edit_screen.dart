@@ -20,7 +20,7 @@ class PdfEditScreen extends StatefulWidget {
 }
 
 class _PdfEditScreenState extends State<PdfEditScreen> {
-  static const _filesChannel = MethodChannel('com.example.scanner/files');
+  static const _filesChannel = MethodChannel('com.opensource.clearscan/files');
 
   final _pageRangeController = TextEditingController();
   final _sourcePasswordController = TextEditingController();

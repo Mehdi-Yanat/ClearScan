@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -42,7 +43,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get authGuestTitle => 'Gast';
 
   @override
-  String get authGuestDescription => 'Melde dich an, um auf dein Konto zuzugreifen';
+  String get authGuestDescription =>
+      'Melde dich an, um auf dein Konto zuzugreifen';
 
   @override
   String get authSignIn => 'Anmelden';
@@ -78,7 +80,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get authInvalidEmail => 'Gib eine gültige E-Mail-Adresse ein.';
 
   @override
-  String get authPasswordTooShort => 'Das Passwort muss mindestens 6 Zeichen lang sein.';
+  String get authPasswordTooShort =>
+      'Das Passwort muss mindestens 6 Zeichen lang sein.';
 
   @override
   String get authHaveAccount => 'Du hast bereits ein Konto? Anmelden';
@@ -87,13 +90,16 @@ class AppLocalizationsDe extends AppLocalizations {
   String get authNeedAccount => 'Neu bei ClearScan? Konto erstellen';
 
   @override
-  String get authBackendNotConfigured => 'Die Kontoanmeldung ist noch nicht eingerichtet.';
+  String get authBackendNotConfigured =>
+      'Die Kontoanmeldung ist noch nicht eingerichtet.';
 
   @override
-  String get authBackendSetupInstructions => 'Starte die VS-Code-Aufgabe \"Run with Supabase\" oder führe .\\tool\\flutter_with_supabase.ps1 run aus. URL und Publishable Key kommen aus .env. Keine geheimen Schlüssel in die App einfügen.';
+  String get authBackendSetupInstructions =>
+      'Starte die VS-Code-Aufgabe \"Run with Supabase\" oder führe .\\tool\\flutter_with_supabase.ps1 run aus. URL und Publishable Key kommen aus .env. Keine geheimen Schlüssel in die App einfügen.';
 
   @override
-  String get authCheckEmail => 'Bestätige dein Konto über den Link in deiner E-Mail.';
+  String get authCheckEmail =>
+      'Bestätige dein Konto über den Link in deiner E-Mail.';
 
   @override
   String get authContinueWithGoogle => 'Mit Google fortfahren';
@@ -102,7 +108,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get authOr => 'oder';
 
   @override
-  String get authGoogleNotConfigured => 'Setze google_ID_client in .env auf deine Google-Web-Client-ID und starte mit Run with Supabase neu.';
+  String get authGoogleNotConfigured =>
+      'Setze google_ID_client in .env auf deine Google-Web-Client-ID und starte mit Run with Supabase neu.';
 
   @override
   String get cloudStorage => 'Cloud-Speicher';
@@ -124,7 +131,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get cloudStoragePrivacy => 'Private Sicherungen, nur für dein Konto.';
 
   @override
-  String get cloudBackupChooseDocuments => 'Dokumente für die Sicherung auswählen';
+  String get cloudBackupChooseDocuments =>
+      'Dokumente für die Sicherung auswählen';
 
   @override
   String get cloudNoLocalDocuments => 'Keine lokalen Dokumente gefunden.';
@@ -228,10 +236,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get appLock => 'App-Sperre';
 
   @override
-  String get appLockAuthReason => 'Authentifizieren, um ClearScan zu entsperren.';
+  String get appLockAuthReason =>
+      'Authentifizieren, um ClearScan zu entsperren.';
 
   @override
-  String get appLockAuthenticationFailed => 'Authentifizierung fehlgeschlagen. Bitte erneut versuchen.';
+  String get appLockAuthenticationFailed =>
+      'Authentifizierung fehlgeschlagen. Bitte erneut versuchen.';
 
   @override
   String appLockAuthenticationError(Object error) {
@@ -361,7 +371,8 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get fast_and_smart => 'Schnelles, intelligentes und sicheres\nDokumentenscannen.';
+  String get fast_and_smart =>
+      'Schnelles, intelligentes und sicheres\nDokumentenscannen.';
 
   @override
   String get documentsTitle => 'Dokumente';
@@ -433,19 +444,22 @@ class AppLocalizationsDe extends AppLocalizations {
   String get onboardingSlideScanTitle => 'Alles scannen';
 
   @override
-  String get onboardingSlideScanSubtitle => 'Erstelle klare, durchsuchbare PDFs\nin Sekunden aus Papier.';
+  String get onboardingSlideScanSubtitle =>
+      'Erstelle klare, durchsuchbare PDFs\nin Sekunden aus Papier.';
 
   @override
   String get onboardingSlideOrganizeTitle => 'Alles organisieren';
 
   @override
-  String get onboardingSlideOrganizeSubtitle => 'Sortiere Ausweise, Verträge und Belege\nin Ordnern.';
+  String get onboardingSlideOrganizeSubtitle =>
+      'Sortiere Ausweise, Verträge und Belege\nin Ordnern.';
 
   @override
   String get onboardingSlideSignTitle => 'Bearbeiten & Unterschreiben';
 
   @override
-  String get onboardingSlideSignSubtitle => 'Zusammenführen, komprimieren, signieren und teilen\nmit wenigen Fingertipps.';
+  String get onboardingSlideSignSubtitle =>
+      'Zusammenführen, komprimieren, signieren und teilen\nmit wenigen Fingertipps.';
 
   @override
   String get onboardingSkip => 'Überspringen';
@@ -454,7 +468,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get onboardingGetStarted => 'Los geht\'s';
 
   @override
-  String get onboardingAgreeTerms => 'Indem du fortfährst, stimmst du den Nutzungsbedingungen und der Datenschutzerklärung zu.';
+  String get onboardingAgreeTerms =>
+      'Indem du fortfährst, stimmst du den Nutzungsbedingungen und der Datenschutzerklärung zu.';
 
   @override
   String get onboardingTileIdCards => 'Ausweise';
@@ -484,7 +499,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get scanModeIdCardHint => 'Vorderseite des Ausweises aufnehmen.';
 
   @override
-  String get scanModeBackSideHint => 'Vorderseite erfasst. Rückseite aufnehmen.';
+  String get scanModeBackSideHint =>
+      'Vorderseite erfasst. Rückseite aufnehmen.';
 
   @override
   String get scanIdFrontLabel => 'Vorderseite';
@@ -589,7 +605,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get settingsClearCacheTitle => 'Cache leeren?';
 
   @override
-  String get settingsClearCacheMessage => 'Temporäre Dateien löschen. Dokumente bleiben erhalten.';
+  String get settingsClearCacheMessage =>
+      'Temporäre Dateien löschen. Dokumente bleiben erhalten.';
 
   @override
   String get settingsCancel => 'Abbrechen';
@@ -633,10 +650,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get cropAdjustErrorOpenImage => 'Konnte das Bild nicht öffnen.';
 
   @override
-  String get cropAdjustErrorCropImage => 'Bildzuschnitt fehlgeschlagen. Passe die Ecken an.';
+  String get cropAdjustErrorCropImage =>
+      'Bildzuschnitt fehlgeschlagen. Passe die Ecken an.';
 
   @override
-  String get cropAdjustErrorDetectEdges => 'Kanten nicht erkannt. Passe sie manuell an.';
+  String get cropAdjustErrorDetectEdges =>
+      'Kanten nicht erkannt. Passe sie manuell an.';
 
   @override
   String get workshopTitle => 'Werkstatt';
@@ -663,10 +682,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get pdfToWordSelectPdf => 'PDF auswählen';
 
   @override
-  String get pdfToWordHint => 'PDF-Text als Word exportieren. OCR für Arabisch, Englisch und Deutsch; Layout kann abweichen.';
+  String get pdfToWordHint =>
+      'PDF-Text als Word exportieren. OCR für Arabisch, Englisch und Deutsch; Layout kann abweichen.';
 
   @override
-  String get pdfToWordConverting => 'PDF-Text wird extrahiert und per OCR erkannt…';
+  String get pdfToWordConverting =>
+      'PDF-Text wird extrahiert und per OCR erkannt…';
 
   @override
   String pdfToWordProgress(Object completed, Object total) {
@@ -734,10 +755,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get pdfToExcelSelectPdf => 'PDF auswählen';
 
   @override
-  String get pdfToExcelHint => 'PDF-Text nach Seite und Zeile in Excel exportieren. OCR: Arabisch, Englisch und Deutsch.';
+  String get pdfToExcelHint =>
+      'PDF-Text nach Seite und Zeile in Excel exportieren. OCR: Arabisch, Englisch und Deutsch.';
 
   @override
-  String get pdfToExcelConverting => 'PDF-Text wird extrahiert und per OCR erkannt…';
+  String get pdfToExcelConverting =>
+      'PDF-Text wird extrahiert und per OCR erkannt…';
 
   @override
   String pdfToExcelProgress(Object completed, Object total) {
@@ -800,16 +823,19 @@ class AppLocalizationsDe extends AppLocalizations {
   String get signatureWhite => 'Weiß';
 
   @override
-  String get signaturePlacementHint => 'Ziehe deine Signatur auf der Seite an die gewünschte Position.';
+  String get signaturePlacementHint =>
+      'Ziehe deine Signatur auf der Seite an die gewünschte Position.';
 
   @override
-  String get signaturePreviewUnavailable => 'Vorschau nicht verfügbar. Wähle die PDF erneut aus.';
+  String get signaturePreviewUnavailable =>
+      'Vorschau nicht verfügbar. Wähle die PDF erneut aus.';
 
   @override
   String get toolWatermark => 'Wasserzeichen';
 
   @override
-  String get toolWatermarkDesc => 'Wasserzeichen zu deinen Dokumenten hinzufügen';
+  String get toolWatermarkDesc =>
+      'Wasserzeichen zu deinen Dokumenten hinzufügen';
 
   @override
   String get watermarkText => 'Wasserzeichentext';
@@ -821,19 +847,23 @@ class AppLocalizationsDe extends AppLocalizations {
   String get watermarkOpacity => 'Deckkraft';
 
   @override
-  String get watermarkPositionHint => 'Ziehe das Wasserzeichen an die gewünschte Position auf allen Seiten.';
+  String get watermarkPositionHint =>
+      'Ziehe das Wasserzeichen an die gewünschte Position auf allen Seiten.';
 
   @override
-  String get watermarkPreviewUnavailable => 'Die Seitenvorschau ist nicht verfügbar.';
+  String get watermarkPreviewUnavailable =>
+      'Die Seitenvorschau ist nicht verfügbar.';
 
   @override
-  String get watermarkAllPagesHint => 'Das Wasserzeichen wird auf jeder Seite hinzugefügt.';
+  String get watermarkAllPagesHint =>
+      'Das Wasserzeichen wird auf jeder Seite hinzugefügt.';
 
   @override
   String get watermarkApply => 'Wasserzeichen hinzufügen';
 
   @override
-  String get watermarkPdfAccessFailed => 'Auf die ausgewählte PDF-Datei kann nicht zugegriffen werden.';
+  String get watermarkPdfAccessFailed =>
+      'Auf die ausgewählte PDF-Datei kann nicht zugegriffen werden.';
 
   @override
   String get toolOcr => 'OCR';
@@ -842,7 +872,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get toolOcrDesc => 'Text aus Bildern extrahieren';
 
   @override
-  String get ocrHint => 'Wähle ein Bild aus, um Text auf Englisch, Deutsch oder Arabisch zu erkennen.';
+  String get ocrHint =>
+      'Wähle ein Bild aus, um Text auf Englisch, Deutsch oder Arabisch zu erkennen.';
 
   @override
   String get ocrSelectImage => 'Bild auswählen';
@@ -868,7 +899,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get ocrCopied => 'Text kopiert';
 
   @override
-  String get ocrImagePreviewFailed => 'Das ausgewählte Bild kann nicht angezeigt werden.';
+  String get ocrImagePreviewFailed =>
+      'Das ausgewählte Bild kann nicht angezeigt werden.';
 
   @override
   String get toolQrGenerator => 'QR-Code-Generator';
@@ -877,7 +909,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get toolQrGeneratorDesc => 'Erstelle deine eigenen QR-Codes';
 
   @override
-  String get qrGeneratorHint => 'Gib Text oder einen Link ein, um einen QR-Code zu erstellen.';
+  String get qrGeneratorHint =>
+      'Gib Text oder einen Link ein, um einen QR-Code zu erstellen.';
 
   @override
   String get qrGeneratorContent => 'Text oder Link';
@@ -889,7 +922,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get qrGeneratorShare => 'QR-Code teilen';
 
   @override
-  String get qrGeneratorTooLong => 'Dieser Inhalt ist zu lang für einen QR-Code.';
+  String get qrGeneratorTooLong =>
+      'Dieser Inhalt ist zu lang für einen QR-Code.';
 
   @override
   String get pdfEditChoosePdf => 'PDF auswählen';
@@ -898,10 +932,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get pdfEditSourcePassword => 'PDF-Passwort (falls geschützt)';
 
   @override
-  String get pdfEditSourcePasswordHelp => 'Passwort prüfen und PDF erneut öffnen.';
+  String get pdfEditSourcePasswordHelp =>
+      'Passwort prüfen und PDF erneut öffnen.';
 
   @override
-  String get pdfEditOpenFailed => 'PDF konnte nicht geöffnet werden. Passwort prüfen und erneut versuchen.';
+  String get pdfEditOpenFailed =>
+      'PDF konnte nicht geöffnet werden. Passwort prüfen und erneut versuchen.';
 
   @override
   String get pdfEditLoadAgain => 'PDF laden';
@@ -918,16 +954,20 @@ class AppLocalizationsDe extends AppLocalizations {
   String get pdfEditPageRangeHint => '1,3-5';
 
   @override
-  String get pdfEditPageRangeHelp => 'Seitennummern oder Bereiche durch Kommas trennen.';
+  String get pdfEditPageRangeHelp =>
+      'Seitennummern oder Bereiche durch Kommas trennen.';
 
   @override
-  String get pdfEditSplitHint => 'Jede ausgewählte Seite wird als separate PDF gespeichert.';
+  String get pdfEditSplitHint =>
+      'Jede ausgewählte Seite wird als separate PDF gespeichert.';
 
   @override
-  String get pdfEditRotateHint => 'Ausgewählte Seiten werden um 90° im Uhrzeigersinn gedreht.';
+  String get pdfEditRotateHint =>
+      'Ausgewählte Seiten werden um 90° im Uhrzeigersinn gedreht.';
 
   @override
-  String get pdfEditReorderHint => 'Seiten in die gewünschte Reihenfolge bringen.';
+  String get pdfEditReorderHint =>
+      'Seiten in die gewünschte Reihenfolge bringen.';
 
   @override
   String pdfEditPage(Object page) {
@@ -947,13 +987,16 @@ class AppLocalizationsDe extends AppLocalizations {
   String get pdfEditConfirmPassword => 'Passwort bestätigen';
 
   @override
-  String get pdfEditPasswordsDoNotMatch => 'Die Passwörter stimmen nicht überein.';
+  String get pdfEditPasswordsDoNotMatch =>
+      'Die Passwörter stimmen nicht überein.';
 
   @override
-  String get pdfEditCompressionNote => 'Starke Komprimierung macht Seiten zu Bildern. Text ist nicht mehr auswählbar/durchsuchbar; Qualität kann sinken.';
+  String get pdfEditCompressionNote =>
+      'Starke Komprimierung macht Seiten zu Bildern. Text ist nicht mehr auswählbar/durchsuchbar; Qualität kann sinken.';
 
   @override
-  String get pdfEditCompressionWarningTitle => 'Warnung zur starken Komprimierung';
+  String get pdfEditCompressionWarningTitle =>
+      'Warnung zur starken Komprimierung';
 
   @override
   String get pdfEditCompressionCancel => 'Abbrechen';
@@ -962,7 +1005,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get pdfEditCompressionConfirm => 'Trotzdem komprimieren';
 
   @override
-  String get pdfEditCompressionNoReduction => 'Komprimierte Datei wäre größer. Original behalten.';
+  String get pdfEditCompressionNoReduction =>
+      'Komprimierte Datei wäre größer. Original behalten.';
 
   @override
   String pdfEditRun(Object tool) {
@@ -970,7 +1014,8 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get pdfEditDone => 'Fertig. Bearbeitete PDFs wurden unter Dokumente gespeichert.';
+  String get pdfEditDone =>
+      'Fertig. Bearbeitete PDFs wurden unter Dokumente gespeichert.';
 
   @override
   String get scannerTooltipClose => 'Schließen';
@@ -988,7 +1033,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get scannerErrorNoCamera => 'Keine Kamera auf diesem Gerät gefunden.';
 
   @override
-  String get scannerErrorPermission => 'Kameraberechtigung ist erforderlich, um Dokumente zu scannen.';
+  String get scannerErrorPermission =>
+      'Kameraberechtigung ist erforderlich, um Dokumente zu scannen.';
 
   @override
   String scannerErrorStart(Object error) {
@@ -1041,5 +1087,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get scanInfoHeader => 'Bild scannen';
 
   @override
-  String get scanInfoHint => 'Von Kamera aufnehmen oder Bild aus Galerie auswählen.';
+  String get scanInfoHint =>
+      'Von Kamera aufnehmen oder Bild aus Galerie auswählen.';
 }

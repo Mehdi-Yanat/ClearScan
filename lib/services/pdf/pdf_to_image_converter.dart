@@ -7,7 +7,7 @@ import 'package:pdfx/pdfx.dart';
 
 typedef PdfImageConversionProgress = void Function(int completed, int total);
 
-const _filesChannel = MethodChannel('com.example.scanner/files');
+const _filesChannel = MethodChannel('com.opensource.clearscan/files');
 
 Future<List<File>> convertPdfToImages({
   required File pdfFile,

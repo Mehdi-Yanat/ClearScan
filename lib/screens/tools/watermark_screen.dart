@@ -19,7 +19,7 @@ class WatermarkScreen extends StatefulWidget {
 }
 
 class _WatermarkScreenState extends State<WatermarkScreen> {
-  static const _filesChannel = MethodChannel('com.example.scanner/files');
+  static const _filesChannel = MethodChannel('com.opensource.clearscan/files');
   static const _previewHeight = 360.0;
 
   final _textController = TextEditingController();

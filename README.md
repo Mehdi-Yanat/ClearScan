@@ -58,6 +58,19 @@ If you encounter DDS or service protocol issues on Windows, run the app with the
 flutter run --no-dds
 ```
 
+## CI/CD and Android releases
+
+GitHub Actions runs static analysis, Flutter tests, an Android emulator-backed end-to-end test, and a debug APK build for pushes and pull requests targeting `main`.
+
+To publish a signed Android release, add these repository or environment secrets in GitHub Actions:
+
+- `ANDROID_KEYSTORE_BASE64`: Base64-encoded upload keystore (PowerShell: `[Convert]::ToBase64String([IO.File]::ReadAllBytes('android/app/upload-keystore.jks'))`; Linux: `base64 -w 0 android/app/upload-keystore.jks`).
+- `ANDROID_KEYSTORE_PASSWORD`: Keystore password.
+- `ANDROID_KEY_ALIAS`: Signing key alias.
+- `ANDROID_KEY_PASSWORD`: Signing key password.
+
+Push a semantic-version tag such as `v1.2.3` to run analysis, Flutter tests, and the Android emulator end-to-end test before building and attaching a signed APK and Android App Bundle to a GitHub Release. The Android version name is taken from the tag; the version code uses the GitHub Actions run number.
+
 ## 🤝 Contributing
 
 Contributions are what make the open-source community such an amazing place to learn, inspire, and collaborate. Any contributions that help improve the project are **greatly appreciated**.

@@ -14,10 +14,13 @@ class AuthScreen extends StatefulWidget {
 }
 
 class _AuthScreenState extends State<AuthScreen> {
-  final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
+  final _signInFormKey = GlobalKey<FormState>();
+  final _signUpFormKey = GlobalKey<FormState>();
+  final _signInEmailController = TextEditingController();
+  final _signInPasswordController = TextEditingController();
+  final _signUpNameController = TextEditingController();
+  final _signUpEmailController = TextEditingController();
+  final _signUpPasswordController = TextEditingController();
 
   bool _creatingAccount = false;
   bool _busy = false;
@@ -34,9 +37,11 @@ class _AuthScreenState extends State<AuthScreen> {
   @override
   void dispose() {
     SupabaseAuthService.currentUser.removeListener(_onAuthChanged);
-    _nameController.dispose();
-    _emailController.dispose();
-    _passwordController.dispose();
+    _signInEmailController.dispose();
+    _signInPasswordController.dispose();
+    _signUpNameController.dispose();
+    _signUpEmailController.dispose();
+    _signUpPasswordController.dispose();
     super.dispose();
   }
 
@@ -51,7 +56,8 @@ class _AuthScreenState extends State<AuthScreen> {
   }
 
   Future<void> _submit() async {
-    if (!_formKey.currentState!.validate()) return;
+    final formKey = _creatingAccount ? _signUpFormKey : _signInFormKey;
+    if (!formKey.currentState!.validate()) return;
     setState(() {
       _busy = true;
       _message = null;
@@ -60,9 +66,9 @@ class _AuthScreenState extends State<AuthScreen> {
     try {
       if (_creatingAccount) {
         final response = await SupabaseAuthService.signUp(
-          name: _nameController.text,
-          email: _emailController.text,
-          password: _passwordController.text,
+          name: _signUpNameController.text,
+          email: _signUpEmailController.text,
+          password: _signUpPasswordController.text,
         );
         if (!mounted) return;
         if (response.session == null) {
@@ -75,8 +81,8 @@ class _AuthScreenState extends State<AuthScreen> {
         }
       } else {
         await SupabaseAuthService.signIn(
-          email: _emailController.text,
-          password: _passwordController.text,
+          email: _signInEmailController.text,
+          password: _signInPasswordController.text,
         );
         if (mounted) Navigator.of(context).pop();
       }
@@ -166,6 +172,100 @@ class _AuthScreenState extends State<AuthScreen> {
     return null;
   }
 
+  Widget _buildSignUpForm(loc.AppLocalizations l10n) {
+    return AutofillGroup(
+      child: Form(
+        key: _signUpFormKey,
+        child: Column(
+          children: [
+            TextFormField(
+              controller: _signUpNameController,
+              keyboardType: TextInputType.name,
+              textCapitalization: TextCapitalization.words,
+              textInputAction: TextInputAction.next,
+              autofillHints: const [AutofillHints.name],
+              autocorrect: false,
+              decoration: InputDecoration(
+                labelText: l10n.authFullName,
+                prefixIcon: const Icon(Icons.person_outline),
+              ),
+              validator: (value) => (value?.trim().isNotEmpty ?? false)
+                  ? null
+                  : l10n.authNameRequired,
+            ),
+            const SizedBox(height: 14),
+            TextFormField(
+              controller: _signUpEmailController,
+              keyboardType: TextInputType.emailAddress,
+              textInputAction: TextInputAction.next,
+              autofillHints: const [AutofillHints.newUsername],
+              autocorrect: false,
+              decoration: InputDecoration(
+                labelText: l10n.authEmail,
+                prefixIcon: const Icon(Icons.email_outlined),
+              ),
+              validator: (value) => _validateEmail(value, l10n),
+            ),
+            const SizedBox(height: 14),
+            TextFormField(
+              controller: _signUpPasswordController,
+              obscureText: true,
+              enableSuggestions: false,
+              autocorrect: false,
+              textInputAction: TextInputAction.done,
+              autofillHints: const [AutofillHints.newPassword],
+              onFieldSubmitted: (_) => _busy ? null : _submit(),
+              decoration: InputDecoration(
+                labelText: l10n.authPassword,
+                prefixIcon: const Icon(Icons.lock_outline),
+              ),
+              validator: (value) => _validatePassword(value, l10n),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSignInForm(loc.AppLocalizations l10n) {
+    return AutofillGroup(
+      child: Form(
+        key: _signInFormKey,
+        child: Column(
+          children: [
+            TextFormField(
+              controller: _signInEmailController,
+              keyboardType: TextInputType.emailAddress,
+              textInputAction: TextInputAction.next,
+              autofillHints: const [AutofillHints.username],
+              autocorrect: false,
+              decoration: InputDecoration(
+                labelText: l10n.authEmail,
+                prefixIcon: const Icon(Icons.email_outlined),
+              ),
+              validator: (value) => _validateEmail(value, l10n),
+            ),
+            const SizedBox(height: 14),
+            TextFormField(
+              controller: _signInPasswordController,
+              obscureText: true,
+              enableSuggestions: false,
+              autocorrect: false,
+              textInputAction: TextInputAction.done,
+              autofillHints: const [AutofillHints.password],
+              onFieldSubmitted: (_) => _busy ? null : _submit(),
+              decoration: InputDecoration(
+                labelText: l10n.authPassword,
+                prefixIcon: const Icon(Icons.lock_outline),
+              ),
+              validator: (value) => _validatePassword(value, l10n),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = loc.AppLocalizations.of(context)!;
@@ -215,7 +315,8 @@ class _AuthScreenState extends State<AuthScreen> {
               SizedBox(
                 width: double.infinity,
                 child: OutlinedButton.icon(
-                  onPressed: _busy || !SupabaseAuthService.isGoogleSignInConfigured
+                  onPressed:
+                      _busy || !SupabaseAuthService.isGoogleSignInConfigured
                       ? null
                       : _signInWithGoogle,
                   icon: const Text(
@@ -257,102 +358,53 @@ class _AuthScreenState extends State<AuthScreen> {
                 ],
               ),
               const SizedBox(height: 16),
-              Form(
-                key: _formKey,
-                child: Column(
-                  children: [
-                    if (_creatingAccount) ...[
-                      TextFormField(
-                        controller: _nameController,
-                        textCapitalization: TextCapitalization.words,
-                        textInputAction: TextInputAction.next,
-                        decoration: InputDecoration(
-                          labelText: l10n.authFullName,
-                          prefixIcon: const Icon(Icons.person_outline),
+              if (_creatingAccount)
+                _buildSignUpForm(l10n)
+              else
+                _buildSignInForm(l10n),
+              if (_message != null) ...[
+                const SizedBox(height: 16),
+                Align(
+                  alignment: AlignmentDirectional.centerStart,
+                  child: Text(
+                    _message!,
+                    style: TextStyle(
+                      color: _isError
+                          ? AppColors.danger
+                          : AppColors.primary(context),
+                    ),
+                  ),
+                ),
+              ],
+              const SizedBox(height: 20),
+              SizedBox(
+                width: double.infinity,
+                child: FilledButton(
+                  onPressed: _busy ? null : _submit,
+                  child: _busy
+                      ? const SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : Text(
+                          _creatingAccount
+                              ? l10n.authCreateAccount
+                              : l10n.authSignIn,
                         ),
-                        validator: (value) =>
-                            (value?.trim().isNotEmpty ?? false)
-                            ? null
-                            : l10n.authNameRequired,
-                      ),
-                      const SizedBox(height: 14),
-                    ],
-                    TextFormField(
-                      controller: _emailController,
-                      keyboardType: TextInputType.emailAddress,
-                      textInputAction: TextInputAction.next,
-                      autofillHints: const [AutofillHints.email],
-                      decoration: InputDecoration(
-                        labelText: l10n.authEmail,
-                        prefixIcon: const Icon(Icons.email_outlined),
-                      ),
-                      validator: (value) => _validateEmail(value, l10n),
-                    ),
-                    const SizedBox(height: 14),
-                    TextFormField(
-                      controller: _passwordController,
-                      obscureText: true,
-                      textInputAction: TextInputAction.done,
-                      autofillHints: [
-                        _creatingAccount
-                            ? AutofillHints.newPassword
-                            : AutofillHints.password,
-                      ],
-                      onFieldSubmitted: (_) => _busy ? null : _submit(),
-                      decoration: InputDecoration(
-                        labelText: l10n.authPassword,
-                        prefixIcon: const Icon(Icons.lock_outline),
-                      ),
-                      validator: (value) => _validatePassword(value, l10n),
-                    ),
-                    if (_message != null) ...[
-                      const SizedBox(height: 16),
-                      Align(
-                        alignment: AlignmentDirectional.centerStart,
-                        child: Text(
-                          _message!,
-                          style: TextStyle(
-                            color: _isError
-                                ? AppColors.danger
-                                : AppColors.primary(context),
-                          ),
-                        ),
-                      ),
-                    ],
-                    const SizedBox(height: 20),
-                    SizedBox(
-                      width: double.infinity,
-                      child: FilledButton(
-                        onPressed: _busy ? null : _submit,
-                        child: _busy
-                            ? const SizedBox(
-                                height: 20,
-                                width: 20,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                ),
-                              )
-                            : Text(
-                                _creatingAccount
-                                    ? l10n.authCreateAccount
-                                    : l10n.authSignIn,
-                              ),
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: _busy
-                          ? null
-                          : () => setState(() {
-                              _creatingAccount = !_creatingAccount;
-                              _message = null;
-                            }),
-                      child: Text(
-                        _creatingAccount
-                            ? l10n.authHaveAccount
-                            : l10n.authNeedAccount,
-                      ),
-                    ),
-                  ],
+                ),
+              ),
+              TextButton(
+                onPressed: _busy
+                    ? null
+                    : () => setState(() {
+                        _creatingAccount = !_creatingAccount;
+                        _message = null;
+                      }),
+                child: Text(
+                  _creatingAccount
+                      ? l10n.authHaveAccount
+                      : l10n.authNeedAccount,
                 ),
               ),
             ],

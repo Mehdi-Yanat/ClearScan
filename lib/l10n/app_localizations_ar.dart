@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -78,7 +79,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get authInvalidEmail => 'أدخل عنوان بريد إلكتروني صالحًا.';
 
   @override
-  String get authPasswordTooShort => 'يجب أن تتكون كلمة المرور من 6 أحرف على الأقل.';
+  String get authPasswordTooShort =>
+      'يجب أن تتكون كلمة المرور من 6 أحرف على الأقل.';
 
   @override
   String get authHaveAccount => 'لديك حساب بالفعل؟ سجّل الدخول';
@@ -87,10 +89,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get authNeedAccount => 'جديد في ClearScan؟ أنشئ حسابًا';
 
   @override
-  String get authBackendNotConfigured => 'لم يتم إعداد تسجيل الدخول إلى الحساب بعد.';
+  String get authBackendNotConfigured =>
+      'لم يتم إعداد تسجيل الدخول إلى الحساب بعد.';
 
   @override
-  String get authBackendSetupInstructions => 'شغّل مهمة VS Code ‏\"Run with Supabase\" أو الأمر .\\tool\\flutter_with_supabase.ps1 run. سيحمّل الرابط والمفتاح العام من .env. لا تضع مفاتيح سرية في التطبيق.';
+  String get authBackendSetupInstructions =>
+      'شغّل مهمة VS Code ‏\"Run with Supabase\" أو الأمر .\\tool\\flutter_with_supabase.ps1 run. سيحمّل الرابط والمفتاح العام من .env. لا تضع مفاتيح سرية في التطبيق.';
 
   @override
   String get authCheckEmail => 'تحقق من بريدك الإلكتروني لتأكيد حسابك.';
@@ -102,7 +106,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get authOr => 'أو';
 
   @override
-  String get authGoogleNotConfigured => 'عيّن google_ID_client في .env إلى معرّف Google Web، ثم أعد التشغيل عبر Run with Supabase.';
+  String get authGoogleNotConfigured =>
+      'عيّن google_ID_client في .env إلى معرّف Google Web، ثم أعد التشغيل عبر Run with Supabase.';
 
   @override
   String get cloudStorage => 'التخزين السحابي';
@@ -433,19 +438,22 @@ class AppLocalizationsAr extends AppLocalizations {
   String get onboardingSlideScanTitle => 'امسح كل شيء';
 
   @override
-  String get onboardingSlideScanSubtitle => 'حوّل الورق إلى PDF واضح وقابل للبحث\nفي ثوانٍ.';
+  String get onboardingSlideScanSubtitle =>
+      'حوّل الورق إلى PDF واضح وقابل للبحث\nفي ثوانٍ.';
 
   @override
   String get onboardingSlideOrganizeTitle => 'نظم كل شيء';
 
   @override
-  String get onboardingSlideOrganizeSubtitle => 'رتّب الهويات والعقود والإيصالات\nفي مجلدات.';
+  String get onboardingSlideOrganizeSubtitle =>
+      'رتّب الهويات والعقود والإيصالات\nفي مجلدات.';
 
   @override
   String get onboardingSlideSignTitle => 'عدل ووقع';
 
   @override
-  String get onboardingSlideSignSubtitle => 'ادمج مستنداتك واضغطها ووقّعها وشاركها\nبسهولة.';
+  String get onboardingSlideSignSubtitle =>
+      'ادمج مستنداتك واضغطها ووقّعها وشاركها\nبسهولة.';
 
   @override
   String get onboardingSkip => 'تخطي';
@@ -454,7 +462,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get onboardingGetStarted => 'ابدأ الآن';
 
   @override
-  String get onboardingAgreeTerms => 'بالمتابعة، أنت توافق على الشروط وسياسة الخصوصية';
+  String get onboardingAgreeTerms =>
+      'بالمتابعة، أنت توافق على الشروط وسياسة الخصوصية';
 
   @override
   String get onboardingTileIdCards => 'بطاقات الهوية';
@@ -663,7 +672,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get pdfToWordSelectPdf => 'اختيار ملف PDF';
 
   @override
-  String get pdfToWordHint => 'صدّر نص PDF إلى Word. يدعم OCR العربية والإنجليزية والألمانية؛ قد يختلف التنسيق.';
+  String get pdfToWordHint =>
+      'صدّر نص PDF إلى Word. يدعم OCR العربية والإنجليزية والألمانية؛ قد يختلف التنسيق.';
 
   @override
   String get pdfToWordConverting => 'جارٍ استخراج النص وتشغيل OCR…';
@@ -734,7 +744,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get pdfToExcelSelectPdf => 'اختيار ملف PDF';
 
   @override
-  String get pdfToExcelHint => 'صدّر نص PDF إلى Excel حسب الصفحة والسطر. يدعم OCR العربية والإنجليزية والألمانية.';
+  String get pdfToExcelHint =>
+      'صدّر نص PDF إلى Excel حسب الصفحة والسطر. يدعم OCR العربية والإنجليزية والألمانية.';
 
   @override
   String get pdfToExcelConverting => 'جارٍ استخراج النص وتشغيل OCR…';
@@ -800,10 +811,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get signatureWhite => 'أبيض';
 
   @override
-  String get signaturePlacementHint => 'اسحب توقيعك على الصفحة إلى الموضع المطلوب.';
+  String get signaturePlacementHint =>
+      'اسحب توقيعك على الصفحة إلى الموضع المطلوب.';
 
   @override
-  String get signaturePreviewUnavailable => 'المعاينة غير متاحة. اختر PDF مجددًا.';
+  String get signaturePreviewUnavailable =>
+      'المعاينة غير متاحة. اختر PDF مجددًا.';
 
   @override
   String get toolWatermark => 'علامة مائية';
@@ -821,7 +834,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get watermarkOpacity => 'العتامة';
 
   @override
-  String get watermarkPositionHint => 'اسحب العلامة المائية لتحديد موضعها في كل الصفحات.';
+  String get watermarkPositionHint =>
+      'اسحب العلامة المائية لتحديد موضعها في كل الصفحات.';
 
   @override
   String get watermarkPreviewUnavailable => 'معاينة الصفحة غير متاحة.';
@@ -842,7 +856,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get toolOcrDesc => 'استخراج النص من الصور';
 
   @override
-  String get ocrHint => 'اختر صورة للتعرف على النص بالإنجليزية أو الألمانية أو العربية.';
+  String get ocrHint =>
+      'اختر صورة للتعرف على النص بالإنجليزية أو الألمانية أو العربية.';
 
   @override
   String get ocrSelectImage => 'اختر صورة';
@@ -901,7 +916,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get pdfEditSourcePasswordHelp => 'تحقق من كلمة المرور ثم أعد فتح PDF.';
 
   @override
-  String get pdfEditOpenFailed => 'تعذر فتح PDF. تحقق من كلمة المرور وحاول مجددًا.';
+  String get pdfEditOpenFailed =>
+      'تعذر فتح PDF. تحقق من كلمة المرور وحاول مجددًا.';
 
   @override
   String get pdfEditLoadAgain => 'تحميل PDF';
@@ -918,13 +934,15 @@ class AppLocalizationsAr extends AppLocalizations {
   String get pdfEditPageRangeHint => '1,3-5';
 
   @override
-  String get pdfEditPageRangeHelp => 'أدخل أرقام الصفحات أو نطاقات مفصولة بفواصل.';
+  String get pdfEditPageRangeHelp =>
+      'أدخل أرقام الصفحات أو نطاقات مفصولة بفواصل.';
 
   @override
   String get pdfEditSplitHint => 'كل صفحة مختارة ستحفظ كملف PDF منفصل.';
 
   @override
-  String get pdfEditRotateHint => 'الصفحات المختارة تدور 90° باتجاه عقارب الساعة.';
+  String get pdfEditRotateHint =>
+      'الصفحات المختارة تدور 90° باتجاه عقارب الساعة.';
 
   @override
   String get pdfEditReorderHint => 'رتب الصفحات بالشكل المطلوب.';
@@ -950,7 +968,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get pdfEditPasswordsDoNotMatch => 'كلمتا المرور غير متطابقتين.';
 
   @override
-  String get pdfEditCompressionNote => 'الضغط القوي يحوّل الصفحات إلى صور؛ لن يمكن تحديد النص أو البحث عنه وقد تقل الجودة.';
+  String get pdfEditCompressionNote =>
+      'الضغط القوي يحوّل الصفحات إلى صور؛ لن يمكن تحديد النص أو البحث عنه وقد تقل الجودة.';
 
   @override
   String get pdfEditCompressionWarningTitle => 'تحذير من الضغط القوي';
@@ -962,7 +981,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get pdfEditCompressionConfirm => 'ضغط على أي حال';
 
   @override
-  String get pdfEditCompressionNoReduction => 'النسخة المضغوطة أكبر. تم الاحتفاظ بالأصل.';
+  String get pdfEditCompressionNoReduction =>
+      'النسخة المضغوطة أكبر. تم الاحتفاظ بالأصل.';
 
   @override
   String pdfEditRun(Object tool) {
@@ -970,7 +990,8 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get pdfEditDone => 'تم الإنتهاء. تم حفظ ملفات PDF المعدلة في المستندات.';
+  String get pdfEditDone =>
+      'تم الإنتهاء. تم حفظ ملفات PDF المعدلة في المستندات.';
 
   @override
   String get scannerTooltipClose => 'إغلاق';

@@ -11,7 +11,7 @@ Android account picker, then exchanges Google's ID token with Supabase Auth.
    package and the SHA-1 fingerprint for local debug builds:
 
    ```text
-   Package name: com.example.scanner
+   Package name: com.opensource.clearscan
    SHA-1: 90:3C:B3:F6:10:80:E8:3A:31:DA:74:83:7A:A0:BF:9B:24:5D:29:34
    ```
 

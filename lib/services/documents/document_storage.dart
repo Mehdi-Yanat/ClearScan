@@ -12,7 +12,7 @@ class SavedPdf {
   final String path;
 }
 
-const _filesChannel = MethodChannel('com.example.scanner/files');
+const _filesChannel = MethodChannel('com.opensource.clearscan/files');
 
 Future<File> saveCroppedDocument({
   required String imagePath,
