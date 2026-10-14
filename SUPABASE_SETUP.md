@@ -31,8 +31,9 @@ Android account picker, then exchanges Google's ID token with Supabase Auth.
 
    Native ID-token sign-in does not use the browser OAuth redirect URL or put
    a Google client secret in the app.
-4. Add the project URL and publishable key to the root `.env` file as
-   `supabase_project_url` and `supabase_publishable_key`.
+4. Copy [`.env.example`](./.env.example) to `.env`, then set your project URL
+   and publishable key as `supabase_project_url` and
+   `supabase_publishable_key`.
 5. Launch or build ClearScan through the helper script, which reads the client
    settings from `.env` and passes them as compile-time configuration:
 
