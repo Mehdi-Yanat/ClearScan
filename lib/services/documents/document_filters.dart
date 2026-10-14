@@ -39,8 +39,7 @@ class EnhanceJob {
 /// Decodes, fixes EXIF rotation and shrinks the image once, so every live
 /// preview pass works on a small file. Safe to run with `compute`.
 Uint8List makePreviewSource(Uint8List bytes) {
-  final decoded = img.decodeImage(bytes);
-  if (decoded == null) throw const FormatException('Unsupported image');
+  final decoded = _decodeImage(bytes);
   final small = _resizeToMaxSide(img.bakeOrientation(decoded), kPreviewMaxSide);
   return Uint8List.fromList(img.encodeJpg(small, quality: 90));
 }
@@ -49,8 +48,7 @@ Uint8List makePreviewSource(Uint8List bytes) {
 /// bytes. Used for both the preview and the final save, so what the user sees
 /// is what gets exported. Safe to run with `compute`.
 Uint8List processDocument(EnhanceJob job) {
-  var src = img.decodeImage(job.bytes);
-  if (src == null) throw const FormatException('Unsupported image');
+  var src = _decodeImage(job.bytes);
   src = _resizeToMaxSide(img.bakeOrientation(src), job.maxSide);
 
   final w = src.width;
@@ -100,6 +98,16 @@ Uint8List processDocument(EnhanceJob job) {
     }
   }
   return Uint8List.fromList(img.encodeJpg(out, quality: job.quality));
+}
+
+img.Image _decodeImage(Uint8List bytes) {
+  try {
+    final decoded = img.decodeImage(bytes);
+    if (decoded == null) throw const FormatException('Unsupported image');
+    return decoded;
+  } on RangeError {
+    throw const FormatException('Unsupported image');
+  }
 }
 
 img.Image _resizeToMaxSide(img.Image src, int maxSide) {
