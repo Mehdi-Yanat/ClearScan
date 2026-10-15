@@ -1,6 +1,6 @@
 # 📄 ClearScan
 
-**A modern, premium document scanner designed to replace traditional scanners.**
+**A modern, premium document scanner designed to be free for all users**
 
 ClearScan transforms your mobile device into a powerful document scanner. It combines a seamless user experience with professional-grade image processing to ensure your documents are captured, enhanced, and exported with precision.
 
