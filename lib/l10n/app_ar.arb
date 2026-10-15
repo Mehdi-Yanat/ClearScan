@@ -1,0 +1,503 @@
+{
+  "@@locale": "ar",
+  "appTitle": "كليارسكان",
+  "scanButton": "مسح",
+  "homeTitle": "الرئيسية",
+  "settingsTitle": "إعدادات",
+  "toolsTitle": "أدوات",
+  "language": "اللغة",
+  "english": "الإنجليزية",
+  "german": "الألمانية",
+  "arabic": "العربية",
+  "freePlan": "خطة مجانية",
+  "authGuestTitle": "زائر",
+  "authGuestDescription": "سجّل الدخول للوصول إلى حسابك",
+  "authSignIn": "تسجيل الدخول",
+  "authSignOut": "تسجيل الخروج",
+  "authTitle": "حسابك",
+  "authSignInSubtitle": "سجّل الدخول إلى حساب ClearScan.",
+  "authSignUpSubtitle": "أنشئ حسابًا للبدء.",
+  "authCreateAccount": "إنشاء حساب",
+  "authFullName": "الاسم الكامل",
+  "authEmail": "البريد الإلكتروني",
+  "authPassword": "كلمة المرور",
+  "authNameRequired": "أدخل اسمك.",
+  "authInvalidEmail": "أدخل عنوان بريد إلكتروني صالحًا.",
+  "authPasswordTooShort": "يجب أن تتكون كلمة المرور من 6 أحرف على الأقل.",
+  "authHaveAccount": "لديك حساب بالفعل؟ سجّل الدخول",
+  "authNeedAccount": "جديد في ClearScan؟ أنشئ حسابًا",
+  "authBackendNotConfigured": "لم يتم إعداد تسجيل الدخول إلى الحساب بعد.",
+  "authBackendSetupInstructions": "شغّل مهمة VS Code ‏\"Run with Supabase\" أو الأمر .\\tool\\flutter_with_supabase.ps1 run. سيحمّل الرابط والمفتاح العام من .env. لا تضع مفاتيح سرية في التطبيق.",
+  "authCheckEmail": "تحقق من بريدك الإلكتروني لتأكيد حسابك.",
+  "authContinueWithGoogle": "المتابعة باستخدام Google",
+  "authOr": "أو",
+  "authGoogleNotConfigured": "عيّن google_ID_client في .env إلى معرّف Google Web، ثم أعد التشغيل عبر Run with Supabase.",
+  "cloudStorage": "التخزين السحابي",
+  "cloudStorageLoading": "جارٍ التحميل...",
+  "cloudBackupCount": "{count} نسخة احتياطية",
+  "@cloudBackupCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "cloudStorageUsed": "المستخدم: {size}",
+  "@cloudStorageUsed": {
+    "placeholders": {
+      "size": {}
+    }
+  },
+  "cloudStoragePrivacy": "نسخ خاصة بحسابك فقط.",
+  "cloudBackupChooseDocuments": "اختر المستندات لنسخها احتياطيًا",
+  "cloudNoLocalDocuments": "لم يتم العثور على مستندات محلية.",
+  "cloudBackupSelected": "نسخ {count} المحددة احتياطيًا",
+  "@cloudBackupSelected": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "cloudUploading": "جارٍ الرفع...",
+  "cloudUploadAction": "نسخ سحابي",
+  "cloudUploadError": "تعذر النسخ إلى السحابة: {error}",
+  "cloudCopyLink": "نسخ الرابط",
+  "cloudLinkCopied": "تم نسخ الرابط. تنتهي صلاحيته خلال 24 ساعة.",
+  "cloudLinkError": "تعذر إنشاء رابط المشاركة: {error}",
+  "@cloudUploadError": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "@cloudLinkError": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "cloudBackups": "النسخ السحابية",
+  "cloudNoBackups": "لا توجد نسخ سحابية حتى الآن.",
+  "cloudRestore": "استعادة إلى هذا الجهاز",
+  "cloudCancel": "إلغاء",
+  "cloudDeleteConfirmTitle": "حذف النسخة السحابية؟",
+  "cloudDeleteConfirmMessage": "حذف {name} من السحابة؟ ستبقى النسخة المحلية.",
+  "@cloudDeleteConfirmMessage": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "cloudDeleteComplete": "تم حذف {name} من النسخ السحابية.",
+  "@cloudDeleteComplete": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "cloudDeleteError": "تعذر حذف النسخة السحابية: {error}",
+  "@cloudDeleteError": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "cloudBackupComplete": "تم نسخ {count} مستند احتياطيًا.",
+  "@cloudBackupComplete": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "cloudBackupPartialFailure": "تم نسخ {count}؛ خطأ: {error}",
+  "@cloudBackupPartialFailure": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "error": {}
+    }
+  },
+  "cloudRestoreComplete": "تمت استعادة {name} إلى هذا الجهاز.",
+  "@cloudRestoreComplete": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "cloudStorageError": "تعذرت استعادة النسخة الاحتياطية: {error}",
+  "@cloudStorageError": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "cloudRefresh": "تحديث النسخ",
+  "cloudManageBackups": "إدارة النسخ",
+  "on": "مفعل",
+  "off": "معطل",
+  "comingSoon": "قريبًا",
+  "backupAndSync": "النسخ الاحتياطي والمزامنة",
+  "appLock": "قفل التطبيق",
+  "appLockAuthReason": "تحقق من هويتك لفتح ClearScan.",
+  "appLockAuthenticationFailed": "فشل التحقق. حاول مجددًا.",
+  "appLockAuthenticationError": "تعذر التحقق: {error}",
+  "@appLockAuthenticationError": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "appLockUnlockTitle": "ClearScan مقفل",
+  "appLockUnlockButton": "فتح ClearScan",
+  "appearance": "المظهر",
+  "rateClearScan": "قيم ClearScan",
+  "helpAndSupport": "المساعدة والدعم",
+  "about": "حول",
+  "profile": "الملف الشخصي",
+  "settingsTooltip": "الإعدادات",
+  "storage": "تخزين",
+  "light": "فاتح",
+  "dark": "داكن",
+  "system": "النظام",
+  "rateStoreListing": "فتح قائمة المتجر",
+  "helpCenterEmail": "فتح مركز المساعدة / البريد الإلكتروني",
+  "helpEmailLaunchFailed": "تعذر فتح البريد. راسل {email}.",
+  "@helpEmailLaunchFailed": {
+    "placeholders": {
+      "email": {}
+    }
+  },
+  "scanAnythingSaveEverything": "امسح كل شيء. احفظ كل شيء.",
+  "quickActions": "الإجراءات السريعة",
+  "recentDocuments": "المستندات الأخيرة",
+  "openPdf": "فتح ملف PDF",
+  "notificationsTitle": "الإشعارات",
+  "notificationsRetry": "إعادة المحاولة",
+  "notificationsEmpty": "أنت على اطلاع بكل جديد.",
+  "notificationsMarkAllRead": "تحديد الكل كمقروء",
+  "notificationsClearAll": "مسح كل الإشعارات",
+  "notificationScanTitle": "تم التقاط المسح",
+  "notificationImportTitle": "تم استيراد الصورة",
+  "notificationFolderTitle": "تم إنشاء المجلد",
+  "seeAll": "عرض الكل",
+  "idCards": "بطاقات الهوية",
+  "passport": "جواز السفر",
+  "qrCode": "رمز الاستجابة السريعة",
+  "import": "استيراد",
+  "share": "مشاركة",
+  "rename": "إعادة التسمية",
+  "delete": "حذف",
+  "documentDeleteConfirmation": "حذف {name}؟ لا يمكن التراجع.",
+  "@documentDeleteConfirmation": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "documentRenameSuccess": "تمت إعادة التسمية إلى {name}",
+  "@documentRenameSuccess": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "documentDeleteSuccess": "تم حذف {name}",
+  "@documentDeleteSuccess": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "fast_and_smart": "مسح سريع وذكي وآمن\nللمستندات.",
+  "documentsTitle": "المستندات",
+  "documentsSortBy": "ترتيب حسب",
+  "documentsFilterAll": "الكل",
+  "documentsFilterPdf": "PDF",
+  "documentsFilterImages": "صور",
+  "documentsFilterDocs": "مستندات",
+  "documentsFilterFavorites": "المفضلة",
+  "sortDate": "التاريخ",
+  "sortName": "الاسم",
+  "sortSize": "الحجم",
+  "searchTooltip": "بحث",
+  "selectOption": "اختيار",
+  "newOption": "جديد…",
+  "searchHint": "ابحث عن المستندات",
+  "undo": "التراجع",
+  "scanDocument": "مسح المستند",
+  "newFolder": "مجلد جديد",
+  "importFile": "استيراد ملف",
+  "removeFromFavorites": "إزالة من المفضلة",
+  "addToFavorites": "إضافة إلى المفضلة",
+  "items": "العناصر",
+  "noDocumentsFound": "لم يتم العثور على مستندات",
+  "onboardingSlideScanTitle": "امسح كل شيء",
+  "onboardingSlideScanSubtitle": "حوّل الورق إلى PDF واضح وقابل للبحث\nفي ثوانٍ.",
+  "onboardingSlideOrganizeTitle": "نظم كل شيء",
+  "onboardingSlideOrganizeSubtitle": "رتّب الهويات والعقود والإيصالات\nفي مجلدات.",
+  "onboardingSlideSignTitle": "عدل ووقع",
+  "onboardingSlideSignSubtitle": "ادمج مستنداتك واضغطها ووقّعها وشاركها\nبسهولة.",
+  "onboardingSkip": "تخطي",
+  "onboardingGetStarted": "ابدأ الآن",
+  "onboardingAgreeTerms": "بالمتابعة، أنت توافق على الشروط وسياسة الخصوصية",
+  "onboardingTileIdCards": "بطاقات الهوية",
+  "onboardingTileContracts": "العقود",
+  "onboardingTileReceipts": "الإيصالات",
+  "scanModeIdCardLabel": "بطاقة الهوية الوطنية",
+  "scanModePassportLabel": "جواز السفر",
+  "scanModeDocumentLabel": "مستند",
+  "scanModeQrLabel": "رمز الاستجابة السريعة",
+  "scanModeBookLabel": "كتاب",
+  "scanModeIdCardHint": "التقط الوجه الأمامي للهوية.",
+  "scanModeBackSideHint": "تم التقاط الأمام. التقط الخلف.",
+  "scanIdFrontLabel": "الوجه الأمامي",
+  "scanIdBackLabel": "الوجه الخلفي",
+  "scanRetakeIdFront": "أعد التقاط الوجه الأمامي",
+  "scanModePassportHint": "ضع صفحة بيانات الجواز في الإطار.",
+  "scanModeDocumentHint": "ضع المستند داخل الإطار.",
+  "scanModeQrHint": "ضع رمز QR في الإطار.",
+  "scanModeBookHint": "ضع الصفحتين داخل الإطار.",
+  "scanGuidanceHoldSteady": "اثبت الكاميرا.",
+  "scanGuidanceReduceGlare": "خفف الانعكاس.",
+  "scanGuidanceImproveLighting": "حسّن الإضاءة.",
+  "scanGuidanceKeepInFrame": "أبقِ البطاقة داخل الإطار.",
+  "scanGuidanceMoveCloser": "اقترب.",
+  "scanGuidanceMoveBack": "ابتعد.",
+  "scanGuidanceAlignCard": "حاذِ البطاقة داخل الإطار.",
+  "scanGuidanceMoveAwayFromEdge": "أبعد البطاقة عن الحافة.",
+  "settingsSectionScanning": "المسح",
+  "settingsSectionSecurity": "الأمان",
+  "settingsSectionStorageSync": "التخزين والمزامنة",
+  "settingsSectionAbout": "حول",
+  "settingsAppLock": "قفل التطبيق (رقم سري / بصمة)",
+  "settingsHideInRecents": "إخفاء من المشغل",
+  "settingsAutoBackup": "النسخ الاحتياطي التلقائي",
+  "settingsDefaultQuality": "الجودة الافتراضية",
+  "settingsDefaultFormat": "الشكل الافتراضي",
+  "settingsClearCache": "مسح التخزين المؤقت",
+  "settingsPrivacyPolicy": "سياسة الخصوصية",
+  "settingsTermsOfService": "شروط الخدمة",
+  "settingsQualityLow": "منخفضة",
+  "settingsQualityMedium": "متوسطة",
+  "settingsQualityHigh": "عالية",
+  "scannerGrid": "إظهار الشبكة",
+  "settingsFormatPdf": "PDF",
+  "settingsFormatJpg": "JPG",
+  "settingsClearCacheTitle": "مسح التخزين المؤقت؟",
+  "settingsClearCacheMessage": "سيتم حذف الملفات المؤقتة فقط.",
+  "settingsCancel": "إلغاء",
+  "settingsClear": "مسح",
+  "settingsCacheCleared": "تم مسح التخزين المؤقت",
+  "settingsOpenLinkPlaceholder": "{title}: أضف رابطك",
+  "@settingsOpenLinkPlaceholder": {
+    "placeholders": {
+      "title": {}
+    }
+  },
+  "cropAdjustBack": "العودة",
+  "cropAdjustTitle": "ضبط الحواف",
+  "cropAdjustNext": "التالي",
+  "cropAdjustPage": "الصفحة",
+  "cropAdjustRetake": "إعادة التقاط",
+  "cropAdjustRotate": "تدوير",
+  "cropAdjustAutoCrop": "قص تلقائي",
+  "cropAdjustAddPage": "إضافة صفحة",
+  "cropAdjustErrorOpenImage": "لم يتم فتح الصورة.",
+  "cropAdjustErrorCropImage": "تعذر قص الصورة. اضبط الزوايا.",
+  "cropAdjustErrorDetectEdges": "تعذر اكتشاف الحواف. اضبطها يدويًا.",
+  "workshopTitle": "الورشة",
+  "workshopConvert": "تحويل",
+  "workshopEditPdf": "تعديل PDF",
+  "workshopMoreTools": "المزيد من الأدوات",
+  "toolImageToPdf": "صورة إلى PDF",
+  "toolPdfToImage": "PDF إلى صورة",
+  "pdfToWordTitle": "تحويل PDF إلى Word",
+  "pdfToWordSelectPdf": "اختيار ملف PDF",
+  "pdfToWordHint": "صدّر نص PDF إلى Word. يدعم OCR العربية والإنجليزية والألمانية؛ قد يختلف التنسيق.",
+  "pdfToWordConverting": "جارٍ استخراج النص وتشغيل OCR…",
+  "pdfToWordProgress": "تمت معالجة {completed} من أصل {total} صفحات",
+  "@pdfToWordProgress": {
+    "placeholders": {
+      "completed": {},
+      "total": {}
+    }
+  },
+  "pdfToWordShare": "مشاركة مستند Word",
+  "pdfToWordConversionFailed": "تعذر تحويل ملف PDF: {error}",
+  "@pdfToWordConversionFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "pdfToWordShareFailed": "تعذر مشاركة مستند Word: {error}",
+  "@pdfToWordShareFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "pdfToImageTitle": "تحويل PDF إلى صورة",
+  "pdfToImageSelectPdf": "اختيار ملف PDF",
+  "pdfToImageHint": "حوّل كل صفحة من ملف PDF إلى صورة PNG.",
+  "pdfToImageConverting": "جارٍ تحويل صفحات PDF…",
+  "pdfToImageProgress": "تم تحويل {completed} من أصل {total} صفحات",
+  "@pdfToImageProgress": {
+    "placeholders": {
+      "completed": {},
+      "total": {}
+    }
+  },
+  "pdfToImageConvertedPages": "تم تحويل {count} صفحات",
+  "@pdfToImageConvertedPages": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "pdfToImageShare": "مشاركة الصور",
+  "pdfToImageConversionFailed": "تعذر تحويل ملف PDF: {error}",
+  "@pdfToImageConversionFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "pdfToImageShareFailed": "تعذرت مشاركة الصور: {error}",
+  "@pdfToImageShareFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "toolPdfToWord": "PDF إلى Word",
+  "toolPdfToExcel": "PDF إلى Excel",
+  "pdfToExcelTitle": "تحويل PDF إلى Excel",
+  "pdfToExcelSelectPdf": "اختيار ملف PDF",
+  "pdfToExcelHint": "صدّر نص PDF إلى Excel حسب الصفحة والسطر. يدعم OCR العربية والإنجليزية والألمانية.",
+  "pdfToExcelConverting": "جارٍ استخراج النص وتشغيل OCR…",
+  "pdfToExcelProgress": "تمت معالجة {completed} من أصل {total} صفحات",
+  "@pdfToExcelProgress": {
+    "placeholders": {
+      "completed": {},
+      "total": {}
+    }
+  },
+  "pdfToExcelShare": "مشاركة ملف Excel",
+  "pdfToExcelConversionFailed": "تعذر تحويل ملف PDF: {error}",
+  "@pdfToExcelConversionFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "pdfToExcelShareFailed": "تعذر مشاركة ملف Excel: {error}",
+  "@pdfToExcelShareFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "toolMergePdf": "دمج PDF",
+  "toolSplitPdf": "تقسيم PDF",
+  "toolCompressPdf": "ضغط PDF",
+  "toolRotatePdf": "تدوير PDF",
+  "toolDeletePages": "حذف الصفحات",
+  "toolReorderPages": "ترتيب الصفحات",
+  "toolExtractPages": "استخراج الصفحات",
+  "toolAddPassword": "إضافة كلمة مرور",
+  "toolSign": "توقيع مستند",
+  "toolSignDesc": "إضافة توقيع إلى مستنداتك",
+  "signatureClear": "مسح التوقيع",
+  "signatureColor": "لون التوقيع",
+  "signatureBlack": "أسود",
+  "signatureWhite": "أبيض",
+  "signaturePlacementHint": "اسحب توقيعك على الصفحة إلى الموضع المطلوب.",
+  "signaturePreviewUnavailable": "المعاينة غير متاحة. اختر PDF مجددًا.",
+  "toolWatermark": "علامة مائية",
+  "toolWatermarkDesc": "إضافة علامة مائية إلى مستنداتك",
+  "watermarkText": "نص العلامة المائية",
+  "watermarkTextHint": "مثال: سري",
+  "watermarkOpacity": "العتامة",
+  "watermarkPositionHint": "اسحب العلامة المائية لتحديد موضعها في كل الصفحات.",
+  "watermarkPreviewUnavailable": "معاينة الصفحة غير متاحة.",
+  "watermarkAllPagesHint": "ستُضاف العلامة المائية إلى كل صفحة.",
+  "watermarkApply": "إضافة علامة مائية",
+  "watermarkPdfAccessFailed": "تعذر الوصول إلى ملف PDF المحدد.",
+  "toolOcr": "OCR",
+  "toolOcrDesc": "استخراج النص من الصور",
+  "ocrHint": "اختر صورة للتعرف على النص بالإنجليزية أو الألمانية أو العربية.",
+  "ocrSelectImage": "اختر صورة",
+  "ocrProcessing": "جارٍ التعرف على النص…",
+  "ocrResult": "النص المستخرج",
+  "ocrNoText": "لم يتم العثور على نص في هذه الصورة.",
+  "ocrFailed": "تعذر التعرف على النص: {error}",
+  "@ocrFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "ocrCopy": "نسخ النص",
+  "ocrCopied": "تم نسخ النص",
+  "ocrImagePreviewFailed": "تعذر عرض الصورة المحددة.",
+  "toolQrGenerator": "مولّد رمز QR",
+  "toolQrGeneratorDesc": "إنشاء رموز QR الخاصة بك",
+  "qrGeneratorHint": "أدخل نصًا أو رابطًا لإنشاء رمز QR.",
+  "qrGeneratorContent": "نص أو رابط",
+  "qrGeneratorContentHint": "أدخل المحتوى المطلوب ترميزه",
+  "qrGeneratorShare": "مشاركة رمز QR",
+  "qrGeneratorTooLong": "هذا المحتوى أطول من أن يتسع له رمز QR.",
+  "pdfEditChoosePdf": "اختر PDF",
+  "pdfEditSourcePassword": "كلمة مرور PDF (إن كان محميًا)",
+  "pdfEditSourcePasswordHelp": "تحقق من كلمة المرور ثم أعد فتح PDF.",
+  "pdfEditOpenFailed": "تعذر فتح PDF. تحقق من كلمة المرور وحاول مجددًا.",
+  "pdfEditLoadAgain": "تحميل PDF",
+  "pdfEditPageCount": "{count} صفحات",
+  "@pdfEditPageCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "pdfEditPageRange": "الصفحات",
+  "pdfEditPageRangeHint": "1,3-5",
+  "pdfEditPageRangeHelp": "أدخل أرقام الصفحات أو نطاقات مفصولة بفواصل.",
+  "pdfEditSplitHint": "كل صفحة مختارة ستحفظ كملف PDF منفصل.",
+  "pdfEditRotateHint": "الصفحات المختارة تدور 90° باتجاه عقارب الساعة.",
+  "pdfEditReorderHint": "رتب الصفحات بالشكل المطلوب.",
+  "pdfEditPage": "الصفحة {page}",
+  "@pdfEditPage": {
+    "placeholders": {
+      "page": {}
+    }
+  },
+  "pdfEditMoveUp": "تحريك لأعلى",
+  "pdfEditMoveDown": "تحريك لأسفل",
+  "pdfEditNewPassword": "كلمة مرور جديدة (على الأقل 6 أحرف)",
+  "pdfEditConfirmPassword": "تأكيد كلمة المرور",
+  "pdfEditPasswordsDoNotMatch": "كلمتا المرور غير متطابقتين.",
+  "pdfEditCompressionNote": "الضغط القوي يحوّل الصفحات إلى صور؛ لن يمكن تحديد النص أو البحث عنه وقد تقل الجودة.",
+  "pdfEditCompressionWarningTitle": "تحذير من الضغط القوي",
+  "pdfEditCompressionCancel": "إلغاء",
+  "pdfEditCompressionConfirm": "ضغط على أي حال",
+  "pdfEditCompressionNoReduction": "النسخة المضغوطة أكبر. تم الاحتفاظ بالأصل.",
+  "pdfEditRun": "تشغيل {tool}",
+  "@pdfEditRun": {
+    "placeholders": {
+      "tool": {}
+    }
+  },
+  "pdfEditDone": "تم الإنتهاء. تم حفظ ملفات PDF المعدلة في المستندات.",
+  "scannerTooltipClose": "إغلاق",
+  "scannerTooltipFlash": "فلاش",
+  "scannerTooltipSettings": "الإعدادات",
+  "scannerTryAgain": "حاول مرة أخرى",
+  "scannerErrorNoCamera": "لم يتم العثور على كاميرا في هذا الجهاز.",
+  "scannerErrorPermission": "إذن الكاميرا مطلوب لمسح المستندات.",
+  "scannerErrorStart": "فشل تشغيل الكاميرا ({error}).",
+  "@scannerErrorStart": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "folderMultiSelectBack": "عودة",
+  "folderMultiSelectChangeView": "تغيير العرض",
+  "folderMultiSelectMoreOptions": "المزيد من الخيارات",
+  "folderMultiSelectDateLabel": "التاريخ",
+  "folderMultiSelectMerge": "دمج",
+  "folderMultiSelectExport": "تصدير",
+  "homeTooltipClose": "إغلاق",
+  "homeTooltipFlash": "فلاش",
+  "homeTooltipSettings": "الإعدادات",
+  "homeTryAgain": "حاول مرة أخرى",
+  "scanActionCamera": "المسح بالكاميرا",
+  "scanActionGallery": "اختيار من المعرض",
+  "scanExportingPdf": "جارٍ تصدير PDF…",
+  "scanExportPdf": "تصدير كملف PDF",
+  "scanInfoHeader": "مسح صورة",
+  "scanInfoHint": "التقط من الكاميرا أو اختر صورة من المعرض."
+}

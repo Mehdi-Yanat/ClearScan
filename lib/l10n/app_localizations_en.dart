@@ -1,0 +1,1074 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
+
+import 'app_localizations.dart';
+
+// ignore_for_file: type=lint
+
+/// The translations for English (`en`).
+class AppLocalizationsEn extends AppLocalizations {
+  AppLocalizationsEn([String locale = 'en']) : super(locale);
+
+  @override
+  String get appTitle => 'ClearScan';
+
+  @override
+  String get scanButton => 'Scan';
+
+  @override
+  String get homeTitle => 'Home';
+
+  @override
+  String get settingsTitle => 'Settings';
+
+  @override
+  String get toolsTitle => 'Tools';
+
+  @override
+  String get language => 'Language';
+
+  @override
+  String get english => 'English';
+
+  @override
+  String get german => 'German';
+
+  @override
+  String get arabic => 'Arabic';
+
+  @override
+  String get freePlan => 'Free plan';
+
+  @override
+  String get authGuestTitle => 'Guest';
+
+  @override
+  String get authGuestDescription => 'Sign in to access your account';
+
+  @override
+  String get authSignIn => 'Sign in';
+
+  @override
+  String get authSignOut => 'Sign out';
+
+  @override
+  String get authTitle => 'Your account';
+
+  @override
+  String get authSignInSubtitle => 'Sign in to your ClearScan account.';
+
+  @override
+  String get authSignUpSubtitle => 'Create an account to get started.';
+
+  @override
+  String get authCreateAccount => 'Create account';
+
+  @override
+  String get authFullName => 'Full name';
+
+  @override
+  String get authEmail => 'Email';
+
+  @override
+  String get authPassword => 'Password';
+
+  @override
+  String get authNameRequired => 'Enter your name.';
+
+  @override
+  String get authInvalidEmail => 'Enter a valid email address.';
+
+  @override
+  String get authPasswordTooShort => 'Password must be at least 6 characters.';
+
+  @override
+  String get authHaveAccount => 'Already have an account? Sign in';
+
+  @override
+  String get authNeedAccount => 'New to ClearScan? Create an account';
+
+  @override
+  String get authBackendNotConfigured => 'Account sign-in is not set up yet.';
+
+  @override
+  String get authBackendSetupInstructions =>
+      'Run the VS Code task \"Run with Supabase\" or .\\tool\\flutter_with_supabase.ps1 run. This loads the URL and publishable key from .env. Never add secret keys to the app.';
+
+  @override
+  String get authCheckEmail => 'Check your email to confirm your account.';
+
+  @override
+  String get authContinueWithGoogle => 'Continue with Google';
+
+  @override
+  String get authOr => 'or';
+
+  @override
+  String get authGoogleNotConfigured =>
+      'Set google_ID_client in .env to your Google Web client ID, then restart with Run with Supabase.';
+
+  @override
+  String get cloudStorage => 'Cloud storage';
+
+  @override
+  String get cloudStorageLoading => 'Loading...';
+
+  @override
+  String cloudBackupCount(int count) {
+    return '$count backups';
+  }
+
+  @override
+  String cloudStorageUsed(Object size) {
+    return '$size used';
+  }
+
+  @override
+  String get cloudStoragePrivacy =>
+      'Private backups, available only to your account.';
+
+  @override
+  String get cloudBackupChooseDocuments => 'Choose documents to back up';
+
+  @override
+  String get cloudNoLocalDocuments => 'No local documents found.';
+
+  @override
+  String cloudBackupSelected(int count) {
+    return 'Back up $count selected';
+  }
+
+  @override
+  String get cloudUploading => 'Uploading...';
+
+  @override
+  String get cloudUploadAction => 'Backup';
+
+  @override
+  String cloudUploadError(Object error) {
+    return 'Could not back up to cloud: $error';
+  }
+
+  @override
+  String get cloudCopyLink => 'Copy link';
+
+  @override
+  String get cloudLinkCopied => 'Link copied. It expires in 24 hours.';
+
+  @override
+  String cloudLinkError(Object error) {
+    return 'Could not create share link: $error';
+  }
+
+  @override
+  String get cloudBackups => 'Cloud backups';
+
+  @override
+  String get cloudNoBackups => 'You have no cloud backups yet.';
+
+  @override
+  String get cloudRestore => 'Restore to this device';
+
+  @override
+  String get cloudCancel => 'Cancel';
+
+  @override
+  String get cloudDeleteConfirmTitle => 'Delete cloud backup?';
+
+  @override
+  String cloudDeleteConfirmMessage(Object name) {
+    return 'Delete $name from cloud backups? The local copy stays.';
+  }
+
+  @override
+  String cloudDeleteComplete(Object name) {
+    return 'Deleted $name from cloud backups.';
+  }
+
+  @override
+  String cloudDeleteError(Object error) {
+    return 'Could not delete cloud backup: $error';
+  }
+
+  @override
+  String cloudBackupComplete(int count) {
+    return 'Backed up $count document(s).';
+  }
+
+  @override
+  String cloudBackupPartialFailure(int count, Object error) {
+    return 'Backed up $count; error: $error';
+  }
+
+  @override
+  String cloudRestoreComplete(Object name) {
+    return 'Restored $name to this device.';
+  }
+
+  @override
+  String cloudStorageError(Object error) {
+    return 'Could not restore backup: $error';
+  }
+
+  @override
+  String get cloudRefresh => 'Refresh backups';
+
+  @override
+  String get cloudManageBackups => 'Manage backups';
+
+  @override
+  String get on => 'On';
+
+  @override
+  String get off => 'Off';
+
+  @override
+  String get comingSoon => 'Coming soon';
+
+  @override
+  String get backupAndSync => 'Backup & Sync';
+
+  @override
+  String get appLock => 'App Lock';
+
+  @override
+  String get appLockAuthReason => 'Authenticate to unlock ClearScan.';
+
+  @override
+  String get appLockAuthenticationFailed => 'Authentication failed. Try again.';
+
+  @override
+  String appLockAuthenticationError(Object error) {
+    return 'Could not authenticate: $error';
+  }
+
+  @override
+  String get appLockUnlockTitle => 'ClearScan is locked';
+
+  @override
+  String get appLockUnlockButton => 'Unlock ClearScan';
+
+  @override
+  String get appearance => 'Appearance';
+
+  @override
+  String get rateClearScan => 'Rate ClearScan';
+
+  @override
+  String get helpAndSupport => 'Help & Support';
+
+  @override
+  String get about => 'About';
+
+  @override
+  String get profile => 'Profile';
+
+  @override
+  String get settingsTooltip => 'Settings';
+
+  @override
+  String get storage => 'Storage';
+
+  @override
+  String get light => 'Light';
+
+  @override
+  String get dark => 'Dark';
+
+  @override
+  String get system => 'System';
+
+  @override
+  String get rateStoreListing => 'Open store listing';
+
+  @override
+  String get helpCenterEmail => 'Open help center / email';
+
+  @override
+  String helpEmailLaunchFailed(Object email) {
+    return 'Can\'t open email. Contact $email.';
+  }
+
+  @override
+  String get scanAnythingSaveEverything => 'Scan Anything. Save Everything.';
+
+  @override
+  String get quickActions => 'Quick Actions';
+
+  @override
+  String get recentDocuments => 'Recent Documents';
+
+  @override
+  String get openPdf => 'Open PDF';
+
+  @override
+  String get notificationsTitle => 'Notifications';
+
+  @override
+  String get notificationsRetry => 'Retry';
+
+  @override
+  String get notificationsEmpty => 'You\'re all caught up.';
+
+  @override
+  String get notificationsMarkAllRead => 'Mark all as read';
+
+  @override
+  String get notificationsClearAll => 'Clear all notifications';
+
+  @override
+  String get notificationScanTitle => 'Scan captured';
+
+  @override
+  String get notificationImportTitle => 'Image imported';
+
+  @override
+  String get notificationFolderTitle => 'Folder created';
+
+  @override
+  String get seeAll => 'See all';
+
+  @override
+  String get idCards => 'ID Cards';
+
+  @override
+  String get passport => 'Passport';
+
+  @override
+  String get qrCode => 'QR Code';
+
+  @override
+  String get import => 'Import';
+
+  @override
+  String get share => 'Share';
+
+  @override
+  String get rename => 'Rename';
+
+  @override
+  String get delete => 'Delete';
+
+  @override
+  String documentDeleteConfirmation(Object name) {
+    return 'Delete $name? This can\'t be undone.';
+  }
+
+  @override
+  String documentRenameSuccess(Object name) {
+    return 'Renamed to $name';
+  }
+
+  @override
+  String documentDeleteSuccess(Object name) {
+    return 'Deleted $name';
+  }
+
+  @override
+  String get fast_and_smart => 'Fast, smart and secure\ndocument scanning.';
+
+  @override
+  String get documentsTitle => 'Documents';
+
+  @override
+  String get documentsSortBy => 'Sort by';
+
+  @override
+  String get documentsFilterAll => 'All';
+
+  @override
+  String get documentsFilterPdf => 'PDF';
+
+  @override
+  String get documentsFilterImages => 'Images';
+
+  @override
+  String get documentsFilterDocs => 'Docs';
+
+  @override
+  String get documentsFilterFavorites => 'Favorites';
+
+  @override
+  String get sortDate => 'Date';
+
+  @override
+  String get sortName => 'Name';
+
+  @override
+  String get sortSize => 'Size';
+
+  @override
+  String get searchTooltip => 'Search';
+
+  @override
+  String get selectOption => 'Select';
+
+  @override
+  String get newOption => 'New…';
+
+  @override
+  String get searchHint => 'Search documents';
+
+  @override
+  String get undo => 'Undo';
+
+  @override
+  String get scanDocument => 'Scan document';
+
+  @override
+  String get newFolder => 'New folder';
+
+  @override
+  String get importFile => 'Import file';
+
+  @override
+  String get removeFromFavorites => 'Remove from favorites';
+
+  @override
+  String get addToFavorites => 'Add to favorites';
+
+  @override
+  String get items => 'items';
+
+  @override
+  String get noDocumentsFound => 'No documents found';
+
+  @override
+  String get onboardingSlideScanTitle => 'Scan Anything';
+
+  @override
+  String get onboardingSlideScanSubtitle =>
+      'Create clear, searchable PDFs\nfrom paper in seconds.';
+
+  @override
+  String get onboardingSlideOrganizeTitle => 'Organize Everything';
+
+  @override
+  String get onboardingSlideOrganizeSubtitle =>
+      'Sort IDs, contracts and receipts\ninto folders.';
+
+  @override
+  String get onboardingSlideSignTitle => 'Edit & Sign';
+
+  @override
+  String get onboardingSlideSignSubtitle =>
+      'Merge, compress, sign and share\nin a few taps.';
+
+  @override
+  String get onboardingSkip => 'Skip';
+
+  @override
+  String get onboardingGetStarted => 'Get Started';
+
+  @override
+  String get onboardingAgreeTerms =>
+      'By continuing you agree to Terms & Privacy';
+
+  @override
+  String get onboardingTileIdCards => 'ID Cards';
+
+  @override
+  String get onboardingTileContracts => 'Contracts';
+
+  @override
+  String get onboardingTileReceipts => 'Receipts';
+
+  @override
+  String get scanModeIdCardLabel => 'ID';
+
+  @override
+  String get scanModePassportLabel => 'Passport';
+
+  @override
+  String get scanModeDocumentLabel => 'Document';
+
+  @override
+  String get scanModeQrLabel => 'QR Code';
+
+  @override
+  String get scanModeBookLabel => 'Book';
+
+  @override
+  String get scanModeIdCardHint => 'Capture ID front.';
+
+  @override
+  String get scanModeBackSideHint => 'Front captured. Capture back.';
+
+  @override
+  String get scanIdFrontLabel => 'Front';
+
+  @override
+  String get scanIdBackLabel => 'Back';
+
+  @override
+  String get scanRetakeIdFront => 'Retake front';
+
+  @override
+  String get scanModePassportHint => 'Frame the passport data page.';
+
+  @override
+  String get scanModeDocumentHint => 'Fit document in frame.';
+
+  @override
+  String get scanModeQrHint => 'Frame the QR code.';
+
+  @override
+  String get scanModeBookHint => 'Fit both pages in frame.';
+
+  @override
+  String get scanGuidanceHoldSteady => 'Hold steady.';
+
+  @override
+  String get scanGuidanceReduceGlare => 'Reduce glare.';
+
+  @override
+  String get scanGuidanceImproveLighting => 'Improve the lighting.';
+
+  @override
+  String get scanGuidanceKeepInFrame => 'Keep card in frame.';
+
+  @override
+  String get scanGuidanceMoveCloser => 'Move closer.';
+
+  @override
+  String get scanGuidanceMoveBack => 'Move back.';
+
+  @override
+  String get scanGuidanceAlignCard => 'Align card inside the frame.';
+
+  @override
+  String get scanGuidanceMoveAwayFromEdge =>
+      'Move the card away from the edge.';
+
+  @override
+  String get settingsSectionScanning => 'SCANNING';
+
+  @override
+  String get settingsSectionSecurity => 'SECURITY';
+
+  @override
+  String get settingsSectionStorageSync => 'STORAGE & SYNC';
+
+  @override
+  String get settingsSectionAbout => 'ABOUT';
+
+  @override
+  String get settingsAppLock => 'App lock (PIN / biometric)';
+
+  @override
+  String get settingsHideInRecents => 'Hide in recents';
+
+  @override
+  String get settingsAutoBackup => 'Auto backup';
+
+  @override
+  String get settingsDefaultQuality => 'Default quality';
+
+  @override
+  String get settingsDefaultFormat => 'Default format';
+
+  @override
+  String get settingsClearCache => 'Clear cache';
+
+  @override
+  String get settingsPrivacyPolicy => 'Privacy policy';
+
+  @override
+  String get settingsTermsOfService => 'Terms of service';
+
+  @override
+  String get settingsQualityLow => 'Low';
+
+  @override
+  String get settingsQualityMedium => 'Medium';
+
+  @override
+  String get settingsQualityHigh => 'High';
+
+  @override
+  String get scannerGrid => 'Show grid';
+
+  @override
+  String get settingsFormatPdf => 'PDF';
+
+  @override
+  String get settingsFormatJpg => 'JPG';
+
+  @override
+  String get settingsClearCacheTitle => 'Clear cache?';
+
+  @override
+  String get settingsClearCacheMessage =>
+      'Temporary files will be deleted. Documents stay safe.';
+
+  @override
+  String get settingsCancel => 'Cancel';
+
+  @override
+  String get settingsClear => 'Clear';
+
+  @override
+  String get settingsCacheCleared => 'Cache cleared';
+
+  @override
+  String settingsOpenLinkPlaceholder(Object title) {
+    return '$title: add your link';
+  }
+
+  @override
+  String get cropAdjustBack => 'Back';
+
+  @override
+  String get cropAdjustTitle => 'Adjust edges';
+
+  @override
+  String get cropAdjustNext => 'Next';
+
+  @override
+  String get cropAdjustPage => 'Page';
+
+  @override
+  String get cropAdjustRetake => 'Retake';
+
+  @override
+  String get cropAdjustRotate => 'Rotate';
+
+  @override
+  String get cropAdjustAutoCrop => 'Auto crop';
+
+  @override
+  String get cropAdjustAddPage => 'Add page';
+
+  @override
+  String get cropAdjustErrorOpenImage => 'Could not open this image.';
+
+  @override
+  String get cropAdjustErrorCropImage =>
+      'Couldn\'t crop image. Adjust the corners and retry.';
+
+  @override
+  String get cropAdjustErrorDetectEdges =>
+      'Couldn\'t detect edges. Adjust the corners manually.';
+
+  @override
+  String get workshopTitle => 'Workshop';
+
+  @override
+  String get workshopConvert => 'Convert';
+
+  @override
+  String get workshopEditPdf => 'Edit PDF';
+
+  @override
+  String get workshopMoreTools => 'More Tools';
+
+  @override
+  String get toolImageToPdf => 'Image to PDF';
+
+  @override
+  String get toolPdfToImage => 'PDF to Image';
+
+  @override
+  String get pdfToWordTitle => 'PDF to Word';
+
+  @override
+  String get pdfToWordSelectPdf => 'Choose a PDF';
+
+  @override
+  String get pdfToWordHint =>
+      'Export PDF text to editable Word. Scans support Arabic, English, and German OCR; layout may change.';
+
+  @override
+  String get pdfToWordConverting => 'Extracting PDF text and running OCR…';
+
+  @override
+  String pdfToWordProgress(Object completed, Object total) {
+    return 'Processed $completed of $total pages';
+  }
+
+  @override
+  String get pdfToWordShare => 'Share Word document';
+
+  @override
+  String pdfToWordConversionFailed(Object error) {
+    return 'Could not convert the PDF: $error';
+  }
+
+  @override
+  String pdfToWordShareFailed(Object error) {
+    return 'Could not share the Word document: $error';
+  }
+
+  @override
+  String get pdfToImageTitle => 'PDF to Image';
+
+  @override
+  String get pdfToImageSelectPdf => 'Choose a PDF';
+
+  @override
+  String get pdfToImageHint => 'Convert every page of a PDF into a PNG image.';
+
+  @override
+  String get pdfToImageConverting => 'Converting PDF pages…';
+
+  @override
+  String pdfToImageProgress(Object completed, Object total) {
+    return 'Converted $completed of $total pages';
+  }
+
+  @override
+  String pdfToImageConvertedPages(Object count) {
+    return 'Converted $count pages';
+  }
+
+  @override
+  String get pdfToImageShare => 'Share images';
+
+  @override
+  String pdfToImageConversionFailed(Object error) {
+    return 'Could not convert the PDF: $error';
+  }
+
+  @override
+  String pdfToImageShareFailed(Object error) {
+    return 'Could not share the images: $error';
+  }
+
+  @override
+  String get toolPdfToWord => 'PDF to Word';
+
+  @override
+  String get toolPdfToExcel => 'PDF to Excel';
+
+  @override
+  String get pdfToExcelTitle => 'PDF to Excel';
+
+  @override
+  String get pdfToExcelSelectPdf => 'Choose a PDF';
+
+  @override
+  String get pdfToExcelHint =>
+      'Export PDF text to Excel by page and line. Scans support Arabic, English, and German OCR.';
+
+  @override
+  String get pdfToExcelConverting => 'Extracting PDF text and running OCR…';
+
+  @override
+  String pdfToExcelProgress(Object completed, Object total) {
+    return 'Processed $completed of $total pages';
+  }
+
+  @override
+  String get pdfToExcelShare => 'Share Excel workbook';
+
+  @override
+  String pdfToExcelConversionFailed(Object error) {
+    return 'Could not convert the PDF: $error';
+  }
+
+  @override
+  String pdfToExcelShareFailed(Object error) {
+    return 'Could not share the Excel workbook: $error';
+  }
+
+  @override
+  String get toolMergePdf => 'Merge PDF';
+
+  @override
+  String get toolSplitPdf => 'Split PDF';
+
+  @override
+  String get toolCompressPdf => 'Compress PDF';
+
+  @override
+  String get toolRotatePdf => 'Rotate PDF';
+
+  @override
+  String get toolDeletePages => 'Delete Pages';
+
+  @override
+  String get toolReorderPages => 'Reorder Pages';
+
+  @override
+  String get toolExtractPages => 'Extract Pages';
+
+  @override
+  String get toolAddPassword => 'Add Password';
+
+  @override
+  String get toolSign => 'Sign Document';
+
+  @override
+  String get toolSignDesc => 'Add signature to your documents';
+
+  @override
+  String get signatureClear => 'Clear signature';
+
+  @override
+  String get signatureColor => 'Signature color';
+
+  @override
+  String get signatureBlack => 'Black';
+
+  @override
+  String get signatureWhite => 'White';
+
+  @override
+  String get signaturePlacementHint =>
+      'Drag your signature on the page to position it.';
+
+  @override
+  String get signaturePreviewUnavailable =>
+      'Preview unavailable. Select the PDF again.';
+
+  @override
+  String get toolWatermark => 'Watermark';
+
+  @override
+  String get toolWatermarkDesc => 'Add watermark to your documents';
+
+  @override
+  String get watermarkText => 'Watermark text';
+
+  @override
+  String get watermarkTextHint => 'e.g. CONFIDENTIAL';
+
+  @override
+  String get watermarkOpacity => 'Opacity';
+
+  @override
+  String get watermarkPositionHint =>
+      'Drag the watermark to set its position on every page.';
+
+  @override
+  String get watermarkPreviewUnavailable => 'The page preview is unavailable.';
+
+  @override
+  String get watermarkAllPagesHint => 'Watermark will be added to all pages.';
+
+  @override
+  String get watermarkApply => 'Add watermark';
+
+  @override
+  String get watermarkPdfAccessFailed =>
+      'The selected PDF file could not be accessed.';
+
+  @override
+  String get toolOcr => 'OCR';
+
+  @override
+  String get toolOcrDesc => 'Extract text from images';
+
+  @override
+  String get ocrHint =>
+      'Choose an image to recognize text in English, German, or Arabic.';
+
+  @override
+  String get ocrSelectImage => 'Choose image';
+
+  @override
+  String get ocrProcessing => 'Recognizing text…';
+
+  @override
+  String get ocrResult => 'Extracted text';
+
+  @override
+  String get ocrNoText => 'No text was found in this image.';
+
+  @override
+  String ocrFailed(Object error) {
+    return 'Could not recognize text: $error';
+  }
+
+  @override
+  String get ocrCopy => 'Copy text';
+
+  @override
+  String get ocrCopied => 'Text copied';
+
+  @override
+  String get ocrImagePreviewFailed => 'Could not display the selected image.';
+
+  @override
+  String get toolQrGenerator => 'QR Code Generator';
+
+  @override
+  String get toolQrGeneratorDesc => 'Create your own QR codes';
+
+  @override
+  String get qrGeneratorHint => 'Enter text or a link to create a QR code.';
+
+  @override
+  String get qrGeneratorContent => 'Text or link';
+
+  @override
+  String get qrGeneratorContentHint => 'Enter the content to encode';
+
+  @override
+  String get qrGeneratorShare => 'Share QR code';
+
+  @override
+  String get qrGeneratorTooLong =>
+      'This content is too long to fit in a QR code.';
+
+  @override
+  String get pdfEditChoosePdf => 'Choose PDF';
+
+  @override
+  String get pdfEditSourcePassword => 'PDF password (if protected)';
+
+  @override
+  String get pdfEditSourcePasswordHelp =>
+      'Check the password, then reopen the PDF.';
+
+  @override
+  String get pdfEditOpenFailed =>
+      'Couldn\'t open PDF. Check its password and retry.';
+
+  @override
+  String get pdfEditLoadAgain => 'Load PDF';
+
+  @override
+  String pdfEditPageCount(Object count) {
+    return '$count pages';
+  }
+
+  @override
+  String get pdfEditPageRange => 'Pages';
+
+  @override
+  String get pdfEditPageRangeHint => '1,3-5';
+
+  @override
+  String get pdfEditPageRangeHelp =>
+      'Enter page numbers or ranges separated by commas.';
+
+  @override
+  String get pdfEditSplitHint =>
+      'Each selected page will be saved as a separate PDF.';
+
+  @override
+  String get pdfEditRotateHint => 'Selected pages will rotate 90° clockwise.';
+
+  @override
+  String get pdfEditReorderHint => 'Arrange pages in the order you want.';
+
+  @override
+  String pdfEditPage(Object page) {
+    return 'Page $page';
+  }
+
+  @override
+  String get pdfEditMoveUp => 'Move up';
+
+  @override
+  String get pdfEditMoveDown => 'Move down';
+
+  @override
+  String get pdfEditNewPassword => 'New password (at least 6 characters)';
+
+  @override
+  String get pdfEditConfirmPassword => 'Confirm password';
+
+  @override
+  String get pdfEditPasswordsDoNotMatch => 'Passwords do not match.';
+
+  @override
+  String get pdfEditCompressionNote =>
+      'Strong compression turns pages into images; text won\'t be selectable/searchable, and quality may drop.';
+
+  @override
+  String get pdfEditCompressionWarningTitle => 'Strong compression warning';
+
+  @override
+  String get pdfEditCompressionCancel => 'Cancel';
+
+  @override
+  String get pdfEditCompressionConfirm => 'Compress anyway';
+
+  @override
+  String get pdfEditCompressionNoReduction =>
+      'Compressed file was larger. Original kept.';
+
+  @override
+  String pdfEditRun(Object tool) {
+    return 'Run $tool';
+  }
+
+  @override
+  String get pdfEditDone =>
+      'Finished. Edited PDF files are saved to Documents.';
+
+  @override
+  String get scannerTooltipClose => 'Close';
+
+  @override
+  String get scannerTooltipFlash => 'Flash';
+
+  @override
+  String get scannerTooltipSettings => 'Settings';
+
+  @override
+  String get scannerTryAgain => 'Try again';
+
+  @override
+  String get scannerErrorNoCamera => 'No camera found on this device.';
+
+  @override
+  String get scannerErrorPermission =>
+      'Camera permission is required to scan documents.';
+
+  @override
+  String scannerErrorStart(Object error) {
+    return 'Could not start the camera ($error).';
+  }
+
+  @override
+  String get folderMultiSelectBack => 'Back';
+
+  @override
+  String get folderMultiSelectChangeView => 'Change view';
+
+  @override
+  String get folderMultiSelectMoreOptions => 'More options';
+
+  @override
+  String get folderMultiSelectDateLabel => 'Date';
+
+  @override
+  String get folderMultiSelectMerge => 'Merge';
+
+  @override
+  String get folderMultiSelectExport => 'Export';
+
+  @override
+  String get homeTooltipClose => 'Close';
+
+  @override
+  String get homeTooltipFlash => 'Flash';
+
+  @override
+  String get homeTooltipSettings => 'Settings';
+
+  @override
+  String get homeTryAgain => 'Try again';
+
+  @override
+  String get scanActionCamera => 'Scan with Camera';
+
+  @override
+  String get scanActionGallery => 'Choose from Gallery';
+
+  @override
+  String get scanExportingPdf => 'Exporting PDF…';
+
+  @override
+  String get scanExportPdf => 'Export as PDF';
+
+  @override
+  String get scanInfoHeader => 'Scan an image';
+
+  @override
+  String get scanInfoHint =>
+      'Capture from camera or choose an image from gallery.';
+}

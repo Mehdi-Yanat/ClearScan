@@ -4,7 +4,9 @@
 
 ClearScan transforms your mobile device into a powerful document scanner. It combines a seamless user experience with professional-grade image processing to ensure your documents are captured, enhanced, and exported with precision.
 
-![App Screenshot Placeholder](https://github.com/Mehdi-Yanat/ClearScan/blob/main/AppIcons/appstore.png?raw=true)
+<p align="center">
+  <img src="https://github.com/Mehdi-Yanat/ClearScan/blob/main/AppIcons/appstore.png?raw=true" alt="ClearScan App Icon" width="250">
+</p> 
 
 ## ✨ Features
 
@@ -55,6 +57,25 @@ If you encounter DDS or service protocol issues on Windows, run the app with the
 ```bash
 flutter run --no-dds
 ```
+
+## CI/CD and Android releases
+
+GitHub Actions runs static analysis, Flutter tests, an Android emulator-backed end-to-end test, and a debug APK build for pushes and pull requests targeting `main`.
+
+To publish a signed Android release, add these repository Actions secrets:
+
+- `ANDROID_KEYSTORE_BASE64`: Base64-encoded upload keystore (PowerShell: `[Convert]::ToBase64String([IO.File]::ReadAllBytes('android/app/upload-keystore.jks'))`; Linux: `base64 -w 0 android/app/upload-keystore.jks`).
+- `ANDROID_KEYSTORE_PASSWORD`: Keystore password.
+- `ANDROID_KEY_ALIAS`: Signing key alias.
+- `ANDROID_KEY_PASSWORD`: Signing key password.
+
+Add these repository Actions variables so release builds include the app's client-side Supabase configuration:
+
+- `SUPABASE_PROJECT_URL`
+- `SUPABASE_PUBLISHABLE_KEY`
+- `GOOGLE_ID_CLIENT` (optional; omit to disable Google sign-in)
+
+To release without creating a tag manually, open **Actions → Release → Run workflow** on `main` and enter a semantic version such as `1.0.1-beta.1`. The workflow creates the corresponding `v1.0.1-beta.1` tag, runs analysis, Flutter tests, and the Android emulator end-to-end test, then builds and attaches a signed APK and Android App Bundle to a GitHub Release. Versions containing a prerelease suffix (for example, `-beta.1`) are published as GitHub prereleases. Pushing a `v*` tag manually also triggers a release. The Android version code uses the GitHub Actions run number.
 
 ## 🤝 Contributing
 

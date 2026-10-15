@@ -1,0 +1,503 @@
+{
+  "@@locale": "en",
+  "appTitle": "ClearScan",
+  "scanButton": "Scan",
+  "homeTitle": "Home",
+  "settingsTitle": "Settings",
+  "toolsTitle": "Tools",
+  "language": "Language",
+  "english": "English",
+  "german": "German",
+  "arabic": "Arabic",
+  "freePlan": "Free plan",
+  "authGuestTitle": "Guest",
+  "authGuestDescription": "Sign in to access your account",
+  "authSignIn": "Sign in",
+  "authSignOut": "Sign out",
+  "authTitle": "Your account",
+  "authSignInSubtitle": "Sign in to your ClearScan account.",
+  "authSignUpSubtitle": "Create an account to get started.",
+  "authCreateAccount": "Create account",
+  "authFullName": "Full name",
+  "authEmail": "Email",
+  "authPassword": "Password",
+  "authNameRequired": "Enter your name.",
+  "authInvalidEmail": "Enter a valid email address.",
+  "authPasswordTooShort": "Password must be at least 6 characters.",
+  "authHaveAccount": "Already have an account? Sign in",
+  "authNeedAccount": "New to ClearScan? Create an account",
+  "authBackendNotConfigured": "Account sign-in is not set up yet.",
+  "authBackendSetupInstructions": "Run the VS Code task \"Run with Supabase\" or .\\tool\\flutter_with_supabase.ps1 run. This loads the URL and publishable key from .env. Never add secret keys to the app.",
+  "authCheckEmail": "Check your email to confirm your account.",
+  "authContinueWithGoogle": "Continue with Google",
+  "authOr": "or",
+  "authGoogleNotConfigured": "Set google_ID_client in .env to your Google Web client ID, then restart with Run with Supabase.",
+  "cloudStorage": "Cloud storage",
+  "cloudStorageLoading": "Loading...",
+  "cloudBackupCount": "{count} backups",
+  "@cloudBackupCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "cloudStorageUsed": "{size} used",
+  "@cloudStorageUsed": {
+    "placeholders": {
+      "size": {}
+    }
+  },
+  "cloudStoragePrivacy": "Private backups, available only to your account.",
+  "cloudBackupChooseDocuments": "Choose documents to back up",
+  "cloudNoLocalDocuments": "No local documents found.",
+  "cloudBackupSelected": "Back up {count} selected",
+  "@cloudBackupSelected": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "cloudUploading": "Uploading...",
+  "cloudUploadAction": "Backup",
+  "cloudUploadError": "Could not back up to cloud: {error}",
+  "cloudCopyLink": "Copy link",
+  "cloudLinkCopied": "Link copied. It expires in 24 hours.",
+  "cloudLinkError": "Could not create share link: {error}",
+  "@cloudUploadError": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "@cloudLinkError": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "cloudBackups": "Cloud backups",
+  "cloudNoBackups": "You have no cloud backups yet.",
+  "cloudRestore": "Restore to this device",
+  "cloudCancel": "Cancel",
+  "cloudDeleteConfirmTitle": "Delete cloud backup?",
+  "cloudDeleteConfirmMessage": "Delete {name} from cloud backups? The local copy stays.",
+  "@cloudDeleteConfirmMessage": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "cloudDeleteComplete": "Deleted {name} from cloud backups.",
+  "@cloudDeleteComplete": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "cloudDeleteError": "Could not delete cloud backup: {error}",
+  "@cloudDeleteError": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "cloudBackupComplete": "Backed up {count} document(s).",
+  "@cloudBackupComplete": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "cloudBackupPartialFailure": "Backed up {count}; error: {error}",
+  "@cloudBackupPartialFailure": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "error": {}
+    }
+  },
+  "cloudRestoreComplete": "Restored {name} to this device.",
+  "@cloudRestoreComplete": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "cloudStorageError": "Could not restore backup: {error}",
+  "@cloudStorageError": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "cloudRefresh": "Refresh backups",
+  "cloudManageBackups": "Manage backups",
+  "on": "On",
+  "off": "Off",
+  "comingSoon": "Coming soon",
+  "backupAndSync": "Backup & Sync",
+  "appLock": "App Lock",
+  "appLockAuthReason": "Authenticate to unlock ClearScan.",
+  "appLockAuthenticationFailed": "Authentication failed. Try again.",
+  "appLockAuthenticationError": "Could not authenticate: {error}",
+  "@appLockAuthenticationError": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "appLockUnlockTitle": "ClearScan is locked",
+  "appLockUnlockButton": "Unlock ClearScan",
+  "appearance": "Appearance",
+  "rateClearScan": "Rate ClearScan",
+  "helpAndSupport": "Help & Support",
+  "about": "About",
+  "profile": "Profile",
+  "settingsTooltip": "Settings",
+  "storage": "Storage",
+  "light": "Light",
+  "dark": "Dark",
+  "system": "System",
+  "rateStoreListing": "Open store listing",
+  "helpCenterEmail": "Open help center / email",
+  "helpEmailLaunchFailed": "Can't open email. Contact {email}.",
+  "@helpEmailLaunchFailed": {
+    "placeholders": {
+      "email": {}
+    }
+  },
+  "scanAnythingSaveEverything": "Scan Anything. Save Everything.",
+  "quickActions": "Quick Actions",
+  "recentDocuments": "Recent Documents",
+  "openPdf": "Open PDF",
+  "notificationsTitle": "Notifications",
+  "notificationsRetry": "Retry",
+  "notificationsEmpty": "You're all caught up.",
+  "notificationsMarkAllRead": "Mark all as read",
+  "notificationsClearAll": "Clear all notifications",
+  "notificationScanTitle": "Scan captured",
+  "notificationImportTitle": "Image imported",
+  "notificationFolderTitle": "Folder created",
+  "seeAll": "See all",
+  "idCards": "ID Cards",
+  "passport": "Passport",
+  "qrCode": "QR Code",
+  "import": "Import",
+  "share": "Share",
+  "rename": "Rename",
+  "delete": "Delete",
+  "documentDeleteConfirmation": "Delete {name}? This can't be undone.",
+  "@documentDeleteConfirmation": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "documentRenameSuccess": "Renamed to {name}",
+  "@documentRenameSuccess": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "documentDeleteSuccess": "Deleted {name}",
+  "@documentDeleteSuccess": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "fast_and_smart": "Fast, smart and secure\ndocument scanning.",
+  "documentsTitle": "Documents",
+  "documentsSortBy": "Sort by",
+  "documentsFilterAll": "All",
+  "documentsFilterPdf": "PDF",
+  "documentsFilterImages": "Images",
+  "documentsFilterDocs": "Docs",
+  "documentsFilterFavorites": "Favorites",
+  "sortDate": "Date",
+  "sortName": "Name",
+  "sortSize": "Size",
+  "searchTooltip": "Search",
+  "selectOption": "Select",
+  "newOption": "New…",
+  "searchHint": "Search documents",
+  "undo": "Undo",
+  "scanDocument": "Scan document",
+  "newFolder": "New folder",
+  "importFile": "Import file",
+  "removeFromFavorites": "Remove from favorites",
+  "addToFavorites": "Add to favorites",
+  "items": "items",
+  "noDocumentsFound": "No documents found",
+  "onboardingSlideScanTitle": "Scan Anything",
+  "onboardingSlideScanSubtitle": "Create clear, searchable PDFs\nfrom paper in seconds.",
+  "onboardingSlideOrganizeTitle": "Organize Everything",
+  "onboardingSlideOrganizeSubtitle": "Sort IDs, contracts and receipts\ninto folders.",
+  "onboardingSlideSignTitle": "Edit & Sign",
+  "onboardingSlideSignSubtitle": "Merge, compress, sign and share\nin a few taps.",
+  "onboardingSkip": "Skip",
+  "onboardingGetStarted": "Get Started",
+  "onboardingAgreeTerms": "By continuing you agree to Terms & Privacy",
+  "onboardingTileIdCards": "ID Cards",
+  "onboardingTileContracts": "Contracts",
+  "onboardingTileReceipts": "Receipts",
+  "scanModeIdCardLabel": "ID",
+  "scanModePassportLabel": "Passport",
+  "scanModeDocumentLabel": "Document",
+  "scanModeQrLabel": "QR Code",
+  "scanModeBookLabel": "Book",
+  "scanModeIdCardHint": "Capture ID front.",
+  "scanModeBackSideHint": "Front captured. Capture back.",
+  "scanIdFrontLabel": "Front",
+  "scanIdBackLabel": "Back",
+  "scanRetakeIdFront": "Retake front",
+  "scanModePassportHint": "Frame the passport data page.",
+  "scanModeDocumentHint": "Fit document in frame.",
+  "scanModeQrHint": "Frame the QR code.",
+  "scanModeBookHint": "Fit both pages in frame.",
+  "scanGuidanceHoldSteady": "Hold steady.",
+  "scanGuidanceReduceGlare": "Reduce glare.",
+  "scanGuidanceImproveLighting": "Improve the lighting.",
+  "scanGuidanceKeepInFrame": "Keep card in frame.",
+  "scanGuidanceMoveCloser": "Move closer.",
+  "scanGuidanceMoveBack": "Move back.",
+  "scanGuidanceAlignCard": "Align card inside the frame.",
+  "scanGuidanceMoveAwayFromEdge": "Move the card away from the edge.",
+  "settingsSectionScanning": "SCANNING",
+  "settingsSectionSecurity": "SECURITY",
+  "settingsSectionStorageSync": "STORAGE & SYNC",
+  "settingsSectionAbout": "ABOUT",
+  "settingsAppLock": "App lock (PIN / biometric)",
+  "settingsHideInRecents": "Hide in recents",
+  "settingsAutoBackup": "Auto backup",
+  "settingsDefaultQuality": "Default quality",
+  "settingsDefaultFormat": "Default format",
+  "settingsClearCache": "Clear cache",
+  "settingsPrivacyPolicy": "Privacy policy",
+  "settingsTermsOfService": "Terms of service",
+  "settingsQualityLow": "Low",
+  "settingsQualityMedium": "Medium",
+  "settingsQualityHigh": "High",
+  "scannerGrid": "Show grid",
+  "settingsFormatPdf": "PDF",
+  "settingsFormatJpg": "JPG",
+  "settingsClearCacheTitle": "Clear cache?",
+  "settingsClearCacheMessage": "Temporary files will be deleted. Documents stay safe.",
+  "settingsCancel": "Cancel",
+  "settingsClear": "Clear",
+  "settingsCacheCleared": "Cache cleared",
+  "settingsOpenLinkPlaceholder": "{title}: add your link",
+  "@settingsOpenLinkPlaceholder": {
+    "placeholders": {
+      "title": {}
+    }
+  },
+  "cropAdjustBack": "Back",
+  "cropAdjustTitle": "Adjust edges",
+  "cropAdjustNext": "Next",
+  "cropAdjustPage": "Page",
+  "cropAdjustRetake": "Retake",
+  "cropAdjustRotate": "Rotate",
+  "cropAdjustAutoCrop": "Auto crop",
+  "cropAdjustAddPage": "Add page",
+  "cropAdjustErrorOpenImage": "Could not open this image.",
+  "cropAdjustErrorCropImage": "Couldn't crop image. Adjust the corners and retry.",
+  "cropAdjustErrorDetectEdges": "Couldn't detect edges. Adjust the corners manually.",
+  "workshopTitle": "Workshop",
+  "workshopConvert": "Convert",
+  "workshopEditPdf": "Edit PDF",
+  "workshopMoreTools": "More Tools",
+  "toolImageToPdf": "Image to PDF",
+  "toolPdfToImage": "PDF to Image",
+  "pdfToWordTitle": "PDF to Word",
+  "pdfToWordSelectPdf": "Choose a PDF",
+  "pdfToWordHint": "Export PDF text to editable Word. Scans support Arabic, English, and German OCR; layout may change.",
+  "pdfToWordConverting": "Extracting PDF text and running OCR…",
+  "pdfToWordProgress": "Processed {completed} of {total} pages",
+  "@pdfToWordProgress": {
+    "placeholders": {
+      "completed": {},
+      "total": {}
+    }
+  },
+  "pdfToWordShare": "Share Word document",
+  "pdfToWordConversionFailed": "Could not convert the PDF: {error}",
+  "@pdfToWordConversionFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "pdfToWordShareFailed": "Could not share the Word document: {error}",
+  "@pdfToWordShareFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "pdfToImageTitle": "PDF to Image",
+  "pdfToImageSelectPdf": "Choose a PDF",
+  "pdfToImageHint": "Convert every page of a PDF into a PNG image.",
+  "pdfToImageConverting": "Converting PDF pages…",
+  "pdfToImageProgress": "Converted {completed} of {total} pages",
+  "@pdfToImageProgress": {
+    "placeholders": {
+      "completed": {},
+      "total": {}
+    }
+  },
+  "pdfToImageConvertedPages": "Converted {count} pages",
+  "@pdfToImageConvertedPages": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "pdfToImageShare": "Share images",
+  "pdfToImageConversionFailed": "Could not convert the PDF: {error}",
+  "@pdfToImageConversionFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "pdfToImageShareFailed": "Could not share the images: {error}",
+  "@pdfToImageShareFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "toolPdfToWord": "PDF to Word",
+  "toolPdfToExcel": "PDF to Excel",
+  "pdfToExcelTitle": "PDF to Excel",
+  "pdfToExcelSelectPdf": "Choose a PDF",
+  "pdfToExcelHint": "Export PDF text to Excel by page and line. Scans support Arabic, English, and German OCR.",
+  "pdfToExcelConverting": "Extracting PDF text and running OCR…",
+  "pdfToExcelProgress": "Processed {completed} of {total} pages",
+  "@pdfToExcelProgress": {
+    "placeholders": {
+      "completed": {},
+      "total": {}
+    }
+  },
+  "pdfToExcelShare": "Share Excel workbook",
+  "pdfToExcelConversionFailed": "Could not convert the PDF: {error}",
+  "@pdfToExcelConversionFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "pdfToExcelShareFailed": "Could not share the Excel workbook: {error}",
+  "@pdfToExcelShareFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "toolMergePdf": "Merge PDF",
+  "toolSplitPdf": "Split PDF",
+  "toolCompressPdf": "Compress PDF",
+  "toolRotatePdf": "Rotate PDF",
+  "toolDeletePages": "Delete Pages",
+  "toolReorderPages": "Reorder Pages",
+  "toolExtractPages": "Extract Pages",
+  "toolAddPassword": "Add Password",
+  "toolSign": "Sign Document",
+  "toolSignDesc": "Add signature to your documents",
+  "signatureClear": "Clear signature",
+  "signatureColor": "Signature color",
+  "signatureBlack": "Black",
+  "signatureWhite": "White",
+  "signaturePlacementHint": "Drag your signature on the page to position it.",
+  "signaturePreviewUnavailable": "Preview unavailable. Select the PDF again.",
+  "toolWatermark": "Watermark",
+  "toolWatermarkDesc": "Add watermark to your documents",
+  "watermarkText": "Watermark text",
+  "watermarkTextHint": "e.g. CONFIDENTIAL",
+  "watermarkOpacity": "Opacity",
+  "watermarkPositionHint": "Drag the watermark to set its position on every page.",
+  "watermarkPreviewUnavailable": "The page preview is unavailable.",
+  "watermarkAllPagesHint": "Watermark will be added to all pages.",
+  "watermarkApply": "Add watermark",
+  "watermarkPdfAccessFailed": "The selected PDF file could not be accessed.",
+  "toolOcr": "OCR",
+  "toolOcrDesc": "Extract text from images",
+  "ocrHint": "Choose an image to recognize text in English, German, or Arabic.",
+  "ocrSelectImage": "Choose image",
+  "ocrProcessing": "Recognizing text…",
+  "ocrResult": "Extracted text",
+  "ocrNoText": "No text was found in this image.",
+  "ocrFailed": "Could not recognize text: {error}",
+  "@ocrFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "ocrCopy": "Copy text",
+  "ocrCopied": "Text copied",
+  "ocrImagePreviewFailed": "Could not display the selected image.",
+  "toolQrGenerator": "QR Code Generator",
+  "toolQrGeneratorDesc": "Create your own QR codes",
+  "qrGeneratorHint": "Enter text or a link to create a QR code.",
+  "qrGeneratorContent": "Text or link",
+  "qrGeneratorContentHint": "Enter the content to encode",
+  "qrGeneratorShare": "Share QR code",
+  "qrGeneratorTooLong": "This content is too long to fit in a QR code.",
+  "pdfEditChoosePdf": "Choose PDF",
+  "pdfEditSourcePassword": "PDF password (if protected)",
+  "pdfEditSourcePasswordHelp": "Check the password, then reopen the PDF.",
+  "pdfEditOpenFailed": "Couldn't open PDF. Check its password and retry.",
+  "pdfEditLoadAgain": "Load PDF",
+  "pdfEditPageCount": "{count} pages",
+  "@pdfEditPageCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "pdfEditPageRange": "Pages",
+  "pdfEditPageRangeHint": "1,3-5",
+  "pdfEditPageRangeHelp": "Enter page numbers or ranges separated by commas.",
+  "pdfEditSplitHint": "Each selected page will be saved as a separate PDF.",
+  "pdfEditRotateHint": "Selected pages will rotate 90° clockwise.",
+  "pdfEditReorderHint": "Arrange pages in the order you want.",
+  "pdfEditPage": "Page {page}",
+  "@pdfEditPage": {
+    "placeholders": {
+      "page": {}
+    }
+  },
+  "pdfEditMoveUp": "Move up",
+  "pdfEditMoveDown": "Move down",
+  "pdfEditNewPassword": "New password (at least 6 characters)",
+  "pdfEditConfirmPassword": "Confirm password",
+  "pdfEditPasswordsDoNotMatch": "Passwords do not match.",
+  "pdfEditCompressionNote": "Strong compression turns pages into images; text won't be selectable/searchable, and quality may drop.",
+  "pdfEditCompressionWarningTitle": "Strong compression warning",
+  "pdfEditCompressionCancel": "Cancel",
+  "pdfEditCompressionConfirm": "Compress anyway",
+  "pdfEditCompressionNoReduction": "Compressed file was larger. Original kept.",
+  "pdfEditRun": "Run {tool}",
+  "@pdfEditRun": {
+    "placeholders": {
+      "tool": {}
+    }
+  },
+  "pdfEditDone": "Finished. Edited PDF files are saved to Documents.",
+  "scannerTooltipClose": "Close",
+  "scannerTooltipFlash": "Flash",
+  "scannerTooltipSettings": "Settings",
+  "scannerTryAgain": "Try again",
+  "scannerErrorNoCamera": "No camera found on this device.",
+  "scannerErrorPermission": "Camera permission is required to scan documents.",
+  "scannerErrorStart": "Could not start the camera ({error}).",
+  "@scannerErrorStart": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "folderMultiSelectBack": "Back",
+  "folderMultiSelectChangeView": "Change view",
+  "folderMultiSelectMoreOptions": "More options",
+  "folderMultiSelectDateLabel": "Date",
+  "folderMultiSelectMerge": "Merge",
+  "folderMultiSelectExport": "Export",
+  "homeTooltipClose": "Close",
+  "homeTooltipFlash": "Flash",
+  "homeTooltipSettings": "Settings",
+  "homeTryAgain": "Try again",
+  "scanActionCamera": "Scan with Camera",
+  "scanActionGallery": "Choose from Gallery",
+  "scanExportingPdf": "Exporting PDF…",
+  "scanExportPdf": "Export as PDF",
+  "scanInfoHeader": "Scan an image",
+  "scanInfoHint": "Capture from camera or choose an image from gallery."
+}
