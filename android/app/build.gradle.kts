@@ -26,7 +26,7 @@ plugins {
 android {
     namespace = "com.opensource.clearscan"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = "23.2.8568313"
+    ndkVersion = "28.2.13676358"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
