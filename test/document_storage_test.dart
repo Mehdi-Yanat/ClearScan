@@ -17,12 +17,12 @@ void main() {
     );
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(pathProvider, (call) async {
-      if (call.method == 'getApplicationDocumentsDirectory') {
-        return tempDirectory.path;
-      }
-      if (call.method == 'getExternalStorageDirectories') return <String>[];
-      throw MissingPluginException('Unexpected method ${call.method}');
-    });
+          if (call.method == 'getApplicationDocumentsDirectory') {
+            return tempDirectory.path;
+          }
+          if (call.method == 'getExternalStorageDirectories') return <String>[];
+          throw MissingPluginException('Unexpected method ${call.method}');
+        });
   });
 
   tearDown(() async {

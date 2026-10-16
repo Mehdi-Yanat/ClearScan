@@ -73,17 +73,11 @@ void main() {
 cv.Mat _documentImage() {
   const width = 320;
   const height = 240;
-  final pixels = Uint8List(width * height)
-    ..fillRange(0, width * height, 30);
+  final pixels = Uint8List(width * height)..fillRange(0, width * height, 30);
   for (var y = 40; y < 200; y++) {
     for (var x = 40; x < 280; x++) {
       pixels[y * width + x] = 225;
     }
   }
-  return cv.Mat.fromList(
-    height,
-    width,
-    cv.MatType.CV_8UC1,
-    pixels,
-  );
+  return cv.Mat.fromList(height, width, cv.MatType.CV_8UC1, pixels);
 }
