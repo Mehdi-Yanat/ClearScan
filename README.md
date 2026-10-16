@@ -1,95 +1,103 @@
-# 📄 ClearScan
+# ClearScan
 
-**A modern, premium document scanner designed to be free for all users**
-
-ClearScan transforms your mobile device into a powerful document scanner. It combines a seamless user experience with professional-grade image processing to ensure your documents are captured, enhanced, and exported with precision.
+ClearScan is an open-source document scanner and PDF utility app built with Flutter. Capture or import documents, clean up scans, and organize, export, and share your files from one place.
 
 <p align="center">
-  <img src="https://github.com/Mehdi-Yanat/ClearScan/blob/main/AppIcons/appstore.png?raw=true" alt="ClearScan App Icon" width="250">
-</p> 
+  <img src="https://raw.githubusercontent.com/Mehdi-Yanat/ClearScan/main/AppIcons/appstore.png" alt="ClearScan app icon" width="180">
+</p>
 
-## ✨ Features
+## Features
 
-- **📸 Intelligent Capture**: Quickly capture documents using your camera or import high-resolution images from your gallery.
-- **✂️ Precision Cropping**: An intuitive cropping tool allows you to refine the document boundaries, ensuring only the relevant content is kept.
-- **🪄 Scan-Style Enhancement**: Automatic grayscale conversion and contrast optimization to produce a clean, high-contrast "scanned" look.
-- **📄 Professional PDF Export**: Export your processed documents into true A4-sized PDFs, ready for professional sharing and archiving.
-- **🚀 Instant Preview**: Open your exported PDFs immediately after generation for quick verification.
+- **Scan documents** with the camera or import images from your device.
+- **Crop and enhance scans** for cleaner, more readable documents.
+- **Manage documents** and export or share them as PDFs.
+- **Work with PDFs** using tools for conversion, merging, splitting, rotation, and text extraction.
+- **Use OCR and QR tools** for text recognition and QR code generation.
+- **Personalize the app** with account, language, theme, and app-lock settings.
 
-## 🛠 Tech Stack
+## Tech stack
 
-- **Framework**: [Flutter](https://flutter.dev) (Dart)
-- **Image Processing**: `image` package for advanced pixel manipulation and filters.
-- **PDF Generation**: `pdf` package for professional document layout and export.
-- **Camera & Gallery**: `image_picker` for seamless media acquisition.
-- **Cropping**: `image_cropper` for precision document framing.
-- **Storage**: `path_provider` for secure local file management.
+- [Flutter](https://flutter.dev) and Dart
+- Camera, image import, cropping, and image processing
+- PDF creation, viewing, editing, and conversion
+- OCR, local storage, and optional Supabase authentication
 
-## 🚀 Getting Started
+## Getting started
 
-### Prerequisites
+### Requirements
 
-- [Flutter SDK](https://docs.flutter.dev/get-started/install) (Stable channel recommended)
-- Android Studio / Android SDK
-- A physical Android device or an Android Emulator
+- Flutter SDK on the stable channel
+- Android Studio with the Android SDK, or another configured Android development environment
+- An Android device or emulator
 
-### Installation
+### Run locally
 
-1. **Clone the repository**:
-   ```bash
-   git clone https://github.com/yourusername/clear_scan.git
-   cd clear_scan
-   ```
-
-2. **Install dependencies**:
-   ```bash
-   flutter pub get
-   ```
-
-3. **Run the application**:
-   ```bash
-   flutter run
-   ```
-
-### Troubleshooting
-
-If you encounter DDS or service protocol issues on Windows, run the app with the following flag:
 ```bash
-flutter run --no-dds
+git clone https://github.com/Mehdi-Yanat/ClearScan.git
+cd ClearScan
+flutter pub get
+flutter run
 ```
 
-## CI/CD and Android releases
+The app can launch without backend configuration. To enable Supabase-backed features, provide the project URL and publishable key as Dart defines:
 
-GitHub Actions runs static analysis, Flutter tests, an Android emulator-backed end-to-end test, and a debug APK build for pushes and pull requests targeting `main`.
+```bash
+flutter run \
+  --dart-define="supabase_project_url=YOUR_SUPABASE_PROJECT_URL" \
+  --dart-define="supabase_publishable_key=YOUR_SUPABASE_PUBLISHABLE_KEY" \
+  --dart-define="google_ID_client=YOUR_GOOGLE_CLIENT_ID"
+```
 
-To publish a signed Android release, add these repository Actions secrets:
+`google_ID_client` is optional. Do not commit private credentials to the repository.
 
-- `ANDROID_KEYSTORE_BASE64`: Base64-encoded upload keystore (PowerShell: `[Convert]::ToBase64String([IO.File]::ReadAllBytes('android/app/upload-keystore.jks'))`; Linux: `base64 -w 0 android/app/upload-keystore.jks`).
-- `ANDROID_KEYSTORE_PASSWORD`: Keystore password.
-- `ANDROID_KEY_ALIAS`: Signing key alias.
-- `ANDROID_KEY_PASSWORD`: Signing key password.
+### Verify a local change
 
-Add these repository Actions variables so release builds include the app's client-side Supabase configuration:
+```bash
+flutter analyze
+flutter test
+```
 
-- `SUPABASE_PROJECT_URL`
-- `SUPABASE_PUBLISHABLE_KEY`
-- `GOOGLE_ID_CLIENT` (optional; omit to disable Google sign-in)
+The Android integration tests require a running emulator:
 
-To release without creating a tag manually, open **Actions → Release → Run workflow** on `main` and enter a semantic version such as `1.0.1-beta.1`. The workflow creates the corresponding `v1.0.1-beta.1` tag, runs analysis, Flutter tests, and the Android emulator end-to-end test, then builds and attaches a signed APK and Android App Bundle to a GitHub Release. Versions containing a prerelease suffix (for example, `-beta.1`) are published as GitHub prereleases. Pushing a `v*` tag manually also triggers a release. The Android version code uses the GitHub Actions run number.
+```bash
+flutter test integration_test/app_test.dart -d emulator-5554
+```
 
-## 🤝 Contributing
+## Continuous integration and releases
 
-Contributions are what make the open-source community such an amazing place to learn, inspire, and collaborate. Any contributions that help improve the project are **greatly appreciated**.
+The **CI** workflow runs on pushes and pull requests targeting `main`. It installs dependencies, runs `flutter analyze` and `flutter test`, and builds a debug APK.
 
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+The **Release** workflow runs when a `v*` tag is pushed or when manually dispatched from GitHub Actions. It runs the checks and Android emulator integration test, then builds a signed APK and Android App Bundle and attaches them to a GitHub Release.
 
-## 📜 License
+Before publishing a signed release, configure the following repository **Actions secrets**:
 
-Distributed under the MIT License. See `LICENSE` for more information.
+| Secret | Description |
+| --- | --- |
+| `ANDROID_KEYSTORE_BASE64` | Base64-encoded Android upload keystore |
+| `ANDROID_KEYSTORE_PASSWORD` | Keystore password |
+| `ANDROID_KEY_ALIAS` | Signing key alias |
+| `ANDROID_KEY_PASSWORD` | Signing key password |
 
----
-*Developed with ❤️ for the open-source community.*
+Encode the keystore locally without adding it to source control:
+
+```powershell
+[Convert]::ToBase64String([IO.File]::ReadAllBytes("android/app/upload-keystore.jks"))
+```
+
+The release workflow also requires these repository **Actions variables**:
+
+| Variable | Required | Description |
+| --- | --- | --- |
+| `SUPABASE_PROJECT_URL` | Yes | Supabase project URL |
+| `SUPABASE_PUBLISHABLE_KEY` | Yes | Supabase publishable key |
+| `GOOGLE_ID_CLIENT` | No | Google sign-in client ID |
+
+To create a release without pushing a tag manually, open **Actions → Release → Run workflow** on `main` and enter a semantic version, for example `1.0.1-beta.1`. The workflow creates the corresponding `v1.0.1-beta.1` release tag. Versions containing a prerelease suffix are published as GitHub prereleases. You can also push a `v*` tag to start the release workflow.
+
+## Contributing
+
+Contributions are welcome. Fork the repository, create a feature branch, make and test your changes, then open a pull request against `main`.
+
+## License
+
+ClearScan is distributed under the MIT License. See [LICENSE](LICENSE) for details.
