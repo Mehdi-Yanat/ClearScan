@@ -11,6 +11,10 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      SUPABASE_PROJECT_URL: ${{ vars.SUPABASE_PROJECT_URL || secrets.SUPABASE_PROJECT_URL }}
+      SUPABASE_PUBLISHABLE_KEY: ${{ vars.SUPABASE_PUBLISHABLE_KEY || secrets.SUPABASE_PUBLISHABLE_KEY }}
+      GOOGLE_ID_CLIENT: ${{ vars.GOOGLE_ID_CLIENT || secrets.GOOGLE_ID_CLIENT }}
 
     steps:
       - name: Checkout code
@@ -36,5 +40,18 @@ jobs:
       - name: Run tests
         run: flutter test
 
+      - name: Validate app configuration
+        run: |
+          for variable_name in SUPABASE_PROJECT_URL SUPABASE_PUBLISHABLE_KEY; do
+            if [[ -z "${!variable_name}" ]]; then
+              echo "::error::Missing GitHub Actions variable: ${variable_name}"
+              exit 1
+            fi
+          done
+
       - name: Build APK (debug)
-        run: flutter build apk --debug
+        run: |
+          flutter build apk --debug \
+            --dart-define="supabase_project_url=${SUPABASE_PROJECT_URL}" \
+            --dart-define="supabase_publishable_key=${SUPABASE_PUBLISHABLE_KEY}" \
+            --dart-define="google_ID_client=${GOOGLE_ID_CLIENT}"

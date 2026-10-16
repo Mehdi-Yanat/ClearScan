@@ -18,9 +18,9 @@ jobs:
     permissions:
       contents: write
     env:
-      SUPABASE_PROJECT_URL: ${{ vars.SUPABASE_PROJECT_URL }}
-      SUPABASE_PUBLISHABLE_KEY: ${{ vars.SUPABASE_PUBLISHABLE_KEY }}
-      GOOGLE_ID_CLIENT: ${{ vars.GOOGLE_ID_CLIENT }}
+      SUPABASE_PROJECT_URL: ${{ vars.SUPABASE_PROJECT_URL || secrets.SUPABASE_PROJECT_URL }}
+      SUPABASE_PUBLISHABLE_KEY: ${{ vars.SUPABASE_PUBLISHABLE_KEY || secrets.SUPABASE_PUBLISHABLE_KEY }}
+      GOOGLE_ID_CLIENT: ${{ vars.GOOGLE_ID_CLIENT || secrets.GOOGLE_ID_CLIENT }}
 
     steps:
       - name: Checkout code

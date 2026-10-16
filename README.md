@@ -50,6 +50,11 @@ flutter run \
 
 `google_ID_client` is optional. Do not commit private credentials to the repository.
 
+GitHub Actions builds receive these values from repository **Actions variables**
+(or secrets of the same name) named `SUPABASE_PROJECT_URL`, `SUPABASE_PUBLISHABLE_KEY`, and (optionally)
+`GOOGLE_ID_CLIENT`. The CI and release workflows pass them to Flutter as Dart
+defines; the ignored local `.env` file is not available on GitHub-hosted runners.
+
 ### Verify a local change
 
 ```bash
