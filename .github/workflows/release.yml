@@ -84,6 +84,10 @@ jobs:
           printf 'storePassword=%s\nkeyPassword=%s\nkeyAlias=%s\nstoreFile=app/upload-keystore.jks\n' \
             "$ANDROID_KEYSTORE_PASSWORD" "$ANDROID_KEYSTORE_PASSWORD" "$ANDROID_KEY_ALIAS" \
             > android/key.properties
+          echo "Signing certificate fingerprints (register SHA-1 in Google Cloud Android OAuth client):"
+          keytool -list -v -keystore android/app/upload-keystore.jks \
+            -alias "$ANDROID_KEY_ALIAS" -storepass "$ANDROID_KEYSTORE_PASSWORD" \
+            | grep -E "SHA1|SHA256"
 
       - name: Determine release version
         id: version
@@ -106,7 +110,7 @@ jobs:
 
       - name: Validate app configuration
         run: |
-          for variable_name in SUPABASE_PROJECT_URL SUPABASE_PUBLISHABLE_KEY; do
+          for variable_name in SUPABASE_PROJECT_URL SUPABASE_PUBLISHABLE_KEY GOOGLE_ID_CLIENT; do
             if [[ -z "${!variable_name}" ]]; then
               echo "::error::Missing required GitHub Actions variable: ${variable_name}"
               exit 1
