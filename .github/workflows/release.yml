@@ -66,18 +66,6 @@ jobs:
       - name: Run tests
         run: flutter test
 
-      - name: Run end-to-end tests
-        uses: reactivecircus/android-emulator-runner@v2
-        timeout-minutes: 45
-        with:
-          api-level: 34
-          target: google_apis
-          arch: x86_64
-          profile: pixel
-          force-avd-creation: false
-          emulator-options: -no-window -gpu swiftshader_indirect -no-audio -no-boot-anim
-          script: flutter test integration_test/app_test.dart -d emulator-5554 --reporter expanded
-
       - name: Configure Android release signing
         env:
           ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}

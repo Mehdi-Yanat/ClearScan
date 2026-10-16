@@ -67,7 +67,7 @@ flutter test integration_test/app_test.dart -d emulator-5554
 
 The **CI** workflow runs on pushes and pull requests targeting `main`. It installs dependencies, runs `flutter analyze` and `flutter test`, and builds a debug APK.
 
-The **Release** workflow runs when a `v*` tag is pushed or when manually dispatched from GitHub Actions. It runs the checks and Android emulator integration test, then builds a signed APK and Android App Bundle and attaches them to a GitHub Release.
+The **Release** workflow runs when a `v*` tag is pushed or when manually dispatched from GitHub Actions. It runs static analysis and Flutter tests, then builds a signed APK and Android App Bundle and attaches them to a GitHub Release.
 
 Before publishing a signed release, configure the following repository **Actions secrets**:
 
